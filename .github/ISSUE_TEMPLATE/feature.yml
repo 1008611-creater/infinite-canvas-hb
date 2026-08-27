@@ -1,0 +1,18 @@
+name: 功能请求
+description: 提议一个可验证的新功能
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 要解决的问题
+      description: 请描述当前问题和使用场景。
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议方案
+      description: 请描述期望的行为或交互。
+    validations:
+      required: true

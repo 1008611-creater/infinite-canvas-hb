@@ -23,6 +23,7 @@ export type CanvasNodeTypeId = CanvasNodeType | (string & {});
 
 export type CanvasNodeStatus = "idle" | "success" | "loading" | "error";
 export type CanvasGenerationMode = "text" | "image" | "video" | "audio";
+export type VideoGenerationMode = "text" | "keyframe" | "reference";
 export type CanvasImageGenerationType = "generation" | "edit";
 
 export type CanvasNodeImage = {
@@ -53,6 +54,7 @@ export type CanvasNodeMetadata = {
     fontSize?: number;
     generationMode?: CanvasGenerationMode;
     generationType?: CanvasImageGenerationType;
+    videoMode?: VideoGenerationMode;
     model?: string;
     reasoningEffort?: "auto" | "low" | "medium" | "high" | "xhigh";
     size?: string;
