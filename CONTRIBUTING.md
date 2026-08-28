@@ -16,11 +16,13 @@ npm run typecheck
 npm run build
 ```
 
-代理位于仓库外的 `agnes-video-proxy` 目录时，运行：
+视频代理检查：
 
 ```bash
-node --check server.js
+node --check agnes-video-proxy/server.js
 ```
+
+代理的启动方式、环境变量和接口见 `agnes-video-proxy/README.md`。`.env` 禁止入库。
 
 ## 视频模式约定
 
