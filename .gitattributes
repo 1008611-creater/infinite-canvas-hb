@@ -1,0 +1,4 @@
+# Windows 批处理脚本必须是 CRLF 换行。
+# cmd 对纯 LF 的 bat 处理不可靠，多行括号块（if / for）可能执行异常。
+*.bat text eol=crlf
+*.cmd text eol=crlf

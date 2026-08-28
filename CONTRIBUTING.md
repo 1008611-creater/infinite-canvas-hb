@@ -7,6 +7,20 @@
 - 通过 Pull Request 合并；PR 必须通过 CI 和代码审查。
 - 不要在仓库中提交 API Key、`.env` 或本地生成产物。
 
+## 本地启动
+
+Windows 一键启动三个服务：
+
+```bat
+scripts\windows\start.bat            REM 后端代理 8787 + Canvas Agent 17371 + 前端画布 3000
+scripts\windows\start.bat /headless  REM 不打开浏览器、不暂停
+scripts\windows\stop.bat             REM 停止
+```
+
+脚本不写死绝对路径，根目录由脚本自身位置推导；canvas-agent 会自动在 npx 缓存目录中查找，找不到时回退 `npx -y @basketikun/canvas-agent`。
+
+桌面快捷方式只做转发，真正的逻辑在 `scripts/windows/` 下，不要两边各改一份。
+
 ## 本地检查
 
 在 `web` 目录运行：
