@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <a href="docs/content/docs/overview/quick-start.mdx">快速开始</a> · <a href="docs/content/docs/overview/features.mdx">功能介绍</a> · <a href="docs/content/docs/overview/render.mdx">Render 部署</a> · <a href="docs/content/docs/overview/docker.mdx">Docker 部署</a> · <a href="docs/content/docs/canvas/canvas-node-manual.mdx">画布节点操作手册</a> · <a href="docs/content/docs/canvas/canvas-shortcuts.mdx">画布快捷键</a> · <a href="SECURITY.md">漏洞提交</a> · <a href="docs/content/docs/progress/todo.mdx">待办事项</a> · <a href="canvas-agent/README.md">本地 Canvas Agent</a> · <a href="plugins/infinite-canvas">Codex app 插件</a>
+  <a href="docs/content/docs/overview/quick-start.mdx">快速开始</a> · <a href="docs/content/docs/overview/features.mdx">功能介绍</a> · <a href="docs/content/docs/overview/render.mdx">Render 部署</a> · <a href="docs/content/docs/overview/docker.mdx">Docker 部署</a> · <a href="docs/content/docs/canvas/canvas-node-manual.mdx">画布节点操作手册</a> · <a href="docs/content/docs/canvas/canvas-shortcuts.mdx">画布快捷键</a> · <a href="SECURITY.md">漏洞提交</a> · <a href="docs/content/docs/progress/todo.mdx">待办事项</a> · <a href="canvas-agent/README.md">本地 Canvas Agent</a> · <a href="plugins/infinite-canvas">Codex app 插件</a> · <a href="agnes-video-proxy/README.md">Agnes 视频代理</a> · <a href="CONTRIBUTING.md">贡献指南</a>
 </p>
 
 无限画布是一款面向图片创作的开源工作台。它把画布编排、AI 图片生成、参考图编辑、对话助手、提示词库和素材沉淀放在同一个界面里，适合用来探索视觉方案并连续迭代图片结果。
@@ -28,6 +28,50 @@
 > 项目目前处于开发阶段，不保证历史数据兼容。各种本地存储格式都可能直接调整，欢迎关注后续更新。
 >
 > 如果你需要稳定维护自己的分支，建议自行 fork 后独立开发。二次开发与 PR 请保留原作者信息和前端页面标识。
+
+## 本 Fork：天宫漫剧工作台
+
+这是 [basketikun/infinite-canvas](https://github.com/basketikun/infinite-canvas) 的二次开发分支，定位为**天宫漫剧视频工作台**：在画布编排之外把视频生成做成主力能力，并接好了本地视频代理、Canvas Agent 与一键启动脚本。以下能力为本分支特有，上游仓库没有。
+
+### 视频生成三模式
+
+视频节点固定提供三种模式，切换模式会自动清理不适用的图片槽位：
+
+| 模式 | 用途 | 携带字段 | 图片上限 |
+| --- | --- | --- | --- |
+| `text` | 文生视频，纯提示词 | 不携带图片 | 0 |
+| `keyframe` | 首尾帧生视频 | `first_frame` / `last_frame` | 2（首帧、尾帧各一） |
+| `reference` | 全能参考生视频 | `images[]` | 5 |
+
+画布、插件、工作台三条链路共用同一套入参构造（`web/src/services/api/video.ts` 的 `buildVideoInput()`），保证行为一致。模式与图片字段不允许混用，代理侧会直接拒绝，避免产生不可预期的计费。
+
+### Agnes 视频代理
+
+`agnes-video-proxy/` 是一个本地 Node 服务，把 Agnes AI 的非标准视频接口翻译成 OpenAI 风格接口，让画布把它当作普通视频渠道接入。
+
+```bash
+cd agnes-video-proxy
+cp .env.example .env   # 填入 AGNES_API_KEY
+node server.js         # 默认 http://localhost:8787
+```
+
+只开放免费模型 `agnes-video-2.5-flash`；付费的 `agnes-video-2.5` 会被代理拒绝，也不在前端模型列表中显示。环境变量、接口清单、参考图上传与限流说明见 [agnes-video-proxy/README.md](agnes-video-proxy/README.md)。`.env` 禁止入库。
+
+### Windows 一键启动
+
+一次拉起工作台所需的三个服务：
+
+```bat
+scripts\windows\start.bat            :: 后端代理 8787 + Canvas Agent 17371 + 前端画布 3000，并打开浏览器
+scripts\windows\start.bat /headless  :: 不打开浏览器、结尾不暂停
+scripts\windows\stop.bat             :: 停止
+```
+
+脚本不写死绝对路径，根目录由脚本自身位置推导；`canvas-agent` 会自动在 npx 缓存目录中查找，找不到时回退 `npx -y @basketikun/canvas-agent`。桌面快捷方式只做转发到 `scripts/windows/`，不要两边各改一份。
+
+### 参与开发
+
+改动走独立分支 + Pull Request，`master` 不直接提交功能改动。分支规范、本地检查命令和视频模式约定见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ## 赞助商
 
@@ -62,6 +106,7 @@
 
 - 无限画布：多画布项目、节点拖拽缩放、连线、小地图、撤销重做、导入导出。
 - AI 创作：浏览器前台直连你配置的 OpenAI 兼容接口，支持文生图、图生图、参考图编辑、文本问答、音频和视频生成。
+- 视频三模式（本 Fork）：文生视频 / 首尾帧 / 全能参考，三种模式独立切换，详见[「视频生成三模式」](#视频生成三模式)。
 - 画布助手：围绕选中节点和上游节点对话、生图，并把结果插回画布。
 - 本地 Agent：通过本机 Canvas Agent 连接 Codex / Claude Code，让 Agent 通过 MCP 操作当前画布；
 - Codex App 插件：提供 Codex app 插件，安装后会自动注册 MCP 并尝试拉起本地 Agent。
@@ -97,7 +142,9 @@ docker compose up -d
 
 运行后默认端口3000，可访问 `http://localhost:3000`。
 
-首次打开后进入右上角配置，填入自己的 OpenAI 兼容 `Base URL` 和 `API Key`。
+Windows 下可直接用一键脚本同时拉起视频代理（8787）、Canvas Agent（17371）和前端画布（3000），见上文[「Windows 一键启动」](#windows-一键启动)。
+
+首次打开后进入右上角配置，填入自己的 OpenAI 兼容 `Base URL` 和 `API Key`。视频渠道若要接 Agnes，把视频通道的 Base URL 填 `http://localhost:8787`，Key 填任意非空值即可（真实密钥在代理侧的 `.env` 里）。
 
 如果默认的OpenAI接口调用方式与您的API不同，可自定义生图/视频脚本调用。
 
