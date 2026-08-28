@@ -40,6 +40,7 @@ export type AiConfig = {
     audioSpeed: string;
     audioInstructions: string;
     videoSeconds: string;
+    videoMode: "text" | "keyframe" | "reference";
     vquality: string;
     videoGenerateAudio: string;
     videoWatermark: string;
@@ -97,6 +98,7 @@ export const defaultConfig: AiConfig = {
     audioSpeed: "1",
     audioInstructions: "",
     videoSeconds: "6",
+    videoMode: "text",
     vquality: "720",
     videoGenerateAudio: "true",
     videoWatermark: "false",
@@ -176,7 +178,7 @@ export function resolveModelForCapability(config: AiConfig, currentModel: string
 
 export function selectableModelsByCapability(config: AiConfig, capability?: ModelCapability) {
     if (!capability) return config.models;
-    return config.channels.flatMap((channel) => channel.models.filter((model) => model.capability === capability).map((model) => encodeChannelModel(channel.id, model.name)));
+    return config.channels.flatMap((channel) => channel.models.filter((model) => model.capability === capability && !(capability === "video" && model.name === "agnes-video-2.5")).map((model) => encodeChannelModel(channel.id, model.name)));
 }
 
 /** The user script (if any) attached to a model; empty string means use the system default call. */
@@ -246,6 +248,7 @@ export const useConfigStore = create<ConfigStore>()(
                         audioInstructions: config.audioInstructions || "",
                         reasoningEffort: config.reasoningEffort || "auto",
                         videoSeconds: config.videoSeconds || "6",
+                        videoMode: config.videoMode === "keyframe" || config.videoMode === "reference" ? config.videoMode : "text",
                         vquality: config.vquality || "720",
                         videoGenerateAudio: config.videoGenerateAudio || "true",
                         videoWatermark: config.videoWatermark || "false",

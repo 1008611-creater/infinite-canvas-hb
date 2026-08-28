@@ -5,6 +5,7 @@ import i18n from "@/i18n";
 import { ImageSettingsTheme } from "@/components/image-settings-panel";
 import { type CanvasTheme } from "@/lib/canvas-theme";
 import { type AiConfig } from "@/stores/use-config-store";
+import type { VideoGenerationMode } from "@/types/canvas";
 
 const resolutionOptions = [
     { value: "720", label: "720p" },
@@ -28,7 +29,7 @@ export const videoSecondOptions = secondOptions.map((value) => String(value));
 
 type VideoSettingsPanelProps = {
     config: AiConfig;
-    onConfigChange: (key: "vquality" | "size" | "videoSeconds" | "videoGenerateAudio" | "videoWatermark", value: string) => void;
+    onConfigChange: (key: "vquality" | "size" | "videoSeconds" | "videoGenerateAudio" | "videoWatermark" | "videoMode", value: string) => void;
     theme: CanvasTheme;
     showTitle?: boolean;
     className?: string;
@@ -49,6 +50,15 @@ export function VideoSettingsPanel({ config, onConfigChange, theme, showTitle = 
         <ImageSettingsTheme theme={theme}>
             <div className={className} style={{ color: theme.node.text }} onMouseDown={(event) => event.stopPropagation()}>
                 {showTitle ? <div className="text-lg font-semibold">{t("settingsPanels.video.title")}</div> : null}
+                <SettingGroup title={t("settingsPanels.video.mode")} color={theme.node.muted}>
+                    <div className="grid grid-cols-3 gap-2.5">
+                        {(["text", "keyframe", "reference"] as VideoGenerationMode[]).map((value) => (
+                            <OptionPill key={value} selected={(config.videoMode || "text") === value} theme={theme} onClick={() => onConfigChange("videoMode", value)}>
+                                {t(`settingsPanels.video.modes.${value}`)}
+                            </OptionPill>
+                        ))}
+                    </div>
+                </SettingGroup>
                 <SettingGroup title={t("settingsPanels.video.quality")} color={theme.node.muted}>
                     <div className="grid grid-cols-3 gap-2.5">
                         {resolutionOptions.map((item) => (
@@ -99,6 +109,14 @@ export function VideoSettingsPanel({ config, onConfigChange, theme, showTitle = 
             </div>
         </ImageSettingsTheme>
     );
+}
+
+export function videoModeLabel(value?: string) {
+    return i18n.t(`settingsPanels.video.modes.${normalizeVideoMode(value)}`);
+}
+
+export function normalizeVideoMode(value?: string): VideoGenerationMode {
+    return value === "keyframe" || value === "reference" ? value : "text";
 }
 
 export function videoResolutionLabel(value: string) {

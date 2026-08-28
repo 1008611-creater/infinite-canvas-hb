@@ -8,7 +8,20 @@ import { imageToDataUrl } from "@/services/image-storage";
 import { boolConfig, buildApiUrl, modelOptionName, resolveModelRequestConfig, resolveModelScript, type AiConfig } from "@/stores/use-config-store";
 import { runModelPlugin } from "./model-plugin";
 import type { ReferenceImage } from "@/types/image";
+import type { VideoGenerationMode } from "@/types/canvas";
 
+export type VideoInput = {
+    mode?: VideoGenerationMode;
+    references?: ReferenceImage[];
+    firstFrame?: ReferenceImage;
+    lastFrame?: ReferenceImage;
+};
+
+export function buildVideoInput(config: Pick<AiConfig, "videoMode">, references: ReferenceImage[] = []): VideoInput {
+    const mode = config.videoMode || "text";
+    if (mode === "keyframe") return { mode, firstFrame: references[0], lastFrame: references[1] };
+    return { mode, references: mode === "reference" ? references : [] };
+}
 type VideoResponse = { id: string; status?: string; error?: { message?: string }; url?: string; result_url?: string; video_url?: string; content?: { video_url?: string; url?: string } | null };
 type ApiVideoResponse = VideoResponse | { code?: number | string; data?: VideoResponse | null; msg?: string; message?: string; error?: { message?: string } };
 type ApiEnvelope<T> = T | { code?: number | string; data?: T | null; msg?: string; message?: string; error?: { message?: string } };
@@ -33,8 +46,8 @@ function aiHeaders(config: AiConfig, contentType?: string) {
     };
 }
 
-export async function requestVideoGeneration(config: AiConfig, prompt: string, references: ReferenceImage[] = [], options?: RequestOptions): Promise<VideoGenerationResult> {
-    const task = await createVideoGenerationTask(config, prompt, references, options);
+export async function requestVideoGeneration(config: AiConfig, prompt: string, input: ReferenceImage[] | VideoInput = [], options?: RequestOptions): Promise<VideoGenerationResult> {
+    const task = await createVideoGenerationTask(config, prompt, input, options);
     for (let attempt = 0; attempt < 120; attempt += 1) {
         if (options?.signal?.aborted) throw new DOMException("Aborted", "AbortError");
         const state = await pollVideoGenerationTask(config, task, options);
@@ -46,13 +59,14 @@ export async function requestVideoGeneration(config: AiConfig, prompt: string, r
     throw new Error(apiText("videoTimeout", { provider: "" }));
 }
 
-export async function createVideoGenerationTask(config: AiConfig, prompt: string, references: ReferenceImage[] = [], options?: RequestOptions): Promise<VideoGenerationTask> {
+export async function createVideoGenerationTask(config: AiConfig, prompt: string, input: ReferenceImage[] | VideoInput = [], options?: RequestOptions): Promise<VideoGenerationTask> {
     const selectedModel = (config.model || config.videoModel).trim();
     const requestConfig = resolveModelRequestConfig(config, selectedModel);
     const script = resolveModelScript(config, selectedModel);
-    if (script) return createPluginVideoTask(requestConfig, selectedModel, script, prompt, references, options);
+    const videoInput = Array.isArray(input) ? { mode: config.videoMode, references: input } : input;
+    if (script) return createPluginVideoTask(requestConfig, selectedModel, script, prompt, videoInput, options);
     assertVideoConfig(requestConfig, requestConfig.model);
-    return createOpenAIVideoTask(requestConfig, selectedModel, prompt, references, options);
+    return createOpenAIVideoTask(requestConfig, selectedModel, prompt, videoInput, options);
 }
 
 export async function pollVideoGenerationTask(config: AiConfig, task: VideoGenerationTask, options?: RequestOptions): Promise<VideoGenerationTaskState> {
@@ -65,10 +79,11 @@ export async function pollVideoGenerationTask(config: AiConfig, task: VideoGener
     return pollOpenAIVideoTask(requestConfig, task, options);
 }
 
-async function createPluginVideoTask(config: AiConfig, model: string, script: string, prompt: string, references: ReferenceImage[], options?: RequestOptions): Promise<VideoGenerationTask> {
+async function createPluginVideoTask(config: AiConfig, model: string, script: string, prompt: string, input: VideoInput, options?: RequestOptions): Promise<VideoGenerationTask> {
     if (!config.baseUrl.trim()) throw new Error(apiText("baseUrlRequired"));
     if (!config.apiKey.trim()) throw new Error(apiText("apiKeyRequired"));
-    const refs = await Promise.all(references.map((image) => imageToDataUrl(image)));
+    const images = [input.firstFrame, input.lastFrame, ...(input.references || [])].filter((image): image is ReferenceImage => Boolean(image));
+    const refs = await Promise.all(images.map((image) => imageToDataUrl(image)));
     const result = videoPluginResult(
         await runModelPlugin({
             capability: "video",
@@ -77,6 +92,7 @@ async function createPluginVideoTask(config: AiConfig, model: string, script: st
             prompt,
             images: refs,
             params: {
+                mode: input.mode || config.videoMode || "text",
                 seconds: normalizeVideoSeconds(config.videoSeconds),
                 size: normalizeVideoSize(config.size),
                 resolution: normalizeVideoResolution(config.vquality),
@@ -116,7 +132,8 @@ export async function storeGeneratedVideo(result: VideoGenerationResult): Promis
     throw new Error(apiText("noPlayableVideo"));
 }
 
-async function createOpenAIVideoTask(config: AiConfig, model: string, prompt: string, references: ReferenceImage[], options?: RequestOptions): Promise<VideoGenerationTask> {
+async function createOpenAIVideoTask(config: AiConfig, model: string, prompt: string, input: VideoInput, options?: RequestOptions): Promise<VideoGenerationTask> {
+    const mode = input.mode || config.videoMode || "text";
     const body = new FormData();
     body.append("model", modelOptionName(model));
     body.append("prompt", prompt);
@@ -124,8 +141,15 @@ async function createOpenAIVideoTask(config: AiConfig, model: string, prompt: st
     if (normalizeVideoSize(config.size)) body.append("size", normalizeVideoSize(config.size)!);
     body.append("resolution_name", normalizeVideoResolution(config.vquality));
     body.append("preset", "normal");
-    const files = await Promise.all(references.slice(0, 7).map(async (image) => dataUrlToFile({ ...image, dataUrl: await imageToDataUrl(image) })));
-    files.forEach((file) => body.append("input_reference[]", file));
+    body.append("mode", mode);
+    const appendFile = async (field: string, image: ReferenceImage) => body.append(field, await dataUrlToFile({ ...image, dataUrl: await imageToDataUrl(image) }));
+    if (mode === "keyframe") {
+        if (input.firstFrame) await appendFile("first_frame", input.firstFrame);
+        if (input.lastFrame) await appendFile("last_frame", input.lastFrame);
+    } else if (mode === "reference") {
+        const files = await Promise.all((input.references || []).slice(0, 5).map(async (image) => dataUrlToFile({ ...image, dataUrl: await imageToDataUrl(image) })));
+        files.forEach((file) => body.append("images[]", file));
+    }
     try {
         const created = unwrapVideoResponse((await axios.post<ApiVideoResponse>(aiApiUrl(config, "/videos"), body, { headers: aiHeaders(config), signal: options?.signal })).data);
         if (!created.id) throw new Error(apiText("noVideoTaskId"));

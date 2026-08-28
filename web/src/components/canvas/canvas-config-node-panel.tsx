@@ -156,6 +156,7 @@ function buildNodeConfig(globalConfig: AiConfig, node: CanvasNodeData, mode: Can
         size: node.metadata?.size || globalConfig.size || defaultConfig.size,
         background: node.metadata?.background ?? globalConfig.background ?? defaultConfig.background,
         videoSeconds: node.metadata?.seconds || globalConfig.videoSeconds || defaultConfig.videoSeconds,
+        videoMode: node.metadata?.videoMode || globalConfig.videoMode || defaultConfig.videoMode,
         vquality: node.metadata?.vquality || globalConfig.vquality || defaultConfig.vquality,
         videoGenerateAudio: node.metadata?.generateAudio || globalConfig.videoGenerateAudio || defaultConfig.videoGenerateAudio,
         videoWatermark: node.metadata?.watermark || globalConfig.videoWatermark || defaultConfig.videoWatermark,
