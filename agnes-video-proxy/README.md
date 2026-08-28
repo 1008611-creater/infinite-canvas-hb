@@ -23,7 +23,10 @@ http://localhost:8787
 | `AGNES_API_KEY` | Agnes API Key，必填 |
 | `AGNES_BASE_URL` | Agnes 服务地址，默认 `https://apihub.agnes-ai.com` |
 | `PROXY_PORT` | 代理端口，默认 `8787` |
-| `AGENT_UPLOAD` | 本地参考图上传方式：`catbox` \| `uguu` \| `none` |
+| `AGENT_UPLOAD` | 本地参考图图床：`auto`（默认，多图床回退）\| `litterbox` \| `uguu` \| `tmpfiles` \| `catbox` \| `none` |
+| `UPLOAD_ENDPOINT` | 自定义图床地址（选填，填了优先使用） |
+| `UPLOAD_FILE_FIELD` | 自定义图床的文件字段名，默认 `fileToUpload` |
+| `UPLOAD_FIELDS` | 自定义图床的额外表单字段，JSON 字符串，如 `{"reqtype":"fileupload"}` |
 | `DEFAULT_AR` | 默认画幅，竖屏 `9:16` |
 | `DEFAULT_SECONDS` | 默认时长，单位秒 |
 
@@ -61,7 +64,38 @@ agnes-video-2.5-flash
 
 ## 参考图上传
 
-本地图片需要先上传到公网图床，Agnes 才能下载。默认使用 catbox，通过 `curl` 子进程上传，以复用系统代理并规避 Node.js 直连时的 `socket hang up`。
+本地图片需要先上传到公网图床，Agnes 才能下载。所有上传都通过 `curl` 子进程完成，以复用系统代理并规避 Node.js 直连时的 `socket hang up`。
+
+默认 `AGENT_UPLOAD=auto`，按顺序回退，前一个失败自动换下一个：
+
+| 顺序 | 图床 | 有效期 | 备注 |
+| --- | --- | --- | --- |
+| 1 | `litterbox` | 72 小时 | 当前主用，返回 `litter.catbox.moe` 真直链 |
+| 2 | `uguu` | 24 小时 | 备用 |
+| 3 | `tmpfiles` | 1 小时 | 返回页面地址，代理自动转成 `/dl/` 直链 |
+| 4 | `catbox` | 永久 | 匿名上传已被封（返回 `Invalid uploader`），仅作兜底 |
+
+> 2026-08-28 实测：`catbox.moe` 匿名上传返回 `Invalid uploader`、`0x0.st` 已关闭上传，导致画布内直传本地参考图全部失败。默认顺序因此改为 litterbox 优先。
+
+如果自建图床更稳（对象存储 / 七牛 / 自建 MinIO 等），配置 `UPLOAD_ENDPOINT` 即可插到队首，内置图床仍作兜底：
+
+```bash
+UPLOAD_ENDPOINT=https://your-image-host.example/api/upload
+UPLOAD_FILE_FIELD=fileToUpload
+UPLOAD_FIELDS={"reqtype":"fileupload"}
+```
+
+大于 1.5 MB 的图片会先用本机 `ffmpeg` 压到长边 1280 再上传，压缩失败则按原图上传。
+
+## 画质预期
+
+**Agnes 视频模型（尤其免费 flash）本身画质偏弱，成片质量的上限由输入图决定。** 生产链路应当是：
+
+```text
+MJ v8.2 / image2 出高质量首尾帧 → Agnes 做 keyframe 插值运镜 → 成片
+```
+
+`keyframe` 模式下首帧尾帧给什么质量，成片就封顶在什么质量；`text` 模式没有高质量底图，只能由弱视频模型凭空生成，画面最不可控。因此正式镜头不要用 `text` 直出。
 
 ## 限流
 

@@ -43,6 +43,8 @@
 | `keyframe` | 首尾帧生视频 | `first_frame` / `last_frame` | 2（首帧、尾帧各一） |
 | `reference` | 全能参考生视频 | `images[]` | 5 |
 
+> **画质预期**：Agnes 免费 flash 视频模型本身画质偏弱，成片质量的上限由**输入图**决定——生图模型（MJ v8.2 / image2）的能力远强于视频模型。正式镜头走 `keyframe`：先用 MJ v8.2 / image2 出高质量首尾帧，再交给 Agnes 插值运镜。`text` 模式没有高质量底图兜底，画面最不可控，不建议用于正式镜头。
+
 画布、插件、工作台三条链路共用同一套入参构造（`web/src/services/api/video.ts` 的 `buildVideoInput()`），保证行为一致。模式与图片字段不允许混用，代理侧会直接拒绝，避免产生不可预期的计费。
 
 ### Agnes 视频代理
