@@ -1,0 +1,4 @@
+# 密钥与本地配置，禁止入库
+.env
+*.log
+node_modules

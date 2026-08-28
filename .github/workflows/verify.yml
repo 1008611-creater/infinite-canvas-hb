@@ -34,10 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: 仅在代理被纳入仓库时检查
-        run: |
-          if [ -f agnes-video-proxy/server.js ]; then
-            node --check agnes-video-proxy/server.js
-          else
-            echo "agnes-video-proxy 当前为独立本地服务，跳过语法检查。"
-          fi
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node --check agnes-video-proxy/server.js

@@ -1,0 +1,13 @@
+{
+  "name": "agnes-video-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OpenAI 兼容视频代理，翻译给 Agnes AI（后续扩展 minimax H3 / Seedance）。供 infinite-canvas 作为视频渠道接入。",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
