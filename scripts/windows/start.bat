@@ -23,7 +23,8 @@ pushd "%~dp0..\..\.." >nul 2>&1
 set "ROOT=%CD%"
 popd
 
-set "PROXY_DIR=%ROOT%\agnes-video-proxy"
+REM 代理以仓库内那份为准（唯一事实源），避免根目录另有运行副本导致改了代码不生效
+set "PROXY_DIR=%ROOT%\infinite-canvas\agnes-video-proxy"
 set "WEB_DIR=%ROOT%\infinite-canvas\web"
 set "VITE_CFG=%WEB_DIR%\vite.config.ts"
 
@@ -31,6 +32,22 @@ if not exist "%WEB_DIR%\package.json" (
     echo.
     echo   [!!] 未找到前端目录：%WEB_DIR%
     echo       请确认本脚本位于 infinite-canvas\scripts\windows\ 下。
+    echo.
+    if "%HEADLESS%"=="" pause
+    exit /b 1
+)
+
+if not exist "%PROXY_DIR%\server.js" (
+    echo.
+    echo   [!!] 未找到视频代理：%PROXY_DIR%\server.js
+    echo.
+    if "%HEADLESS%"=="" pause
+    exit /b 1
+)
+if not exist "%PROXY_DIR%\.env" (
+    echo.
+    echo   [!!] 代理缺少 .env：%PROXY_DIR%\.env
+    echo       请先执行：copy .env.example .env 并填入 AGNES_API_KEY
     echo.
     if "%HEADLESS%"=="" pause
     exit /b 1
