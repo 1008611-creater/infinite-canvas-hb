@@ -44,7 +44,10 @@ const CONFIG = {
   PORT: parseInt(process.env.PROXY_PORT || '8787', 10),
   AGNES_API_KEY: process.env.AGNES_API_KEY || '',
   AGNES_BASE: (process.env.AGNES_BASE_URL || 'https://apihub.agnes-ai.com').replace(/\/$/, ''),
-  UPLOAD: (process.env.AGENT_UPLOAD || 'catbox').toLowerCase(), // catbox | uguu | none
+  UPLOAD: (process.env.AGENT_UPLOAD || 'auto').toLowerCase(),   // auto（多图床回退）| litterbox | uguu | tmpfiles | catbox | custom | none
+  UPLOAD_ENDPOINT: process.env.UPLOAD_ENDPOINT || '',           // 自定义图床 URL，配合 UPLOAD=custom 优先使用
+  UPLOAD_FILE_FIELD: process.env.UPLOAD_FILE_FIELD || 'fileToUpload',
+  UPLOAD_FIELDS: process.env.UPLOAD_FIELDS || '',               // 自定义图床的额外表单字段，JSON 字符串
   DEFAULT_AR: process.env.DEFAULT_AR || '9:16',                 // 天宫漫剧默认竖屏
   DEFAULT_SECONDS: parseInt(process.env.DEFAULT_SECONDS || '12', 10), // 拉满 12 秒
 };
@@ -140,25 +143,113 @@ function tryCompress(localPath) {
     return null;
   }
 }
-function uploadWithCurl(buffer, filename, fields) {
+// ---------------------------------------------------------------- 图床（参考图必须先变公网 URL）
+// Agnes 侧只接受公网可下载的图片 URL，机身本地文件必须走图床。
+// 实测（2026-08-28）：catbox.moe 匿名上传已被封（返回 "Invalid uploader"），
+// 0x0.st 关闭上传，因此默认顺序改为 litterbox（catbox 的临时通道，返回真直链）。
+// 所有上传都走 curl 子进程：node 原生 https 直连图床经常 socket hang up，
+// curl 能复用系统代理，稳定性明显更好。
+const UPLOADERS = {
+  litterbox: {
+    url: 'https://litterbox.catbox.moe/resources/internals/api.php',
+    fields: { reqtype: 'fileupload', time: '72h' },
+    fileField: 'fileToUpload',
+    note: '直链，72 小时有效',
+  },
+  uguu: {
+    url: 'https://uguu.se/upload',
+    fields: {},
+    fileField: 'files[]',
+    note: '24 小时有效',
+  },
+  tmpfiles: {
+    url: 'https://tmpfiles.org/api/v1/upload',
+    fields: {},
+    fileField: 'file',
+    note: '1 小时有效；返回页面地址需转成 /dl/ 直链',
+    map(text) {
+      // {"data":{"url":"http://tmpfiles.org/123456/name.jpg"}} -> https://tmpfiles.org/dl/123456/name.jpg
+      try {
+        const j = JSON.parse(text);
+        const u = j && j.data && j.data.url;
+        if (u) return String(u).replace(/^https?:\/\/tmpfiles\.org\//, 'https://tmpfiles.org/dl/');
+      } catch {}
+      return text;
+    },
+  },
+  catbox: {
+    url: 'https://catbox.moe/user/api.php',
+    fields: { reqtype: 'fileupload' },
+    fileField: 'fileToUpload',
+    note: '永久直链，但匿名上传常被拒（Invalid uploader）',
+  },
+};
+const AUTO_UPLOAD_ORDER = ['litterbox', 'uguu', 'tmpfiles', 'catbox'];
+
+function parseUploadFields(raw) {
+  if (!raw) return {};
+  try {
+    const j = JSON.parse(raw);
+    return j && typeof j === 'object' ? j : {};
+  } catch {
+    return {};
+  }
+}
+// 决定尝试顺序：custom 端点优先，其余按 AUTO_UPLOAD_ORDER 兜底
+function uploaderOrder() {
+  const u = CONFIG.UPLOAD;
+  if (u === 'none') return [];
+  const custom = CONFIG.UPLOAD_ENDPOINT
+    ? [{
+        name: 'custom',
+        url: CONFIG.UPLOAD_ENDPOINT,
+        fields: parseUploadFields(CONFIG.UPLOAD_FIELDS),
+        fileField: CONFIG.UPLOAD_FILE_FIELD || 'fileToUpload',
+        note: '自定义图床（UPLOAD_ENDPOINT）',
+      }]
+    : [];
+  if (!u || u === 'auto' || u === 'custom') return [...custom, ...AUTO_UPLOAD_ORDER];
+  return [...custom, u, ...AUTO_UPLOAD_ORDER.filter((x) => x !== u)];
+}
+function uploadWithCurl(buffer, filename, uploader) {
   return new Promise((resolve, reject) => {
     const tmpDir = process.env.TEMP || require('os').tmpdir();
     const tmpPath = path.join(tmpDir, `ag_upload_${Date.now()}_${Math.random().toString(36).slice(2, 8)}_${filename || 'ref.png'}`);
     try { fs.writeFileSync(tmpPath, buffer); } catch (e) { return reject(e); }
     const args = ['-s', '--max-time', '60'];
-    for (const [k, v] of Object.entries(fields)) {
+    for (const [k, v] of Object.entries(uploader.fields || {})) {
       args.push('-F', `${k}=${v}`);
     }
-    args.push('-F', `fileToUpload=@${tmpPath}`);
-    args.push('https://catbox.moe/user/api.php');
+    args.push('-F', `${uploader.fileField || 'fileToUpload'}=@${tmpPath}`);
+    args.push(uploader.url);
     execFile('curl', args, { timeout: 70000 }, (err, stdout, stderr) => {
       try { fs.unlinkSync(tmpPath); } catch {}
       if (err) return reject(err);
-      const url = stdout.trim();
-      if (url.startsWith('http')) return resolve(url);
+      let url = stdout.trim();
+      if (typeof uploader.map === 'function') url = uploader.map(url);
+      if (typeof url === 'string' && url.startsWith('http')) return resolve(url);
       reject(new Error('curl 未返回有效 URL: ' + (stderr || url).slice(0, 160)));
     });
   });
+}
+async function uploadPublic(buffer, filename, kind) {
+  const order = uploaderOrder();
+  if (!order.length) throw new Error(`${kind} 是本地文件但 AGENT_UPLOAD=none，请先上传为公网 URL`);
+  const errs = [];
+  for (const key of order) {
+    const up = typeof key === 'string' ? UPLOADERS[key] : key;
+    if (!up || !up.url) continue;
+    try {
+      const url = await uploadWithCurl(buffer, filename, up);
+      console.log(`[upload] ${kind} 上传成功（${up.name || key}）：${url}`);
+      return url;
+    } catch (e) {
+      const msg = String((e && e.message) || e).slice(0, 120);
+      console.warn(`[upload] ${kind} 经 ${up.name || key} 上传失败：${msg}`);
+      errs.push(`${up.name || key}: ${msg}`);
+    }
+  }
+  throw new Error(`${kind} 上传失败，已尝试 ${errs.length} 个图床 -> ${errs.join(' | ')}`);
 }
 function multipart(buffer, filename, fields, fileFieldName = 'fileToUpload') {
   const boundary = '----AgnesProxy' + Date.now();
@@ -206,7 +297,7 @@ async function resolveMedia(value, kind) {
   let name = path.basename(value);
   const c = tryCompress(value);
   if (c) { buf = fs.readFileSync(c); name = path.basename(c); }
-  return await uploadWithCurl(buf, name, { reqtype: 'fileupload' });
+  return await uploadPublic(buf, name, kind);
 }
 
 // ---- 解析画布发来的 multipart/form-data（与 JSON 双通道）----
@@ -285,9 +376,7 @@ function toDataUri(buf) {
   return `data:${mimeOfBuffer(buf)};base64,${buf.toString('base64')}`;
 }
 async function uploadBuffer(buffer, filename) {
-  // catbox 从本机直连经常 socket hang up，但 curl 走系统代理可稳定上传；
-  // uguu 返回的临时 URL 常被 Agnes 服务器拒下载，故只保留 catbox。
-  return await uploadWithCurl(buffer, filename || 'ref.png', { reqtype: 'fileupload' });
+  return await uploadPublic(buffer, filename || 'ref.png', '图片');
 }
 // 画布走 OpenAI 视频路径时发的是 FormData（无 mode/aspect_ratio），这里翻译给 Agnes
 async function handleCreateForm(fields, files) {
