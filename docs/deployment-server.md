@@ -73,15 +73,25 @@ chmod 600 /opt/agnes-video-proxy/.env
 ### 4. Cloudflare 后台
 
 1. **Zero Trust → Networks → Tunnels → Create a tunnel**，类型选 Cloudflared，命名（如 `hb-canvas`）
-2. 建好后复制那个 token，在服务器上执行：
-   ```bash
-   cloudflared service install <token>
-   systemctl enable --now cloudflared
-   ```
-3. 回到该 tunnel 的 **Public Hostname** 页，加一条：
+2. 回到该 tunnel 的 **Public Hostname** 页，加一条：
    - Subdomain: `hb`，Domain: `cauai.fun`
    - Service: `HTTP` → `127.0.0.1:18085`
-4. 如果 `hb.cauai.fun` 已经有旧的 DNS 记录（比如指到旧部署），先删掉它，否则新记录建不上
+3. 如果 `hb.cauai.fun` 已经有旧的 DNS 记录（比如指到旧部署），先删掉它，否则新记录建不上
+4. 把建 tunnel 时给的那串 **token** 拿到服务器上：
+
+   ```bash
+   mkdir -p /etc/cloudflared-canvas
+   echo '<token>' > /etc/cloudflared-canvas/token
+   chmod 600 /etc/cloudflared-canvas/token
+   cp /opt/infinite-canvas/cloudflared-canvas.service /etc/systemd/system/
+   systemctl daemon-reload
+   systemctl enable --now cloudflared-canvas
+   ```
+
+> **别用 `cloudflared service install`**：它会建一个叫 `cloudflared` 的 systemd 服务，
+> 和这台机器上已经在跑的 kidswear 隧道抢名字（那个是手动起的裸进程，用 `/etc/cloudflared/token`）。
+> 仓库里的 `deploy/cloudflared-canvas.service` 用独立服务名 + 独立 token 目录，两个隧道各跑各的。
+> 服务单元会由 `publish.sh` 上传到 `/opt/infinite-canvas/cloudflared-canvas.service`。
 
 ## 日常更新
 

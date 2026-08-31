@@ -1,0 +1,30 @@
+# Cloudflare Tunnel（hb.cauai.fun —— 无限画布）
+#
+# 为什么不用 `cloudflared service install`：
+# 那会创建名为 cloudflared 的 systemd 服务，跟这台机器上已经在跑的
+# kidswear 隧道（手动起的裸进程，用的是 /etc/cloudflared/token）抢名字、互相干扰。
+# 这里用独立的服务名 + 独立的 token 目录，两个隧道各跑各的。
+#
+# 用法：
+#   mkdir -p /etc/cloudflared-canvas
+#   echo '<CF 后台给的 tunnel token>' > /etc/cloudflared-canvas/token
+#   chmod 600 /etc/cloudflared-canvas/token
+#   cp cloudflared-canvas.service /etc/systemd/system/
+#   systemctl daemon-reload && systemctl enable --now cloudflared-canvas
+#
+# 状态排查：systemctl status cloudflared-canvas / journalctl -u cloudflared-canvas -n 50 --no-pager
+# 放到 /etc/systemd/system/cloudflared-canvas.service
+
+[Unit]
+Description=Cloudflare Tunnel for hb.cauai.fun (infinite-canvas)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/cloudflared --no-autoupdate tunnel run --protocol http2 --token-file /etc/cloudflared-canvas/token
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -51,10 +51,22 @@ COMMIT="$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 RELEASE="canvas-${STAMP}-${COMMIT}"
 
-echo "==> 构建前端（base=$AGNES_BASE_URL_VALUE）"
+echo "==> 构建前端（agnes=$AGNES_BASE_URL_VALUE）"
 cd web
-npm run build
+# 这两个值是编译进 JS 的，运行时改不了，必须在构建时注入。
+# 漏了 VITE_AGNES_BASE_URL 的话，产物里就是默认的 localhost:8787——
+# 页面照样打得开、回环自检照样 200，但访客浏览器会去连他自己的电脑，视频功能全废。
+VITE_AGNES_BASE_URL="$AGNES_BASE_URL_VALUE" \
+VITE_AGNES_API_KEY="$ACCESS_TOKEN" \
+    npm run build
 cd "$ROOT"
+
+# 产物校验：构建日志看着正常不代表值真的注入了，直接搜产物
+if ! grep -rqF "$AGNES_BASE_URL_VALUE" web/dist/assets/*.js 2>/dev/null; then
+    echo "✗ 构建产物里找不到 ${AGNES_BASE_URL_VALUE}，VITE_AGNES_BASE_URL 没注入，中止发布"
+    exit 1
+fi
+echo "==> 产物校验通过：已注入 ${AGNES_BASE_URL_VALUE}"
 
 echo "==> 打包 $RELEASE"
 STAGE="$(mktemp -d)"
@@ -94,6 +106,8 @@ upload_lf deploy/nginx-docker.conf "${APP_ROOT}/nginx/default.conf"
     fi; \
     chmod 644 ${APP_ROOT}/secrets/htpasswd 2>/dev/null || true"
 upload_lf deploy/Dockerfile.proxy "${CANVAS_PROXY_ROOT:-/opt/agnes-video-proxy}/Dockerfile"
+# 隧道服务单元（老大在 CF 后台建好 tunnel 后，用它在服务器上把隧道跑起来）
+upload_lf deploy/cloudflared-canvas.service "${APP_ROOT}/cloudflared-canvas.service"
 
 # 代理的 .env（含 Agnes 上游 Key 与访问令牌）不在 git 里，需要单独同步。
 # 只在服务器还没建过时才上传，避免覆盖线上手工改过的配置；改了本机 .env 想同步就手动删服务器上那份再跑。
