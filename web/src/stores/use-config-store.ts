@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 import { nanoid } from "nanoid";
 
 import i18n from "@/i18n";
+import { AGNES_API_KEY } from "@/constant/env";
 
 export type ApiCallFormat = "openai" | "gemini";
 export type ModelCapability = "image" | "video" | "text" | "audio";
@@ -68,6 +69,55 @@ const CHANNEL_MODEL_SEPARATOR = "::";
 const OPENAI_BASE_URL = "https://api.openai.com";
 const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com";
 
+// ---- 本地 Agnes 视频代理（本 fork 自带，由 scripts/windows/start.bat 拉起）----
+export const LOCAL_AGNES_CHANNEL_ID = "agnes-local";
+export const LOCAL_AGNES_BASE_URL = "http://localhost:8787";
+export const LOCAL_AGNES_MODEL = "agnes-video-2.5-flash";
+export const LOCAL_AGNES_CHANNEL_NAME = "Agnes 本地代理 (8787)";
+
+/** True when the channel points at the bundled local proxy, whatever port suffix/path the user appended. */
+function isLocalAgnesChannel(channel: ModelChannel) {
+    const baseUrl = (channel.baseUrl || "").trim().toLowerCase().replace(/\/+$/, "");
+    return baseUrl === LOCAL_AGNES_BASE_URL || baseUrl.startsWith(`${LOCAL_AGNES_BASE_URL}/`);
+}
+
+/**
+ * Build the preset local-proxy channel. The key comes from VITE_AGNES_API_KEY, which start.bat injects
+ * from agnes-video-proxy/.env; when it is empty the user can still paste a key in the config panel.
+ */
+export function createLocalAgnesChannel(): ModelChannel {
+    return {
+        id: LOCAL_AGNES_CHANNEL_ID,
+        name: LOCAL_AGNES_CHANNEL_NAME,
+        baseUrl: LOCAL_AGNES_BASE_URL,
+        apiKey: AGNES_API_KEY,
+        apiFormat: "openai",
+        models: [{ name: LOCAL_AGNES_MODEL, capability: "video" }],
+    };
+}
+
+/**
+ * Migration: persisted configs predate the preset channel, so `defaultConfig` alone cannot reach them.
+ * Adds the proxy channel when missing, and tops up its key/model when the user left them blank.
+ */
+export function ensureLocalAgnesChannel(channels: ModelChannel[]): ModelChannel[] {
+    const index = channels.findIndex(isLocalAgnesChannel);
+    if (index < 0) return [...channels, createLocalAgnesChannel()];
+
+    const existing = channels[index];
+    const hasModel = existing.models.some((model) => model.name === LOCAL_AGNES_MODEL);
+    const needsKey = !existing.apiKey.trim() && Boolean(AGNES_API_KEY);
+    if (hasModel && !needsKey) return channels;
+
+    const next = [...channels];
+    next[index] = {
+        ...existing,
+        apiKey: needsKey ? AGNES_API_KEY : existing.apiKey,
+        models: hasModel ? existing.models : [...existing.models, { name: LOCAL_AGNES_MODEL, capability: "video" as const }],
+    };
+    return next;
+}
+
 export const defaultConfig: AiConfig = {
     channelMode: "local",
     baseUrl: OPENAI_BASE_URL,
@@ -87,10 +137,11 @@ export const defaultConfig: AiConfig = {
                 { name: "gpt-4o-mini-tts", capability: "audio" },
             ],
         },
+        createLocalAgnesChannel(),
     ],
     model: "default::gpt-image-2",
     imageModel: "default::gpt-image-2",
-    videoModel: "default::grok-imagine-video",
+    videoModel: `${LOCAL_AGNES_CHANNEL_ID}${CHANNEL_MODEL_SEPARATOR}${LOCAL_AGNES_MODEL}`,
     textModel: "default::gpt-5.5",
     audioModel: "default::gpt-4o-mini-tts",
     audioVoice: "alloy",
@@ -104,7 +155,7 @@ export const defaultConfig: AiConfig = {
     videoWatermark: "false",
     systemPrompt: "",
     reasoningEffort: "auto",
-    models: ["default::gpt-image-2", "default::grok-imagine-video", "default::gpt-5.5", "default::gpt-4o-mini-tts"],
+    models: ["default::gpt-image-2", "default::grok-imagine-video", "default::gpt-5.5", "default::gpt-4o-mini-tts", `${LOCAL_AGNES_CHANNEL_ID}${CHANNEL_MODEL_SEPARATOR}${LOCAL_AGNES_MODEL}`],
     quality: "auto",
     size: "1:1",
     background: "",
@@ -227,7 +278,7 @@ export const useConfigStore = create<ConfigStore>()(
                 const persistedWebdav = (persistedState.webdav || {}) as Partial<WebdavSyncConfig>;
                 const config = { ...defaultConfig, ...persistedConfig };
                 if (!Array.isArray(persistedConfig.channels)) config.channels = [];
-                const channels = normalizeChannels(config);
+                const channels = ensureLocalAgnesChannel(normalizeChannels(config));
                 const models = modelOptionsFromChannels(channels);
                 return {
                     ...current,

@@ -71,6 +71,17 @@ scripts\windows\stop.bat             :: 停止
 
 脚本不写死绝对路径，根目录由脚本自身位置推导；`canvas-agent` 会自动在 npx 缓存目录中查找，找不到时回退 `npx -y @basketikun/canvas-agent`。桌面快捷方式只做转发到 `scripts/windows/`，不要两边各改一份。
 
+#### 开箱即用的 Agnes 渠道
+
+用 `start.bat` 启动时，脚本会读取 `agnes-video-proxy/.env` 里的 `AGNES_API_KEY`，注入成 `VITE_AGNES_API_KEY` 再拉起前端。因此画布里会**预置**好一个 `Agnes 本地代理 (8787)` 渠道（模型 `agnes-video-2.5-flash`），视频模型默认就选它，打开即可用，不需要手动填 Base URL 和 Key。
+
+要点：
+
+- 密钥只在本机流转：`.env` 已 gitignore，代码里不写死任何 Key。
+- **改了 `.env` 里的 Key 之后必须重启前端**（`stop.bat` 再 `start.bat`）——Vite 只在启动时把 `VITE_` 变量打进前端。
+- 不用 `start.bat`、直接 `npm run dev` 时拿不到注入的 Key，渠道仍在，但在「设置 - 渠道」里手动填一次即可。
+- 已经手工建过 `http://localhost:8787` 渠道的老配置不会被覆盖；只在其 Key 为空时才补填。
+
 ### 参与开发
 
 改动走独立分支 + Pull Request，`master` 不直接提交功能改动。分支规范、本地检查命令和视频模式约定见 [CONTRIBUTING.md](CONTRIBUTING.md)。
@@ -146,7 +157,9 @@ docker compose up -d
 
 Windows 下可直接用一键脚本同时拉起视频代理（8787）、Canvas Agent（17371）和前端画布（3000），见上文[「Windows 一键启动」](#windows-一键启动)。
 
-首次打开后进入右上角配置，填入自己的 OpenAI 兼容 `Base URL` 和 `API Key`。视频渠道若要接 Agnes，把视频通道的 Base URL 填 `http://localhost:8787`，Key 填任意非空值即可（真实密钥在代理侧的 `.env` 里）。
+首次打开后进入右上角配置，填入自己的 OpenAI 兼容 `Base URL` 和 `API Key`。
+
+视频渠道若用 `start.bat` 启动，画布里已预置好 `Agnes 本地代理 (8787)` 渠道，无需配置；否则手动新增一个渠道，Base URL 填 `http://localhost:8787`，Key 填任意非空值即可——真实密钥在代理侧的 `.env` 里，代理请求上游时用的是它自己那份（前端传来的 Key 只用于通过画布的空值校验）。
 
 如果默认的OpenAI接口调用方式与您的API不同，可自定义生图/视频脚本调用。
 

@@ -11,4 +11,6 @@ interface ImportMetaEnv {
     readonly VITE_ANALYTICS_GA4_ID?: string;
     // Baidu Analytics site ID
     readonly VITE_ANALYTICS_BAIDU_ID?: string;
+    // Agnes API key for the bundled local video proxy; injected by scripts/windows/start.bat from agnes-video-proxy/.env.
+    readonly VITE_AGNES_API_KEY?: string;
 }
