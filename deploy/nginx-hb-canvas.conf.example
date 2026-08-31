@@ -1,0 +1,50 @@
+# hb.cauai.fun —— 无限画布（天宫漫剧）
+#
+# 只监听回环端口：本机 80 被机房拦截页占用、443 不通，公网入口由 Cloudflare Tunnel 提供，
+# 所以这里不开对外端口，由 cloudflared 主动外连到 Cloudflare 边缘。
+# 放到 /etc/nginx/conf.d/hb-canvas.conf
+
+server {
+    listen 127.0.0.1:18085;
+    server_name hb.cauai.fun;
+
+    root /opt/infinite-canvas/current/dist;
+    index index.html;
+
+    # SPA 路由回退
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # 文件名带 hash 的构建产物可以长期缓存
+    location /assets/ {
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # 运行期配置（docker-entrypoint 生成），禁止缓存
+    location = /config.js {
+        add_header Cache-Control "no-store";
+    }
+
+    # Agnes 视频代理：浏览器调同域 /agnes/...，nginx 去掉前缀后转给 127.0.0.1:8787。
+    # Basic Auth 挡住陌生访客；代理本身还会再校验一次 PROXY_ACCESS_TOKEN（双保险）。
+    location /agnes/ {
+        auth_basic "Infinite Canvas";
+        auth_basic_user_file /etc/nginx/.htpasswd-canvas;
+
+        proxy_pass http://127.0.0.1:8787/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # 生成一次视频可能要等几分钟（Agnes 免费额度约 1 次/分钟）
+        proxy_read_timeout 600s;
+        proxy_send_timeout 600s;
+
+        # 首尾帧模式要上传图片
+        client_max_body_size 64m;
+    }
+}

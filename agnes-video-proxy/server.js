@@ -72,6 +72,9 @@ const CONFIG = {
   UPLOAD_FIELDS: process.env.UPLOAD_FIELDS || '',               // 自定义图床的额外表单字段，JSON 字符串
   DEFAULT_AR: process.env.DEFAULT_AR || '9:16',                 // 天宫漫剧默认竖屏
   DEFAULT_SECONDS: parseInt(process.env.DEFAULT_SECONDS || '12', 10), // 拉满 12 秒
+  // 公网部署必填：浏览器要带 Bearer <PROXY_ACCESS_TOKEN> 才给用，否则任何人都能白嫖你的 Agnes 额度。
+  // 不填 = 不校验（本机开发保持原样）。前端由 VITE_AGNES_API_KEY 注入同一个值。
+  ACCESS_TOKEN: (process.env.PROXY_ACCESS_TOKEN || '').trim(),
 };
 
 // Agnes 模型表：当前产品只开放免费的 flash 模型
@@ -536,6 +539,15 @@ const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
   const u = new URL(req.url, 'http://localhost');
+  // 公网部署时校验访问令牌：/health 用于探活，保持开放。
+  if (CONFIG.ACCESS_TOKEN && u.pathname !== '/health') {
+    const auth = String(req.headers['authorization'] || '');
+    const token = auth.toLowerCase().startsWith('bearer ') ? auth.slice(7).trim() : '';
+    if (token !== CONFIG.ACCESS_TOKEN) {
+      res.setHeader('WWW-Authenticate', 'Bearer realm="agnes-video-proxy"');
+      return send(res, 401, { error: 'unauthorized', detail: 'missing or invalid PROXY_ACCESS_TOKEN' });
+    }
+  }
   try {
     if (req.method === 'GET' && u.pathname === '/health') return send(res, 200, { ok: true, base: CONFIG.AGNES_BASE });
     if (req.method === 'GET' && u.pathname === '/v1/models') return send(res, 200, { object: 'list', data: modelsList() });

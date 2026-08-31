@@ -1,0 +1,16 @@
+# Cloudflare Tunnel 配置示例：把 hb.cauai.fun 指到本机 nginx 的 18085。
+# 放到 /etc/cloudflared/canvas.yml（tunnel id 与凭据文件名按你自己的 tunnel 改）。
+#
+# 同时要在 Cloudflare 后台加一条 DNS 记录：
+#   类型 CNAME  名称 hb  目标 <tunnel-uuid>.cfargotunnel.com  代理状态：已代理
+# 改完 DNS 后：systemctl restart cloudflared-canvas
+
+tunnel: e7eb70de-7ad0-4abd-bc39-b2092722073a
+credentials-file: /etc/cloudflared/e7eb70de-7ad0-4abd-bc39-b2092722073a.json
+protocol: http2
+edge-ip-version: "4"
+
+ingress:
+  - hostname: hb.cauai.fun
+    service: http://127.0.0.1:18085
+  - service: http_status:404

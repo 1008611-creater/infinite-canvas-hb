@@ -159,7 +159,17 @@ Windows 下可直接用一键脚本同时拉起视频代理（8787）、Canvas A
 
 首次打开后进入右上角配置，填入自己的 OpenAI 兼容 `Base URL` 和 `API Key`。
 
-视频渠道若用 `start.bat` 启动，画布里已预置好 `Agnes 本地代理 (8787)` 渠道，无需配置；否则手动新增一个渠道，Base URL 填 `http://localhost:8787`，Key 填任意非空值即可——真实密钥在代理侧的 `.env` 里，代理请求上游时用的是它自己那份（前端传来的 Key 只用于通过画布的空值校验）。
+视频渠道若用 `start.bat` 启动，画布里已预置好 `Agnes 视频代理` 渠道，无需配置；否则手动新增一个渠道，Base URL 填 `http://localhost:8787`，Key 填任意非空值即可——真实密钥在代理侧的 `.env` 里，代理请求上游时用的是它自己那份（前端传来的 Key 只用于通过画布的空值校验）。
+
+### 服务器部署
+
+本 Fork 已部署为线上站点（静态前端 + Agnes 视频代理，通过 Cloudflare Tunnel 暴露）。
+完整流程见 [docs/deployment-server.md](docs/deployment-server.md)：
+
+- 前端构建时可用 `VITE_AGNES_BASE_URL` 指定代理地址（线上填 `/agnes`，由 nginx 反代到 127.0.0.1:8787；不填则默认 `http://localhost:8787`）
+- 公网部署时用 nginx Basic Auth 挡住陌生访客，Bearer 令牌由 nginx 注入（浏览器不可能同时发两个 Authorization 头）
+- 代理侧可选 `PROXY_ACCESS_TOKEN`，校验通过才放行，避免 Key 被白嫖
+- PR 合进 master 后，在本机跑 `bash scripts/deploy/publish.sh` 一键构建并上线（服务器只跑不构建）
 
 如果默认的OpenAI接口调用方式与您的API不同，可自定义生图/视频脚本调用。
 

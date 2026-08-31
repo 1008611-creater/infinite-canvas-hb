@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 import { nanoid } from "nanoid";
 
 import i18n from "@/i18n";
-import { AGNES_API_KEY } from "@/constant/env";
+import { AGNES_API_KEY, AGNES_BASE_URL } from "@/constant/env";
 
 export type ApiCallFormat = "openai" | "gemini";
 export type ModelCapability = "image" | "video" | "text" | "audio";
@@ -69,27 +69,55 @@ const CHANNEL_MODEL_SEPARATOR = "::";
 const OPENAI_BASE_URL = "https://api.openai.com";
 const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com";
 
-// ---- 本地 Agnes 视频代理（本 fork 自带，由 scripts/windows/start.bat 拉起）----
+// ---- Agnes 视频代理（本 fork 自带：本机由 scripts/windows/start.bat 拉起，服务器由 systemd 托管）----
 export const LOCAL_AGNES_CHANNEL_ID = "agnes-local";
-export const LOCAL_AGNES_BASE_URL = "http://localhost:8787";
 export const LOCAL_AGNES_MODEL = "agnes-video-2.5-flash";
-export const LOCAL_AGNES_CHANNEL_NAME = "Agnes 本地代理 (8787)";
+export const LOCAL_AGNES_CHANNEL_NAME = "Agnes 视频代理";
 
-/** True when the channel points at the bundled local proxy, whatever port suffix/path the user appended. */
+/** Address baked into this build: /agnes when built for the server, http://localhost:8787 otherwise. */
+const AGNES_URL = AGNES_BASE_URL;
+/** Address every locally built bundle uses, and the one old configs in localStorage still carry. */
+const LOCALHOST_AGNES_URL = "http://localhost:8787";
+
+function normalizeUrl(value: string) {
+    return (value || "").trim().toLowerCase().replace(/\/+$/, "");
+}
+
+/** True when the channel points at this build's proxy, or at the localhost address it replaced. */
 function isLocalAgnesChannel(channel: ModelChannel) {
-    const baseUrl = (channel.baseUrl || "").trim().toLowerCase().replace(/\/+$/, "");
-    return baseUrl === LOCAL_AGNES_BASE_URL || baseUrl.startsWith(`${LOCAL_AGNES_BASE_URL}/`);
+    const baseUrl = normalizeUrl(channel.baseUrl);
+    return [AGNES_URL, LOCALHOST_AGNES_URL].some((url) => baseUrl === normalizeUrl(url) || baseUrl.startsWith(`${normalizeUrl(url)}/`));
 }
 
 /**
- * Build the preset local-proxy channel. The key comes from VITE_AGNES_API_KEY, which start.bat injects
- * from agnes-video-proxy/.env; when it is empty the user can still paste a key in the config panel.
+ * Server builds reach the proxy through the page's own origin, but a config saved from a private address
+ * can still point at localhost, which then resolves to the visitor's own machine. Rewrite it to this
+ * build's URL so the page just works; local builds and private-host visits are left alone.
+ */
+function retargetAgnesChannel(channels: ModelChannel[]): ModelChannel[] {
+    if (normalizeUrl(AGNES_URL) === LOCALHOST_AGNES_URL) return channels;
+    if (typeof window === "undefined") return channels;
+    const hostname = window.location.hostname;
+    if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1" || hostname === "[::1]") return channels;
+
+    const index = channels.findIndex(isLocalAgnesChannel);
+    if (index < 0) return channels;
+    if (normalizeUrl(channels[index].baseUrl) === normalizeUrl(AGNES_URL)) return channels;
+    const next = [...channels];
+    next[index] = { ...channels[index], baseUrl: AGNES_URL };
+    return next;
+}
+
+/**
+ * Build the preset proxy channel. The key comes from VITE_AGNES_API_KEY, which start.bat injects
+ * from agnes-video-proxy/.env (server builds inject PROXY_ACCESS_TOKEN); when it is empty the user can
+ * still paste a key in the config panel.
  */
 export function createLocalAgnesChannel(): ModelChannel {
     return {
         id: LOCAL_AGNES_CHANNEL_ID,
         name: LOCAL_AGNES_CHANNEL_NAME,
-        baseUrl: LOCAL_AGNES_BASE_URL,
+        baseUrl: AGNES_URL,
         apiKey: AGNES_API_KEY,
         apiFormat: "openai",
         models: [{ name: LOCAL_AGNES_MODEL, capability: "video" }],
@@ -98,18 +126,20 @@ export function createLocalAgnesChannel(): ModelChannel {
 
 /**
  * Migration: persisted configs predate the preset channel, so `defaultConfig` alone cannot reach them.
- * Adds the proxy channel when missing, and tops up its key/model when the user left them blank.
+ * Repoints a stale localhost address first, then adds the proxy channel when missing, and tops up its
+ * key/model when the user left them blank.
  */
 export function ensureLocalAgnesChannel(channels: ModelChannel[]): ModelChannel[] {
-    const index = channels.findIndex(isLocalAgnesChannel);
-    if (index < 0) return [...channels, createLocalAgnesChannel()];
+    const retargeted = retargetAgnesChannel(channels);
+    const index = retargeted.findIndex(isLocalAgnesChannel);
+    if (index < 0) return [...retargeted, createLocalAgnesChannel()];
 
-    const existing = channels[index];
+    const existing = retargeted[index];
     const hasModel = existing.models.some((model) => model.name === LOCAL_AGNES_MODEL);
     const needsKey = !existing.apiKey.trim() && Boolean(AGNES_API_KEY);
-    if (hasModel && !needsKey) return channels;
+    if (hasModel && !needsKey) return retargeted;
 
-    const next = [...channels];
+    const next = [...retargeted];
     next[index] = {
         ...existing,
         apiKey: needsKey ? AGNES_API_KEY : existing.apiKey,

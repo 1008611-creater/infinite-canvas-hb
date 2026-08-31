@@ -1,0 +1,18 @@
+[Unit]
+Description=Agnes video proxy for infinite-canvas (OpenAI-compatible)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/agnes-video-proxy
+EnvironmentFile=/opt/agnes-video-proxy/.env
+# 系统自带的 node 是 v12，跑不了这个代理，用 /opt/node24
+ExecStart=/opt/node24/bin/node /opt/agnes-video-proxy/server.js
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

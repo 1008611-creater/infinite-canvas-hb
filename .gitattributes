@@ -2,3 +2,10 @@
 # cmd 对纯 LF 的 bat 处理不可靠，多行括号块（if / for）可能执行异常。
 *.bat text eol=crlf
 *.cmd text eol=crlf
+
+# 服务器上的脚本与配置必须是 LF：Linux 的 bash / systemd / nginx 遇到 CRLF 会直接报错。
+*.sh text eol=lf
+*.service text eol=lf
+*.conf text eol=lf
+*.example text eol=lf
+*.yml text eol=lf
