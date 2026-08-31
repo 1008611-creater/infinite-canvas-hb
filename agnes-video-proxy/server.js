@@ -25,6 +25,28 @@ const path = require('path');
 const { URL } = require('url');
 const { execFile } = require('child_process');
 
+// ---------------------------------------------------------------- 日志落盘
+// 代理通常由 start.bat 以后台窗口拉起，终端输出会随窗口消失，一旦出图床这类
+// 远端故障就只能靠猜。这里把 console 输出同步追加到 proxy.log，方便事后自查。
+// 用 AGENT_LOG_FILE 可改路径，设为 none 则关闭落盘。
+const LOG_FILE = process.env.AGENT_LOG_FILE || path.join(__dirname, 'proxy.log');
+function serializeArg(arg) {
+    if (typeof arg === 'string') return arg;
+    if (arg instanceof Error) return arg.stack || arg.message;
+    try { return JSON.stringify(arg); } catch { return String(arg); }
+}
+if (LOG_FILE.toLowerCase() !== 'none') {
+    for (const level of ['log', 'warn', 'error']) {
+        const original = console[level].bind(console);
+        console[level] = (...args) => {
+            original(...args);
+            try {
+                fs.appendFileSync(LOG_FILE, `[${new Date().toISOString()}] ${level.toUpperCase()} ${args.map(serializeArg).join(' ')}\n`);
+            } catch {}
+        };
+    }
+}
+
 // ---------------------------------------------------------------- .env 加载（零依赖）
 function loadEnv() {
   const p = path.join(__dirname, '.env');
@@ -211,10 +233,17 @@ function uploaderOrder() {
   if (!u || u === 'auto' || u === 'custom') return [...custom, ...AUTO_UPLOAD_ORDER];
   return [...custom, u, ...AUTO_UPLOAD_ORDER.filter((x) => x !== u)];
 }
+// Windows 版 curl 读取含非 ASCII 字符的路径会静默失败（实测 curl 8.13：退出码 26，
+// stdout 为空），而参考图的原始文件名常常是中文。这里把临时文件名强制收敛成
+// 纯 ASCII，只保留扩展名，避免整条上传链路被文件名拖垮。
+function safeTempName(filename) {
+    const ext = path.extname(String(filename || '')).replace(/[^a-zA-Z0-9.]/g, '');
+    return `ag_upload_${Date.now()}_${Math.random().toString(36).slice(2, 8)}${ext || '.png'}`;
+}
 function uploadWithCurl(buffer, filename, uploader) {
   return new Promise((resolve, reject) => {
     const tmpDir = process.env.TEMP || require('os').tmpdir();
-    const tmpPath = path.join(tmpDir, `ag_upload_${Date.now()}_${Math.random().toString(36).slice(2, 8)}_${filename || 'ref.png'}`);
+    const tmpPath = path.join(tmpDir, safeTempName(filename));
     try { fs.writeFileSync(tmpPath, buffer); } catch (e) { return reject(e); }
     const args = ['-s', '--max-time', '60'];
     for (const [k, v] of Object.entries(uploader.fields || {})) {
@@ -411,7 +440,7 @@ async function handleCreateForm(fields, files) {
   const videoId = result.video_id || result.id;
   if (!videoId) throw new Error('Agnes 未返回 video_id: ' + JSON.stringify(result).slice(0, 300));
   taskModel.set(videoId, model);
-  return { id: videoId, object: 'video.generation', model, status: 'queued', created: Date.now() };
+  return rememberPoll(videoId, { id: videoId, object: 'video.generation', model, status: 'queued', created: Date.now() });
 }
 
 // ---------------------------------------------------------------- 处理器
@@ -455,19 +484,42 @@ async function handleCreate(body) {
   if (!videoId) throw new Error('Agnes 未返回 video_id: ' + JSON.stringify(result).slice(0, 300));
   taskModel.set(videoId, model);
   console.log('[提交] 成功 video_id =', videoId);
-  return { id: videoId, object: 'video.generation', model, status: 'queued', created: Date.now() };
+  return rememberPoll(videoId, { id: videoId, object: 'video.generation', model, status: 'queued', created: Date.now() });
+}
+
+// Agnes 免费额度限流极严（约 1 次/分钟），而画布前端默认 2.5 秒轮询一次。
+// 不加节流的话任务刚提交就会被轮询打出 429，前端随即判成「生成失败」——
+// 任务其实还在 Agnes 那边跑。这里做两件事：
+//   1) 同一 video_id 在缓存窗口内复用上次结果，不重复打 Agnes；
+//   2) 真去请求时若撞上 429/5xx，兜底返回上次已知状态（无缓存则当 queued），
+//      让前端继续等，而不是直接判死。
+const POLL_CACHE_MS = Number(process.env.AGENT_POLL_CACHE_MS || 20000);
+const pollCache = new Map(); // video_id -> { at, payload }
+
+function rememberPoll(id, payload) {
+    pollCache.set(id, { at: Date.now(), payload });
+    return payload;
 }
 
 async function handlePoll(id) {
   const model = taskModel.get(id) || 'agnes-video-2.5-flash';
-  const data = await agnesRequest('GET', `/agnesapi?video_id=${encodeURIComponent(id)}&model_name=${encodeURIComponent(model)}`);
+  const cached = pollCache.get(id);
+  if (cached && Date.now() - cached.at < POLL_CACHE_MS) return cached.payload;
+  let data;
+  try {
+    data = await agnesRequest('GET', `/agnesapi?video_id=${encodeURIComponent(id)}&model_name=${encodeURIComponent(model)}`);
+  } catch (e) {
+    const msg = String((e && e.message) || e).slice(0, 120);
+    console.warn(`[poll] 查询 ${id} 失败（多为限流），沿用上次状态：${msg}`);
+    return cached ? cached.payload : { id, object: 'video.generation', status: 'queued', model };
+  }
   const status = mapStatus(data.status);
   const meta = data.metadata || {};
   const videoUrl = meta.url || data.url || data.video_url || null;
   const out = { id, object: 'video.generation', status, model };
   if (videoUrl) out.video_url = videoUrl;
   if (status === 'completed') out.data = [{ url: videoUrl }];
-  return out;
+  return rememberPoll(id, out);
 }
 
 function modelsList() {
