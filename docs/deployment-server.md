@@ -6,8 +6,9 @@
 
 ```
 浏览器 → Cloudflare（DNS + HTTPS）→ cloudflared tunnel → 127.0.0.1:18085 (nginx 容器)
-                                                            ├─ /          静态前端（volume 挂载 current/dist）
-                                                            └─ /agnes/…   Basic Auth → agnes 容器:8787（只在 compose 内网）
+                                                            ├─ /login.html  登录页（免门禁，只有一个密码框）
+                                                            ├─ /            静态前端，无 cookie 跳登录页
+                                                            └─ /agnes/…     cookie 门禁 → agnes 容器:8787（只在 compose 内网）
 ```
 
 - **为什么用 Tunnel**：服务器不需要开放任何入站端口，cloudflared 主动外连到 Cloudflare 边缘。
@@ -16,11 +17,27 @@
 - **为什么前端调 `/agnes` 而不是 `http://localhost:8787`**：浏览器里的 localhost 指的是访问者自己的电脑。
   走同域路径由 nginx 转发，才真正打到服务器的代理。
 - **两道锁**：
-  1. nginx Basic Auth —— 陌生访客打不开页面
+  1. cookie 门禁 —— 陌生访客打不开页面
   2. 代理侧 `PROXY_ACCESS_TOKEN` —— 就算绕过页面直接打接口也用不了
 
   令牌由 **nginx 注入**（`proxy_set_header Authorization "Bearer ..."`），不是前端发的：
-  浏览器对同一个请求只能发一个 Authorization 头，Basic Auth 会和 Bearer 打架。
+  浏览器对同一个请求只能发一个 Authorization 头。
+
+### 门禁：只输密码，不要用户名
+
+不用 Basic Auth，因为**它协议上强制带用户名**，做不到「只输密码」。现在的流程是：
+
+1. 访客打开任意页面 → nginx 发现没有 `canvas_auth` cookie → 302 到 `/login.html`
+2. 登录页只有一个密码框，把密码 `POST /agnes/auth`
+3. 代理比对服务端 `.env` 里的 `SITE_PASSWORD`，通过才下发 `canvas_auth=<随机串>` 的 cookie（HttpOnly，30 天）
+4. nginx 只比对这个随机串，不解析密码
+
+**密码只在服务端**，登录页源码里拿不到它，页面只能拿到「通过 / 不通过」。
+改密码：改服务器 `/opt/agnes-video-proxy/.env` 的 `SITE_PASSWORD` 再重建容器，或用
+`CANVAS_SITE_PASSWORD=新密码 bash scripts/deploy/publish.sh`（脚本会检测变化并自动重建）。
+
+`AUTH_COOKIE` 是「已登录」的凭证，**必须固定**：它由 `publish.sh` 首次生成后写进 `.env` 并一直复用。
+每次部署都重新生成的话，已登录的人会被迫反复登录。
 
 ## 服务器上的路径
 
@@ -117,22 +134,37 @@ CANVAS_SSH_HOST=<你的 ssh 别名> bash scripts/deploy/publish.sh
 在服务器上依次跑，四项必须全绿：
 
 ```bash
-# 1) 首页
-curl -sS -o /dev/null -w 'home=%{http_code}\n' http://127.0.0.1:18085/            # 期望 200
+# 1) 没登录访问首页 → 应跳登录页（302，Location 指向 /login.html）
+curl -sS -o /dev/null -w 'home=%{http_code}\n' http://127.0.0.1:18085/
+curl -sSI http://127.0.0.1:18085/ | grep -i '^location'
 
-# 2) 经 Basic Auth 走反代
-curl -sS -o /dev/null -w 'agnes=%{http_code}\n' -u 用户名:密码 \
-  http://127.0.0.1:18085/agnes/v1/models                                          # 期望 200
+# 2) 登录页本身必须能打开（它若也被挡住，用户永远进不来）
+curl -sS -o /dev/null -w 'login=%{http_code}\n' http://127.0.0.1:18085/login.html   # 期望 200
 
-# 3) 不给密码
-curl -sS -o /dev/null -w 'nopass=%{http_code}\n' http://127.0.0.1:18085/agnes/v1/models   # 期望 401
+# 3) 错误密码 → 401
+curl -sS -o /dev/null -w 'badpw=%{http_code}\n' \
+  -X POST -H 'Content-Type: application/json' -d '{"password":"wrong"}' \
+  http://127.0.0.1:18085/agnes/auth                                                 # 期望 401
 
-# 4) 第二道锁：绕开 nginx 直连代理容器，不带令牌
-docker exec canvas-agnes-proxy wget -qO- http://127.0.0.1:8787/v1/models          # 期望 401（不是 200）
+# 4) 正确密码 → 200，并拿到 cookie
+curl -sS -c /tmp/ck -o /dev/null -w 'login=%{http_code}\n' \
+  -X POST -H 'Content-Type: application/json' -d '{"password":"<站点密码>"}' \
+  http://127.0.0.1:18085/agnes/auth                                                 # 期望 200
+
+# 5) 带上 cookie 走反代
+curl -sS -b /tmp/ck -o /dev/null -w 'agnes=%{http_code}\n' \
+  http://127.0.0.1:18085/agnes/v1/models                                            # 期望 200
+
+# 6) 不给 cookie 打接口
+curl -sS -o /dev/null -w 'nocookie=%{http_code}\n' \
+  http://127.0.0.1:18085/agnes/v1/models                                            # 期望 403
+
+# 7) 第二道锁：绕开 nginx 直连代理容器，不带令牌
+docker exec canvas-agnes-proxy wget -qO- http://127.0.0.1:8787/v1/models            # 期望 401（不是 200）
 ```
 
-第 4 项如果是 200，说明 `PROXY_ACCESS_TOKEN` 没生效（多半是 `.env` 没传上去或容器没重建），
-此时 Basic Auth 是唯一防线。容器重建才读新 `.env`：
+第 7 项如果是 200，说明 `PROXY_ACCESS_TOKEN` 没生效（多半是 `.env` 没传上去或容器没重建），
+此时站点密码是唯一防线。容器重建才读新 `.env`：
 
 ```bash
 cd /opt/infinite-canvas && docker compose up -d --force-recreate agnes
@@ -159,25 +191,48 @@ docker compose exec -T web nginx -t
 # 代理探活（/health 不需要令牌）
 docker compose exec -T agnes wget -qO- http://127.0.0.1:8787/health
 
-# 经 Basic Auth 走一遍反代
-curl -u 用户名:密码 http://127.0.0.1:18085/agnes/v1/models
+# 登录走一遍（看是否 200 + 是否下发 cookie）
+curl -sS -i -X POST -H 'Content-Type: application/json' \
+  -d '{"password":"<站点密码>"}' http://127.0.0.1:18085/agnes/auth | head -8
+
+# 带 cookie 走一遍反代
+curl -sS -b 'canvas_auth=<AUTH_COOKIE 的值>' http://127.0.0.1:18085/agnes/v1/models
 
 # 隧道
-systemctl status cloudflared
-journalctl -u cloudflared -n 50 --no-pager
+systemctl status cloudflared-canvas
+journalctl -u cloudflared-canvas -n 50 --no-pager
 ```
 
-### 输对密码反而 500
+### 改了密码却不生效
 
-日志里是 `[crit] open() "/etc/nginx/.htpasswd-canvas" failed (13: Permission denied)`。
-读这个文件的是 **nginx worker 进程**（官方镜像里是 `nginx` 用户），所以文件必须**其他用户可读**：
+环境变量是**容器启动时注入**的：改完 `.env` 不重建容器，进程里还是旧值，
+表现为「密码明明改了，输新的还报错、输旧的还能进」，而且日志里看不出任何异常。
 
 ```bash
-chmod 644 /etc/nginx/.htpasswd-canvas
+cd /opt/infinite-canvas && docker compose up -d --force-recreate agnes
+docker exec canvas-agnes-proxy printenv | grep -E 'SITE_PASSWORD|AUTH_COOKIE'
 ```
 
-杀伤力在于症状反直觉：不输密码时 nginx 直接返 401（压根没去读文件），看着一切都正常；
-**只有输对密码才会 500**，很容易误判成代理或反代出了问题。
+用 `publish.sh` 发布时不用管这一步——脚本会检测 `.env` 变化并自动重建。
+
+### 登录后立刻又跳回登录页
+
+先看 cookie 到底有没有写进去：
+
+```bash
+curl -sS -i -X POST -H 'Content-Type: application/json' \
+  -d '{"password":"<站点密码>"}' http://127.0.0.1:18085/agnes/auth | grep -i set-cookie
+```
+
+- 没有 `Set-Cookie` → 代理没读到 `AUTH_COOKIE`，检查 `/opt/agnes-video-proxy/.env` 并重建容器
+- 有 `Set-Cookie` 但页面还是跳 → nginx 里的 cookie 值和代理下发的不一致，
+  比对 `/opt/infinite-canvas/nginx/default.conf` 的 `canvas_auth=` 与 `.env` 的 `AUTH_COOKIE`
+
+### 登录页没有样式 / 点了没反应
+
+登录页是**完全自包含**的（样式和脚本都内联在 `login.html` 里）。
+如果给它加了外链资源（比如 `/assets/xxx.css`），那些请求会被 nginx 门禁挡掉——
+登录页把自己关在门外了。改动登录页时必须保持自包含。
 
 ### 发布脚本报 `unexpected EOF while looking for matching '"'`
 

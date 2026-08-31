@@ -75,6 +75,12 @@ const CONFIG = {
   // 公网部署必填：浏览器要带 Bearer <PROXY_ACCESS_TOKEN> 才给用，否则任何人都能白嫖你的 Agnes 额度。
   // 不填 = 不校验（本机开发保持原样）。前端由 VITE_AGNES_API_KEY 注入同一个值。
   ACCESS_TOKEN: (process.env.PROXY_ACCESS_TOKEN || '').trim(),
+  // 站点门禁密码（替代 Basic Auth，做到「只输密码、不要用户名」）。
+  // 登录页把密码 POST 到 /auth，校验通过才下发 cookie；密码只存在服务端，前端拿不到。
+  SITE_PASSWORD: (process.env.SITE_PASSWORD || '').trim(),
+  // 登录成功后写入浏览器的 cookie 值。nginx 只做字符串比对，不解析密码。
+  // 必须是随机串：它等同于「已进入」的凭证。
+  AUTH_COOKIE: (process.env.AUTH_COOKIE || '').trim(),
 };
 
 // Agnes 模型表：当前产品只开放免费的 flash 模型
@@ -532,6 +538,51 @@ function modelsList() {
   }));
 }
 
+// ---------------------------------------------------------------- 站点登录
+// 公网暴露时密码会被暴力试，这里做最轻的兜底：同一来源连续失败 5 次锁 5 分钟。
+const AUTH_FAILS = new Map();          // ip -> { count, until }
+const AUTH_MAX_FAIL = 5;
+const AUTH_LOCK_MS = 5 * 60 * 1000;
+
+function clientIp(req) {
+  const xf = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+  return xf || (req.socket && req.socket.remoteAddress) || 'unknown';
+}
+
+// POST /auth { password } —— 校验站点密码，通过后下发门禁 cookie。
+// 密码只存在于服务端环境变量：前端登录页拿不到它，只能拿到「通过/不通过」的结果。
+function handleAuth(req, res) {
+  const ip = clientIp(req);
+  const prev = AUTH_FAILS.get(ip) || { count: 0, until: 0 };
+  if (prev.until > Date.now()) {
+    const mins = Math.ceil((prev.until - Date.now()) / 60000);
+    return send(res, 429, { error: 'too_many_attempts', detail: `错误次数过多，请 ${mins} 分钟后再试` });
+  }
+  if (req.method !== 'POST') return send(res, 405, { error: 'method_not_allowed' });
+  readJson(req).then((body) => {
+    if (!CONFIG.SITE_PASSWORD) {
+      console.error('[auth] 未配置 SITE_PASSWORD，拒绝所有登录');
+      return send(res, 500, { error: 'site_password_not_configured' });
+    }
+    if (!CONFIG.AUTH_COOKIE) {
+      console.error('[auth] 未配置 AUTH_COOKIE，无法下发门禁 cookie');
+      return send(res, 500, { error: 'auth_cookie_not_configured' });
+    }
+    if (String(body.password || '') !== CONFIG.SITE_PASSWORD) {
+      const expired = prev.until && prev.until < Date.now();
+      const count = expired ? 1 : prev.count + 1;
+      AUTH_FAILS.set(ip, { count, until: count >= AUTH_MAX_FAIL ? Date.now() + AUTH_LOCK_MS : 0 });
+      console.warn(`[auth] 登录失败 ip=${ip} 连续失败=${count}`);
+      return send(res, 401, { error: 'invalid_password', detail: `密码不正确（连续失败 ${count} 次）` });
+    }
+    AUTH_FAILS.delete(ip);
+    const maxAge = 30 * 24 * 3600;   // 登录状态保持 30 天
+    res.setHeader('Set-Cookie', `canvas_auth=${CONFIG.AUTH_COOKIE}; Path=/; Max-Age=${maxAge}; HttpOnly; SameSite=Lax`);
+    console.log(`[auth] 登录成功 ip=${ip}`);
+    send(res, 200, { ok: true });
+  }).catch((e) => send(res, 400, { error: 'bad_request', detail: e.message }));
+}
+
 // ---------------------------------------------------------------- 路由
 const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -539,6 +590,15 @@ const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
   const u = new URL(req.url, 'http://localhost');
+
+  // 站点登录 / 登出：必须放在令牌锁之前——用户此刻还没有令牌。
+  // 安全由密码本身兜底（/auth 校验密码，/auth/logout 只是清 cookie，无敏感信息）。
+  if (u.pathname === '/auth') return handleAuth(req, res);
+  if (u.pathname === '/auth/logout') {
+    res.setHeader('Set-Cookie', 'canvas_auth=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax');
+    return send(res, 200, { ok: true });
+  }
+
   // 公网部署时校验访问令牌：/health 用于探活，保持开放。
   if (CONFIG.ACCESS_TOKEN && u.pathname !== '/health') {
     const auth = String(req.headers['authorization'] || '');
