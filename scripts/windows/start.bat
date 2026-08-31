@@ -26,7 +26,6 @@ popd
 REM 代理以仓库内那份为准（唯一事实源），避免根目录另有运行副本导致改了代码不生效
 set "PROXY_DIR=%ROOT%\infinite-canvas\agnes-video-proxy"
 set "WEB_DIR=%ROOT%\infinite-canvas\web"
-set "VITE_CFG=%WEB_DIR%\vite.config.ts"
 
 if not exist "%WEB_DIR%\package.json" (
     echo.
@@ -104,14 +103,28 @@ if %errorlevel%==0 (
 
 echo.
 
+REM ---- 2.5 取 Agnes Key 注入前端（密钥只留在本机，不入库）----
+set "VITE_AGNES_API_KEY="
+if exist "%PROXY_DIR%\.env" (
+    for /f "usebackq delims=" %%K in (`node "%~dp0read-agnes-key.cjs"`) do set "VITE_AGNES_API_KEY=%%K"
+)
+if defined VITE_AGNES_API_KEY (
+    echo   [OK] Agnes Key 已注入前端（取自代理 .env）
+) else (
+    echo   [..] 未取到 Agnes Key，可在画布「设置 - 渠道」里手填
+)
+
+echo.
+
 REM ---- 3. 前端画布 ----
 netstat -ano | findstr /c:":3000 " /c:":3000" | findstr /i "LISTENING" >nul 2>&1
 if %errorlevel%==0 (
     echo   [OK] 前端画布已在运行 (3000)
 ) else (
     echo   [..] 启动前端画布 (3000) ...
-    if not exist "%VITE_CFG%" set "VITE_CFG="
-    start "canvas-web-3000" /min cmd /c "cd /d "%WEB_DIR%" && set NODE_OPTIONS= && node node_modules/vite/bin/vite.js --host 0.0.0.0 --port 3000 %VITE_CFG%"
+    REM 不要给 vite 传配置文件路径：位置参数会被当成项目根目录，导致首页 404。
+    REM 上面已 cd 到 web 目录，vite 会自动发现同目录下的 vite.config.ts。
+    start "canvas-web-3000" /min cmd /c "cd /d "%WEB_DIR%" && set NODE_OPTIONS= && node node_modules/vite/bin/vite.js --host 0.0.0.0 --port 3000"
     timeout /t 10 /nobreak >nul
     netstat -ano | findstr /c:":3000 " /c:":3000" | findstr /i "LISTENING" >nul 2>&1
     if !errorlevel!==0 ( echo   [OK] 前端画布已就绪 ) else ( echo   [!!] 前端画布未在10秒内就绪 )
