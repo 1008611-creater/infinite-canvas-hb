@@ -143,6 +143,20 @@ export default function VideoPage() {
             else setLastFrame(image);
             return;
         }
+        // 首尾帧模式下，从工具栏「上传」或拖拽进来的图片 slot 为 undefined。此时必须依次
+        // 落进首帧/尾帧槽位：若照原样塞进 references，界面上不会有任何反馈（keyframe
+        // 只渲染 firstFrame / lastFrame），生成按钮也一直禁用，看起来就像上传失效。
+        if (videoMode === "keyframe") {
+            let cursor = 0;
+            if (!firstFrame && nextReferences[cursor]) setFirstFrame(nextReferences[cursor++]);
+            if (!lastFrame && nextReferences[cursor]) setLastFrame(nextReferences[cursor++]);
+            // 两个槽位都已有图时，从头覆盖，保证连续上传始终有反馈
+            if (cursor === 0) {
+                setFirstFrame(nextReferences[0]);
+                if (nextReferences[1]) setLastFrame(nextReferences[1]);
+            }
+            return;
+        }
         setReferences((value) => [...value, ...nextReferences].slice(0, maxReferenceCount));
     };
 
