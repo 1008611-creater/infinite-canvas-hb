@@ -1,0 +1,36 @@
+# hb.cauai.fun —— 无限画布（天宫漫剧）
+#
+# 两个容器：
+#   web   nginx，托管静态前端，并把 /agnes/ 反代给 agnes 容器
+#   agnes Agnes 视频代理（Node），只暴露在 compose 内部网络，不对公网开端口
+#
+# 只把 18085 绑在 127.0.0.1：公网入口由 Cloudflare Tunnel 提供，不需要开对外端口。
+# 放到 /opt/infinite-canvas/docker-compose.yml
+
+services:
+  web:
+    image: nginx:1.27-alpine
+    container_name: canvas-web
+    restart: unless-stopped
+    volumes:
+      # 必须挂「目录」，不能挂单个文件或 current/dist：
+      # docker 的 bind mount 是按 inode 绑定的，而 current 软链切换（指向新 release）
+      # 和 sed -i 改配置都会换 inode。挂单个目标的话，容器读到的永远是启动时那一份——
+      # 表现就是「发布显示成功，但线上还在跑旧版本」，重载 nginx 也救不回来。
+      # 挂整个目录后，路径在容器里解析，软链和配置改动立刻生效。
+      - /opt/infinite-canvas:/usr/share/nginx/canvas:ro
+      - /opt/infinite-canvas/nginx:/etc/nginx/conf.d:ro
+    ports:
+      - "127.0.0.1:18085:80"
+    depends_on:
+      - agnes
+
+  agnes:
+    build:
+      context: /opt/agnes-video-proxy
+      dockerfile: Dockerfile
+    image: canvas-agnes-proxy:latest
+    container_name: canvas-agnes-proxy
+    restart: unless-stopped
+    env_file:
+      - /opt/agnes-video-proxy/.env

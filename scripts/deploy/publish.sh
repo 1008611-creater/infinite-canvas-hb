@@ -12,13 +12,20 @@
 # 可用环境变量覆盖：
 #   CANVAS_SSH_HOST        默认 psyidc-liuliang5（~/.ssh/config 里的别名，端口/密钥都在那）
 #   CANVAS_APP_ROOT        默认 /opt/infinite-canvas
+#   CANVAS_PROXY_ROOT      默认 /opt/agnes-video-proxy
 #   CANVAS_AGNES_BASE_URL  默认 /agnes（同域反代，不要改成带域名的地址）
 #   CANVAS_ACCESS_TOKEN    默认读取本机 agnes-video-proxy/.env 里的 PROXY_ACCESS_TOKEN
+#   CANVAS_RUNTIME         docker（默认）| systemd
+#   CANVAS_BASIC_AUTH      "用户名:密码"，首次部署时生成 Basic Auth（已存在则不覆盖）
 # ---------------------------------------------------------------------------
 set -euo pipefail
 
-SSH_HOST="${CANVAS_SSH_HOST:-psyidc-liuliang5}"
+SSH_HOST="${CANVAS_SSH_HOST:-haika-kidswear-1757}"
 APP_ROOT="${CANVAS_APP_ROOT:-/opt/infinite-canvas}"
+
+# -n 必须加：ssh 默认会把脚本自己的 stdin 吃掉，导致 ssh 之后的命令读不到输入，
+# bash 会报 "line N: unexpected EOF while looking for matching `\"'" 且后面的步骤静默不执行。
+SSH=(ssh -n)
 AGNES_BASE_URL_VALUE="${CANVAS_AGNES_BASE_URL:-/agnes}"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -60,10 +67,62 @@ TARBALL="$(mktemp -d)/${RELEASE}.tar.gz"
 tar -czf "$TARBALL" -C "$STAGE" dist proxy
 
 echo "==> 上传并部署到 ${SSH_HOST}:${APP_ROOT}"
-ssh "$SSH_HOST" "mkdir -p ${APP_ROOT}/releases ${APP_ROOT}/scripts/deploy"
+"${SSH[@]}" "$SSH_HOST" "mkdir -p ${APP_ROOT}/releases ${APP_ROOT}/scripts/deploy ${APP_ROOT}/nginx ${APP_ROOT}/secrets ${CANVAS_PROXY_ROOT:-/opt/agnes-video-proxy}"
+
+# Windows 工作区里的文本文件是 CRLF，Linux 的 bash / systemd / nginx 遇到 CRLF 会直接报错
+# （典型症状：set: pipefail\r: invalid option name），所以脚本和配置上传前统一转成 LF。
+upload_lf() {
+    local src="$1" dest="$2" tmp
+    tmp="$(mktemp)"
+    sed 's/\r$//' "$src" > "$tmp"
+    scp "$tmp" "${SSH_HOST}:${dest}"
+    rm -f "$tmp"
+}
+
 scp "$TARBALL" "${SSH_HOST}:${APP_ROOT}/releases/${RELEASE}.tar.gz"
-scp scripts/deploy/deploy.sh "${SSH_HOST}:${APP_ROOT}/scripts/deploy/deploy.sh"
-ssh "$SSH_HOST" "bash ${APP_ROOT}/scripts/deploy/deploy.sh ${APP_ROOT}/releases/${RELEASE}.tar.gz"
+upload_lf scripts/deploy/deploy.sh "${APP_ROOT}/scripts/deploy/deploy.sh"
+
+# 同步服务器配置文件（幂等，改了仓库里的模板就会跟着生效）
+upload_lf deploy/docker-compose.yml "${APP_ROOT}/docker-compose.yml"
+upload_lf deploy/nginx-docker.conf "${APP_ROOT}/nginx/default.conf"
+"${SSH[@]}" "$SSH_HOST" "sed -i 's|__AGNES_TOKEN__|${ACCESS_TOKEN}|' ${APP_ROOT}/nginx/default.conf"
+
+# 兼容迁移：早期把 Basic Auth 放在 /etc/nginx/.htpasswd-canvas（单文件挂载，改密码后容器读不到）
+"${SSH[@]}" "$SSH_HOST" "if [[ ! -f ${APP_ROOT}/secrets/htpasswd && -f /etc/nginx/.htpasswd-canvas ]]; then \
+        cp /etc/nginx/.htpasswd-canvas ${APP_ROOT}/secrets/htpasswd; \
+        echo '==> 已迁移 Basic Auth 到 ${APP_ROOT}/secrets/htpasswd'; \
+    fi; \
+    chmod 644 ${APP_ROOT}/secrets/htpasswd 2>/dev/null || true"
+upload_lf deploy/Dockerfile.proxy "${CANVAS_PROXY_ROOT:-/opt/agnes-video-proxy}/Dockerfile"
+
+# 代理的 .env（含 Agnes 上游 Key 与访问令牌）不在 git 里，需要单独同步。
+# 只在服务器还没建过时才上传，避免覆盖线上手工改过的配置；改了本机 .env 想同步就手动删服务器上那份再跑。
+PROXY_ROOT="${CANVAS_PROXY_ROOT:-/opt/agnes-video-proxy}"
+if [[ -f agnes-video-proxy/.env ]]; then
+    if "${SSH[@]}" "$SSH_HOST" "test -f ${PROXY_ROOT}/.env"; then
+        echo "==> 服务器已有 ${PROXY_ROOT}/.env，跳过同步（如需覆盖请先手动删除）"
+    else
+        echo "==> 首次部署：上传 agnes-video-proxy/.env"
+        upload_lf agnes-video-proxy/.env "${PROXY_ROOT}/.env"
+        "${SSH[@]}" "$SSH_HOST" "chmod 600 ${PROXY_ROOT}/.env"
+    fi
+else
+    echo "⚠ 本机没有 agnes-video-proxy/.env，服务器若也没有，代理会因缺 Agnes Key 而生成失败"
+fi
+
+# 首次部署时生成 Basic Auth 账号密码（已存在则不覆盖，避免把改过的密码冲掉）
+if [[ -n "${CANVAS_BASIC_AUTH:-}" ]]; then
+    "${SSH[@]}" "$SSH_HOST" "command -v openssl >/dev/null || { echo '✗ 服务器没有 openssl，无法生成密码'; exit 1; }; \
+        mkdir -p ${APP_ROOT}/secrets; \
+        H=\$(openssl passwd -apr1 '${CANVAS_BASIC_AUTH#*:}'); \
+        grep -q '^${CANVAS_BASIC_AUTH%%:*}:' ${APP_ROOT}/secrets/htpasswd 2>/dev/null \
+            || printf '%s:%s\n' '${CANVAS_BASIC_AUTH%%:*}' \"\$H\" >> ${APP_ROOT}/secrets/htpasswd; \
+        chmod 644 ${APP_ROOT}/secrets/htpasswd"
+    # 644 不能改成 640：读取这个文件的是 nginx 的 worker 进程（docker 官方镜像里是 nginx 用户），
+    # 权限不够时「没输密码」看着正常（直接返 401），但「输对密码」反而 500，排查时极易误判。
+fi
+
+"${SSH[@]}" "$SSH_HOST" "CANVAS_RUNTIME=${CANVAS_RUNTIME:-docker} bash ${APP_ROOT}/scripts/deploy/deploy.sh ${APP_ROOT}/releases/${RELEASE}.tar.gz"
 
 rm -rf "$STAGE" "$(dirname "$TARBALL")"
 echo "==> 完成：$RELEASE 已上线"

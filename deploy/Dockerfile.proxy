@@ -1,0 +1,12 @@
+# Agnes 视频代理镜像。
+# 代理用 curl 子进程把本地图片传到公网图床（规避 Node 直连的 socket hang up），
+# 所以镜像里必须有 curl——alpine 的 node 镜像默认不带。
+FROM node:22-alpine
+
+RUN apk add --no-cache curl
+
+WORKDIR /app
+COPY server.js package.json ./
+
+EXPOSE 8787
+CMD ["node", "server.js"]
