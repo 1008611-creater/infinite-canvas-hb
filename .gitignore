@@ -20,3 +20,5 @@ web/public/plugins
 tools/mj-bridge/.venv/
 tools/mj-bridge/.results/
 tools/mj-bridge/__pycache__/
+# 本地浏览器验证脚本与截图（临时产物）
+.probe/

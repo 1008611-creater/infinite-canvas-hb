@@ -45,7 +45,11 @@ export const channelTemplates: ChannelTemplate[] = [
             { name: "auto/best-vision", capability: "text" },
             { name: "auto/best-coding", capability: "text" },
         ],
-        hint: "文本网关（207 个模型，auto/* 会自动挑可用上游）。API Key 填任意非空值即可，网关只要求 Authorization 头存在、不校验内容。注意：公网页面要访问它得先暴露成 https；**网关本身无鉴权，暴露到公网等于把额度公开，务必先用 Cloudflare Access 加一层登录**。",
+        // 实测（2026-09-01）：浏览器不把 127.0.0.1 当混合内容拦截，HTTPS 页面可直接调本机网关，
+        // 所以同机使用无需 cloudflared。跨设备才需要隧道，而且不能裸奔——
+        // Cloudflare Access 是交互式登录，会把 fetch 302 到登录页，和浏览器请求不兼容；
+        // 公网场景要用 tools/omniroute-guard 的令牌守卫，详见 docs/omniroute-integration.md。
+        hint: "文本网关（207 个模型，auto/* 会自动挑可用上游）。API Key 留空即可，网关不鉴权。在跑网关的那台电脑上打开画布就能直接用；换设备才需要隧道，届时务必套上 tools/omniroute-guard 的令牌守卫——网关裸奔在公网等于把额度公开。",
     },
     {
         id: "midjourney",
@@ -53,7 +57,8 @@ export const channelTemplates: ChannelTemplate[] = [
         baseUrl: "http://127.0.0.1:8765",
         apiFormat: "openai",
         models: [{ name: "midjourney", capability: "image" }],
-        hint: "走本地 MJ 桥接服务（mxai-rpa-mcp + FastAPI）。需先在本机启动该服务；公网页面访问同样要把它暴露成 https。",
+        // 和 OmniRoute 同理：跑桥接的那台电脑上打开画布，HTTPS 页面可直接调 127.0.0.1，不必穿透。
+        hint: "走本地 MJ 桥接服务（mxai-rpa-mcp + FastAPI）。需先在本机启动 tools/mj-bridge；在跑桥接的那台电脑上打开画布即可直连。桥接默认只监听本机，跨设备再考虑隧道。",
     },
 ];
 
