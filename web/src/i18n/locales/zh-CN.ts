@@ -452,6 +452,7 @@ export default {
         channels: {
             description: "每个渠道选择一个协议并拉取模型，为每个模型指定能力（生图/视频/文本/音频），并可自定义调用脚本。",
             add: "新增渠道",
+            addFromTemplate: "从模板添加（预填接口地址与模型）",
             unnamed: "未命名渠道",
             numberedName: "渠道 {{count}}",
             modelCount: "{{count}} 个模型",
@@ -491,6 +492,10 @@ export default {
             selectModels: "选择模型",
             scriptReady: "脚本已设",
             script: "调用脚本",
+            imageBatchLimit: "单次最多出图张数",
+            imageBatchLimitPlaceholder: "留空 = 不限制",
+            imageBatchLimitHint: "有些渠道对多张请求不老实——不报错但会少给（实测 OpenLux 要 3 张只返回 2 张）。填 1 之后前端会拆成多次请求，保证选几张出几张。",
+            editViaGenerations: "图生图走 generations 接口",
             empty: "点击「选择模型」拉取或手动增加模型。",
             capabilities: {
                 image: "生图",
