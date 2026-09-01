@@ -72,5 +72,8 @@ export function normalizeConnection(firstNodeId: string, secondNodeId: string, n
     if (second.type === CanvasNodeType.Config) return { fromNodeId: first.id, toNodeId: second.id };
     if (first.type === CanvasNodeType.Config && firstHandleType === "target") return { fromNodeId: second.id, toNodeId: first.id };
     if (first.type === CanvasNodeType.Config) return { fromNodeId: first.id, toNodeId: second.id };
+    // 从输入点（左侧 target）起拖时，起拖节点是接收方，方向必须反转，
+    // 否则连线会画在该节点的右侧输出点上。
+    if (firstHandleType === "target") return { fromNodeId: second.id, toNodeId: first.id };
     return { fromNodeId: first.id, toNodeId: second.id };
 }

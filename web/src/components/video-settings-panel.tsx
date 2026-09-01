@@ -2,6 +2,7 @@ import { type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import i18n from "@/i18n";
+import { resolveVideoModeForInput } from "@/lib/canvas/canvas-video-mode";
 import { ImageSettingsTheme } from "@/components/image-settings-panel";
 import { type CanvasTheme } from "@/lib/canvas-theme";
 import { type AiConfig } from "@/stores/use-config-store";
@@ -21,11 +22,31 @@ const sizeOptions = [
     { value: "auto", labelKey: "auto", width: 0, height: 0 },
 ];
 
-const secondOptions = [6, 10, 12, 16, 20];
+// 各视频渠道真实支持的时长（秒）。这里的范围必须和上游保持一致，否则界面给了选项、
+// 提交后被上游静默裁剪，用户完全无感知。Agnes 代理的 clampSeconds 硬性限制 4~12。
+type SecondsRule = { min: number; max: number; options: number[] };
+
+const modelSecondsRules: { match: RegExp; rule: SecondsRule }[] = [
+    { match: /agnes/i, rule: { min: 4, max: 12, options: [4, 6, 8, 10, 12] } },
+];
+
+const fallbackSecondsRule: SecondsRule = { min: 4, max: 12, options: [4, 6, 8, 10, 12] };
+
+export function getVideoSecondsRule(model?: string): SecondsRule {
+    const name = String(model || "").split("::").pop() || "";
+    return modelSecondsRules.find((item) => item.match.test(name))?.rule || fallbackSecondsRule;
+}
+
+export function clampVideoSeconds(value: string, model?: string) {
+    const rule = getVideoSecondsRule(model);
+    const parsed = Math.round(Number(value));
+    if (!Number.isFinite(parsed)) return String(rule.options[0]);
+    return String(Math.min(rule.max, Math.max(rule.min, parsed)));
+}
 
 export const videoResolutionOptions = resolutionOptions.map((item) => ({ value: item.value, label: item.label }));
 export const videoSizeOptions = sizeOptions.map((item) => ({ value: item.value, get label() { return i18n.t(`settingsPanels.video.sizes.${item.labelKey}`); } }));
-export const videoSecondOptions = secondOptions.map((value) => String(value));
+export const videoSecondOptions = fallbackSecondsRule.options.map((value) => String(value));
 
 type VideoSettingsPanelProps = {
     config: AiConfig;
@@ -33,11 +54,19 @@ type VideoSettingsPanelProps = {
     theme: CanvasTheme;
     showTitle?: boolean;
     className?: string;
+    /** 上游接入的参考图数量。给了就会提示"实际会按哪种模式生成"，避免所选模式与输入冲突时用户不知情。 */
+    referenceCount?: number;
 };
 
-export function VideoSettingsPanel({ config, onConfigChange, theme, showTitle = true, className = "w-[320px] space-y-4 rounded-2xl px-1 py-0.5" }: VideoSettingsPanelProps) {
+export function VideoSettingsPanel({ config, onConfigChange, theme, showTitle = true, className = "w-[320px] space-y-4 rounded-2xl px-1 py-0.5", referenceCount }: VideoSettingsPanelProps) {
     const { t } = useTranslation();
+    const secondsRule = getVideoSecondsRule(config.model);
     const seconds = config.videoSeconds || "6";
+    const secondsNumber = Number(seconds);
+    const secondsOutOfRange = Number.isFinite(secondsNumber) && secondsNumber > 0 && (secondsNumber < secondsRule.min || secondsNumber > secondsRule.max);
+    const commitSeconds = (value: string) => onConfigChange("videoSeconds", clampVideoSeconds(value, config.model));
+    const effectiveMode = referenceCount === undefined ? undefined : resolveVideoModeForInput(config.videoMode, referenceCount);
+    const modeSwitched = effectiveMode !== undefined && effectiveMode !== normalizeVideoMode(config.videoMode);
     const size = normalizeVideoSizeValue(config.size);
     const dimensions = readSizeDimensions(size);
     const resolution = normalizeVideoResolutionValue(config.vquality);
@@ -58,6 +87,11 @@ export function VideoSettingsPanel({ config, onConfigChange, theme, showTitle = 
                             </OptionPill>
                         ))}
                     </div>
+                    {modeSwitched ? (
+                        <div className="text-[11px] leading-snug" style={{ color: "#d97706" }}>
+                            {t("settingsPanels.video.modeAutoSwitched", { count: referenceCount, mode: videoModeLabel(effectiveMode) })}
+                        </div>
+                    ) : null}
                 </SettingGroup>
                 <SettingGroup title={t("settingsPanels.video.quality")} color={theme.node.muted}>
                     <div className="grid grid-cols-3 gap-2.5">
@@ -98,12 +132,17 @@ export function VideoSettingsPanel({ config, onConfigChange, theme, showTitle = 
                 </SettingGroup>
                 <SettingGroup title={t("settingsPanels.video.seconds")} color={theme.node.muted}>
                     <div className="grid grid-cols-3 gap-2.5">
-                        {secondOptions.map((value) => (
-                            <OptionPill key={value} selected={seconds === String(value)} theme={theme} onClick={() => onConfigChange("videoSeconds", String(value))}>
+                        {secondsRule.options.map((value) => (
+                            <OptionPill key={value} selected={seconds === String(value)} theme={theme} onClick={() => commitSeconds(String(value))}>
                                 {value}s
                             </OptionPill>
                         ))}
-                        <NumberInput value={seconds} min={1} max={20} theme={theme} onChange={(value) => onConfigChange("videoSeconds", value)} />
+                        <NumberInput value={seconds} min={secondsRule.min} max={secondsRule.max} theme={theme} onChange={commitSeconds} />
+                    </div>
+                    <div className="text-[11px] leading-snug" style={{ color: secondsOutOfRange ? "#d97706" : theme.node.muted }}>
+                        {secondsOutOfRange
+                            ? t("settingsPanels.video.secondsOutOfRange", { seconds, min: secondsRule.min, max: secondsRule.max })
+                            : t("settingsPanels.video.secondsRangeHint", { min: secondsRule.min, max: secondsRule.max })}
                     </div>
                 </SettingGroup>
             </div>
