@@ -1,4 +1,4 @@
-import { App, Button, Form, Input, Modal, Progress, Select, Tabs } from "antd";
+import { App, Button, Form, Input, Modal, Progress, Select, Space, Tabs } from "antd";
 import type { TFunction } from "i18next";
 import { Cloud, Download, Pencil, Plus, RefreshCw, Trash2, Upload, Wifi } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -13,6 +13,7 @@ import { exportAppConfig, importAppConfig } from "@/services/config-file";
 import { syncAppDataToWebdav, type AppSyncDomainKey, type AppSyncProgressEvent } from "@/services/app-sync";
 import { testWebdavConnection, WEBDAV_MANIFEST_FILE_NAME } from "@/services/webdav-sync";
 import { audioFormatOptions, audioVoiceOptions, normalizeAudioSpeedValue } from "@/lib/audio-generation";
+import { channelTemplates, createChannelFromTemplate } from "@/stores/channel-templates";
 import { createModelChannel, modelOptionsFromChannels, normalizeModelOptionValue, selectableModelsByCapability, useConfigStore, type AiConfig, type ApiCallFormat, type ConfigTabKey, type ModelCapability, type ModelChannel } from "@/stores/use-config-store";
 
 type ModelGroup = {
@@ -97,6 +98,20 @@ export function AppConfigPanel({ showDoneButton = false, initialTab = "channels"
         const channel = createModelChannel({ name: t("config.channels.numberedName", { count: config.channels.length + 1 }) });
         updateChannels([...config.channels, channel]);
         setEditingChannelId(channel.id);
+    };
+
+    const addChannelFromTemplate = (templateId: string) => {
+        const template = channelTemplates.find((item) => item.id === templateId);
+        if (!template) return;
+        // id 必须重新生成：模板 id 是固定的，同一个模板加两次会撞车。
+        const existing = config.channels.filter((channel) => channel.name === template.name).length;
+        const channel = createModelChannel({
+            ...createChannelFromTemplate(template),
+            name: existing ? `${template.name} ${existing + 1}` : template.name,
+        });
+        updateChannels([...config.channels, channel]);
+        setEditingChannelId(channel.id);
+        message.info(template.hint);
     };
 
     const deleteChannel = (id: string) => {
@@ -186,9 +201,18 @@ export function AppConfigPanel({ showDoneButton = false, initialTab = "channels"
                             <div>
                                 <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                                     <div className="text-xs text-stone-500">{t("config.channels.description")}</div>
-                                    <Button type="primary" icon={<Plus className="size-4" />} onClick={addChannel}>
-                                        {t("config.channels.add")}
-                                    </Button>
+                                    <Space>
+                                        <Select
+                                            style={{ minWidth: 200 }}
+                                            placeholder={t("config.channels.addFromTemplate")}
+                                            value={null}
+                                            options={channelTemplates.map((template) => ({ label: template.name, value: template.id }))}
+                                            onChange={addChannelFromTemplate}
+                                        />
+                                        <Button type="primary" icon={<Plus className="size-4" />} onClick={addChannel}>
+                                            {t("config.channels.add")}
+                                        </Button>
+                                    </Space>
                                 </div>
                                 <div className="space-y-2">
                                     {config.channels.map((channel) => (

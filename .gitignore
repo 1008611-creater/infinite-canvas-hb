@@ -17,3 +17,10 @@ plugins/canvas/*/node_modules
 web/public/plugins
 # 发布脚本的临时目录
 .deploy-tmp/
+
+# MJ 桥接服务：虚拟环境与生成结果都留在本机，不入库
+tools/mj-bridge/.venv/
+tools/mj-bridge/.results/
+tools/mj-bridge/__pycache__/
+# 本地浏览器验证脚本与截图（临时产物）
+.probe/

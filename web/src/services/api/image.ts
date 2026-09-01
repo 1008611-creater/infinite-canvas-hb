@@ -130,6 +130,17 @@ function normalizeBackground(background: string | undefined) {
     return background?.trim().toLowerCase() === "transparent" ? "transparent" : undefined;
 }
 
+/**
+ * 渠道单次请求允许的张数上限。
+ * 有些渠道（OpenLux 等）不接受 n>1，传了整个请求会失败；
+ * 这类渠道在配置里标了 imageBatchLimit，这里据此把一次"出 N 张"拆成多次请求。
+ * 未配置或配置非法的，按不限制处理。
+ */
+function resolveImageBatchLimit(value: number | undefined) {
+    if (!value || !Number.isFinite(value)) return Number.MAX_SAFE_INTEGER;
+    return Math.max(1, Math.floor(value));
+}
+
 /** Map "quality + ratio" to an explicit pixel dimension like "3840x2160". */
 function resolveSize(quality: string | undefined, ratio: string): string {
     const parsedRatio = parseImageRatio(ratio);
@@ -746,13 +757,16 @@ export async function requestGeneration(config: AiConfig, prompt: string, option
     const quality = normalizeQuality(config.quality);
     const requestSize = resolveRequestSize(quality, config.size);
     const background = normalizeBackground(config.background);
-    try {
+    const batchLimit = resolveImageBatchLimit(requestConfig.imageBatchLimit);
+    const batchSize = Math.max(1, Math.min(n, batchLimit));
+    const batchCount = Math.ceil(n / batchSize);
+    const requestBatch = async (count: number) => {
         const response = await axios.post<ImageApiResponse>(
             aiApiUrl(requestConfig, "/images/generations"),
             {
                 model: requestConfig.model,
                 prompt: withSystemPrompt(requestConfig, prompt),
-                n,
+                n: count,
                 ...(quality ? { quality } : {}),
                 ...(requestSize ? { size: requestSize } : {}),
                 ...(background ? { background } : {}),
@@ -765,11 +779,26 @@ export async function requestGeneration(config: AiConfig, prompt: string, option
                 signal: options?.signal,
             },
         );
-        const images = await parseImagePayload(response.data);
-        return images;
-    } catch (error) {
-        throw new Error(readAxiosError(error, apiText("requestFailed")));
+        return parseImagePayload(response.data);
+    };
+    // 渠道一次只能出 1 张时，把"出 N 张"拆成 N 次请求并发跑。
+    // 这样用户选的张数照旧生效，不会因为渠道限制被静默削成 1 张。
+    if (batchCount <= 1) {
+        try {
+            return await requestBatch(n);
+        } catch (error) {
+            throw new Error(readAxiosError(error, apiText("requestFailed")));
+        }
     }
+    const settled = await Promise.allSettled(
+        Array.from({ length: batchCount }, (_, index) => requestBatch(Math.max(1, Math.min(batchSize, n - index * batchSize)))),
+    );
+    const images = settled.flatMap((item) => (item.status === "fulfilled" ? item.value : []));
+    if (!images.length) {
+        const firstError = settled.find((item) => item.status === "rejected");
+        throw new Error(firstError && firstError.status === "rejected" ? readAxiosError(firstError.reason, apiText("requestFailed")) : apiText("requestFailed"));
+    }
+    return images;
 }
 
 export async function requestEdit(config: AiConfig, prompt: string, references: ReferenceImage[], mask?: ReferenceImage, options?: RequestOptions) {
@@ -809,35 +838,94 @@ export async function requestEdit(config: AiConfig, prompt: string, references: 
     const quality = normalizeQuality(config.quality);
     const requestSize = resolveRequestSize(quality, config.size);
     const background = normalizeBackground(config.background);
-    const formData = new FormData();
-    formData.set("model", requestConfig.model);
-    formData.set("prompt", withSystemPrompt(requestConfig, requestPrompt));
-    formData.set("n", String(n));
-    // gpt-image models reject response_format; they always return b64.
-    if (!/gpt-image/.test(requestConfig.model)) {
-        formData.set("response_format", "b64_json");
-    }
-    formData.set("output_format", IMAGE_OUTPUT_FORMAT);
-    if (quality) {
-        formData.set("quality", quality);
-    }
-    if (requestSize) {
-        formData.set("size", requestSize);
-    }
-    if (background) {
-        formData.set("background", background);
-    }
-    const files = await Promise.all(references.map(async (image) => dataUrlToFile({ ...image, dataUrl: await imageToDataUrl(image) })));
-    files.forEach((file) => formData.append("image", file));
-    if (mask) formData.set("mask", dataUrlToFile(mask));
+    const batchLimit = resolveImageBatchLimit(requestConfig.imageBatchLimit);
+    const batchSize = Math.max(1, Math.min(n, batchLimit));
+    const batchCount = Math.ceil(n / batchSize);
 
-    try {
-        const response = await axios.post<ImageApiResponse>(aiApiUrl(requestConfig, "/images/edits"), formData, { headers: aiHeaders(requestConfig), signal: options?.signal });
-        const images = await parseImagePayload(response.data);
+    // 部分渠道（OpenLux）没有可用的 /images/edits，图生图只能走 generations + image 参数。
+    if (requestConfig.editViaGenerations) {
+        const refs = await Promise.all(references.map((image) => imageToDataUrl(image)));
+        const requestGenerationsEdit = async (count: number) => {
+            const response = await axios.post<ImageApiResponse>(
+                aiApiUrl(requestConfig, "/images/generations"),
+                {
+                    model: requestConfig.model,
+                    prompt: withSystemPrompt(requestConfig, requestPrompt),
+                    n: count,
+                    ...(refs.length ? { image: refs.length === 1 ? refs[0] : refs } : {}),
+                    ...(quality ? { quality } : {}),
+                    ...(requestSize ? { size: requestSize } : {}),
+                    ...(background ? { background } : {}),
+                    ...(/gpt-image/.test(requestConfig.model) ? {} : { response_format: "b64_json" }),
+                    output_format: IMAGE_OUTPUT_FORMAT,
+                },
+                { headers: aiHeaders(requestConfig, "application/json"), signal: options?.signal },
+            );
+            return parseImagePayload(response.data);
+        };
+        if (batchCount <= 1) {
+            try {
+                return await requestGenerationsEdit(n);
+            } catch (error) {
+                throw new Error(readAxiosError(error, apiText("requestFailed")));
+            }
+        }
+        const settled = await Promise.allSettled(
+            Array.from({ length: batchCount }, (_, index) => requestGenerationsEdit(Math.max(1, Math.min(batchSize, n - index * batchSize)))),
+        );
+        const images = settled.flatMap((item) => (item.status === "fulfilled" ? item.value : []));
+        if (!images.length) {
+            const firstError = settled.find((item) => item.status === "rejected");
+            throw new Error(firstError && firstError.status === "rejected" ? readAxiosError(firstError.reason, apiText("requestFailed")) : apiText("requestFailed"));
+        }
         return images;
-    } catch (error) {
-        throw new Error(readAxiosError(error, apiText("requestFailed")));
     }
+
+    const files = await Promise.all(references.map(async (image) => dataUrlToFile({ ...image, dataUrl: await imageToDataUrl(image) })));
+    const buildEditFormData = (count: number) => {
+        const formData = new FormData();
+        formData.set("model", requestConfig.model);
+        formData.set("prompt", withSystemPrompt(requestConfig, requestPrompt));
+        formData.set("n", String(count));
+        // gpt-image models reject response_format; they always return b64.
+        if (!/gpt-image/.test(requestConfig.model)) {
+            formData.set("response_format", "b64_json");
+        }
+        formData.set("output_format", IMAGE_OUTPUT_FORMAT);
+        if (quality) {
+            formData.set("quality", quality);
+        }
+        if (requestSize) {
+            formData.set("size", requestSize);
+        }
+        if (background) {
+            formData.set("background", background);
+        }
+        files.forEach((file) => formData.append("image", file));
+        if (mask) formData.set("mask", dataUrlToFile(mask));
+        return formData;
+    };
+    const requestEditBatch = async (count: number) => {
+        const response = await axios.post<ImageApiResponse>(aiApiUrl(requestConfig, "/images/edits"), buildEditFormData(count), { headers: aiHeaders(requestConfig), signal: options?.signal });
+        return parseImagePayload(response.data);
+    };
+    // 同 requestGeneration：渠道一次只能出 1 张时拆成多次请求。
+    if (batchCount <= 1) {
+        try {
+            return await requestEditBatch(n);
+        } catch (error) {
+            throw new Error(readAxiosError(error, apiText("requestFailed")));
+        }
+    }
+    const settled = await Promise.allSettled(
+        Array.from({ length: batchCount }, (_, index) => requestEditBatch(Math.max(1, Math.min(batchSize, n - index * batchSize)))),
+    );
+    const images = settled.flatMap((item) => (item.status === "fulfilled" ? item.value : []));
+    if (!images.length) {
+        const firstError = settled.find((item) => item.status === "rejected");
+        throw new Error(firstError && firstError.status === "rejected" ? readAxiosError(firstError.reason, apiText("requestFailed")) : apiText("requestFailed"));
+    }
+    return images;
 }
 
 export async function requestImageQuestion(config: AiConfig, messages: AiTextMessage[], onDelta: (text: string) => void, options?: RequestOptions) {

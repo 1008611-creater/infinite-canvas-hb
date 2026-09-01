@@ -452,6 +452,7 @@ export default {
         channels: {
             description: "Choose a protocol for each provider, fetch its models, assign capabilities, and optionally customize request scripts.",
             add: "Add provider",
+            addFromTemplate: "Add from template (endpoint and models prefilled)",
             unnamed: "Unnamed provider",
             numberedName: "Provider {{count}}",
             modelCount: "{{count}} models",
@@ -491,6 +492,10 @@ export default {
             selectModels: "Select models",
             scriptReady: "Script set",
             script: "Request script",
+            imageBatchLimit: "Max images per request",
+            imageBatchLimitPlaceholder: "Empty = unlimited",
+            imageBatchLimitHint: "Some providers quietly return fewer images than requested instead of failing (measured: OpenLux returned 2 of 3). Set 1 and the app splits into one request per image, so you always get the count you picked.",
+            editViaGenerations: "Image edits use the generations endpoint",
             empty: "Select models to fetch or manually add models.",
             capabilities: {
                 image: "Image",

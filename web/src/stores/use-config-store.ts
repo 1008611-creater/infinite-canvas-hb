@@ -23,6 +23,18 @@ export type ModelChannel = {
     apiKey: string;
     apiFormat: ApiCallFormat;
     models: ChannelModel[];
+    /**
+     * 单次请求允许生成的图片张数上限。
+     * 有些渠道（如 OpenLux）对 n 的处理不老实：不报错，但会少给（实测 n=3 只返回 2 张）。
+     * 这类渠道填 1，前端会拆成多次请求，保证用户选几张就出几张。
+     * 留空表示不限制。
+     */
+    imageBatchLimit?: number;
+    /**
+     * 图生图改走 `/images/generations` + image 参数，而不是 multipart 的 `/images/edits`。
+     * OpenLux 一类渠道的 edits 接口不可用（报 failed to parse multipart form），必须走这条。
+     */
+    editViaGenerations?: boolean;
 };
 
 export type AiConfig = {
@@ -370,6 +382,8 @@ export function createModelChannel(channel?: Partial<ModelChannel>): ModelChanne
         apiKey: channel?.apiKey || "",
         apiFormat,
         models: normalizeChannelModels(channel?.models),
+        ...(channel?.imageBatchLimit ? { imageBatchLimit: channel.imageBatchLimit } : {}),
+        ...(channel?.editViaGenerations ? { editViaGenerations: true } : {}),
     };
 }
 
@@ -429,6 +443,8 @@ export function resolveModelRequestConfig(config: AiConfig, value: string) {
         baseUrl: channel.baseUrl,
         apiKey: channel.apiKey,
         apiFormat: channel.apiFormat,
+        imageBatchLimit: channel.imageBatchLimit,
+        editViaGenerations: channel.editViaGenerations,
     };
 }
 

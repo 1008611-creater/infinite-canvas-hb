@@ -81,6 +81,28 @@ export function ChannelEditorDrawer({ open, channel, onSave, onClose }: { open: 
                     <span className="mb-1 block text-sm font-medium">API Key</span>
                     <Input.Password value={draft.apiKey} onChange={(event) => patch({ apiKey: event.target.value })} placeholder="sk-..." />
                 </label>
+                <label className="block">
+                    <span className="mb-1 block text-sm font-medium">{t("config.channelEditor.imageBatchLimit")}</span>
+                    <Input
+                        value={draft.imageBatchLimit ? String(draft.imageBatchLimit) : ""}
+                        onChange={(event) => {
+                            const raw = event.target.value.trim();
+                            if (!raw) {
+                                patch({ imageBatchLimit: undefined });
+                                return;
+                            }
+                            const parsed = Number(raw);
+                            if (!Number.isFinite(parsed) || parsed < 1) return;
+                            patch({ imageBatchLimit: Math.floor(parsed) });
+                        }}
+                        placeholder={t("config.channelEditor.imageBatchLimitPlaceholder")}
+                    />
+                    <span className="mt-1 block text-xs text-stone-500">{t("config.channelEditor.imageBatchLimitHint")}</span>
+                </label>
+                <label className="flex items-center gap-2 self-end pb-2">
+                    <input type="checkbox" className="size-4" checked={Boolean(draft.editViaGenerations)} onChange={(event) => patch({ editViaGenerations: event.target.checked || undefined })} />
+                    <span className="text-sm font-medium">{t("config.channelEditor.editViaGenerations")}</span>
+                </label>
             </div>
 
             <div className="mt-6 mb-3 flex flex-wrap items-center justify-between gap-2">
