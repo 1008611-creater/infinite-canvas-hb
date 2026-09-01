@@ -48,6 +48,7 @@ import { buildNodeMentionReferences, getGroupResourceNodes, isCanvasReferenceNod
 import { exportCanvasProjects } from "@/lib/canvas/canvas-export";
 import { applyNodeConfigPatch, audioMetadata, buildAudioGenerationMetadata, buildImageGenerationMetadata, createCanvasNode, imageMetadata, videoMetadata } from "@/lib/canvas/canvas-node-factory";
 import { findContainingGroupId, findGroupDropTarget, getConnectionTargetAnchor, normalizeConnection, snapNodesIntoGroup } from "@/lib/canvas/canvas-node-geometry";
+import { applyVideoModeUpdates } from "@/lib/canvas/canvas-video-mode";
 import {
     audioExtension,
     buildAngleLabel,
@@ -459,6 +460,14 @@ function InfiniteCanvasPage() {
         resizeObserver.observe(el);
         return () => resizeObserver.disconnect();
     }, []);
+
+    // 连线一变，就把视频节点的生成模式对齐到上游输入：
+    // 连了图却停在文生视频，参考图会被整包丢弃；选了首尾帧却只有一张图，尾帧会缺失。
+    // 统一在这里同步，覆盖所有改动连线的地方（新增、删除、撤销重做、导入）。
+    // 无需改动时 applyVideoModeUpdates 返回原数组，setNodes 会因为引用相同而跳过重渲染。
+    useEffect(() => {
+        setNodes((prev) => applyVideoModeUpdates(prev, connections, prev.filter((node) => node.type === CanvasNodeType.Video).map((node) => node.id)));
+    }, [connections]);
 
     const screenToCanvas = useCallback((clientX: number, clientY: number) => {
         const rect = containerRef.current?.getBoundingClientRect();

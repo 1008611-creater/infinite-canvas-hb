@@ -2,6 +2,7 @@ import axios from "axios";
 import { nanoid } from "nanoid";
 
 import i18n from "@/i18n";
+import { resolveVideoModeForInput } from "@/lib/canvas/canvas-video-mode";
 import { dataUrlToFile } from "@/lib/image-utils";
 import { uploadMediaFile, type UploadedFile } from "@/services/file-storage";
 import { imageToDataUrl } from "@/services/image-storage";
@@ -18,7 +19,7 @@ export type VideoInput = {
 };
 
 export function buildVideoInput(config: Pick<AiConfig, "videoMode">, references: ReferenceImage[] = []): VideoInput {
-    const mode = config.videoMode || "text";
+    const mode = resolveVideoModeForInput(config.videoMode, references.length);
     if (mode === "keyframe") return { mode, firstFrame: references[0], lastFrame: references[1] };
     return { mode, references: mode === "reference" ? references : [] };
 }
