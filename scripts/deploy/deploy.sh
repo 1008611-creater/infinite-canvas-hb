@@ -75,18 +75,30 @@ curl -sS -o /dev/null -w "本地回环自检: %{http_code}\n" --max-time 5 http:
 
 # 版本自愈：软链切换后，容器挂载的如果是「会换 inode 的路径」（老配置里的 current/dist），
 # 它会继续服务旧版本——发布日志一片绿，线上却没变。这里核对容器实际在跑的版本，不一致就重建。
+#
+# 站点有 cookie 门禁，不带 cookie 请求会被 302 到登录页，curl 拿到的是空内容。
+# 不带上凭证就会误判成「版本读不到」，进而每次发布都白重建一次 web 容器（还会打印一条假的失败告警）。
+AUTH_COOKIE_VALUE="$(grep -E '^AUTH_COOKIE=' "${PROXY_ENV_FILE:-/opt/agnes-video-proxy/.env}" 2>/dev/null | head -1 | cut -d= -f2- | tr -d '\r' || true)"
+CURL_AUTH=()
+if [[ -n "$AUTH_COOKIE_VALUE" ]]; then
+    CURL_AUTH=(-H "Cookie: canvas_auth=${AUTH_COOKIE_VALUE}")
+fi
+read_served_release() {
+    curl -sS --max-time 5 "${CURL_AUTH[@]}" http://127.0.0.1:18085/BUILD_INFO.txt 2>/dev/null \
+        | sed -n 's/^release=//p' | tr -d '\r' || true
+}
 EXPECTED_RELEASE="$(sed -n 's/^release=//p' "${TARGET}/dist/BUILD_INFO.txt" 2>/dev/null || true)"
 if [[ -n "$EXPECTED_RELEASE" && "$RUNTIME" == "docker" ]]; then
-    ACTUAL_RELEASE="$(curl -sS --max-time 5 http://127.0.0.1:18085/BUILD_INFO.txt 2>/dev/null \
-        | sed -n 's/^release=//p' | tr -d '\r' || true)"
+    ACTUAL_RELEASE="$(read_served_release)"
     if [[ "$ACTUAL_RELEASE" != "$EXPECTED_RELEASE" ]]; then
         echo "==> 容器还在跑旧版本（期望 ${EXPECTED_RELEASE}，实际 ${ACTUAL_RELEASE:-读不到}），重建 web 容器"
         compose up -d --force-recreate web
         sleep 3
-        ACTUAL_RELEASE="$(curl -sS --max-time 5 http://127.0.0.1:18085/BUILD_INFO.txt 2>/dev/null \
-            | sed -n 's/^release=//p' | tr -d '\r' || true)"
+        ACTUAL_RELEASE="$(read_served_release)"
         if [[ "$ACTUAL_RELEASE" != "$EXPECTED_RELEASE" ]]; then
             echo "✗ 重建后版本仍不对（实际 ${ACTUAL_RELEASE:-读不到}），请上服务器排查"
+        else
+            echo "==> 重建后版本校验通过：${ACTUAL_RELEASE}"
         fi
     else
         echo "==> 版本校验通过：${ACTUAL_RELEASE}"
