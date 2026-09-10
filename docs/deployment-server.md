@@ -8,7 +8,9 @@
 浏览器 → Cloudflare（DNS + HTTPS）→ cloudflared tunnel → 127.0.0.1:18085 (nginx 容器)
                                                             ├─ /login.html  登录页（免门禁，只有一个密码框）
                                                             ├─ /            静态前端，无 cookie 跳登录页
-                                                            └─ /agnes/…     cookie 门禁 → agnes 容器:8787（只在 compose 内网）
+                                                            ├─ /agnes/…     cookie 门禁 → agnes 容器:8787（视频代理）
+                                                            ├─ /dav/…       Basic Auth → agnes 容器:8789（云端同步 WebDAV）
+                                                            └─ /show/…      免门禁静态目录（交付展示用）
 ```
 
 - **为什么用 Tunnel**：服务器不需要开放任何入站端口，cloudflared 主动外连到 Cloudflare 边缘。
@@ -39,6 +41,39 @@
 `AUTH_COOKIE` 是「已登录」的凭证，**必须固定**：它由 `publish.sh` 首次生成后写进 `.env` 并一直复用。
 每次部署都重新生成的话，已登录的人会被迫反复登录。
 
+### 云端同步（WebDAV）：画布与素材上云
+
+画布前端本来就有完整的同步引擎（`web/src/services/app-sync.ts`），同步**画布 / 我的资产 /
+生图记录 / 视频记录**，并把引用到的本地媒体文件（图片、视频、音频）二进制也一起传上去。
+但仓库里一直缺配套服务端，所以这些数据实际上只活在浏览器 IndexedDB 里——清一次站点数据就没了。
+
+现在部署栈自带 `canvas-webdav`（源码在 `canvas-webdav/`，说明见其 README）：
+跑在 **agnes 容器内的独立端口 8789**，nginx 把 `/dav/` 反代进来，数据落在宿主机 `/opt/canvas-webdav`。
+
+前端怎么配：画布右上角**配置 → WebDAV 同步**，填
+
+| 字段 | 值 |
+| --- | --- |
+| WebDAV 地址 | `https://hb.cauai.fun/dav` |
+| 用户名 | `canvas` |
+| 密码 | 站点密码（`SITE_PASSWORD`，默认 `lsb123456`） |
+| 目录 | 留空，或用 `infinite-canvas` 之类给自己分个文件夹 |
+
+点「测试连接」应提示可用，再点同步即可。换设备后用同一份配置同步，画布和素材就会补齐
+（含缺失的媒体文件，会一并下载回来）。
+
+几条设计约束，改的时候别踩：
+
+1. **`/dav/` 不吃 cookie 门禁**。原因是原生 WebDAV 客户端（访达、资源管理器、手机文件 App）
+   带不了站点的 `canvas_auth` cookie，这一层的安全由 Basic Auth 兜住，凭据与站点密码一致，
+   不会比后台更宽松。也正因如此，`hb.cauai.fun/dav` 在浏览器里直接打开会弹账号密码框。
+2. **凭据写进服务器 `.env`**（`WEBDAV_USER` / `WEBDAV_PASSWORD`），由 `publish.sh` 维护，
+   默认复用站点密码；单独设密码用 `CANVAS_WEBDAV_PASSWORD=xxx bash scripts/deploy/publish.sh`。
+3. **数据卷必须持久化**（compose 里的 `/opt/canvas-webdav:/data`）。代理代码一改就会重建容器，
+   卷没挂出去的话用户的画布和成片会被一起删掉。
+4. 大文件上传在 nginx 侧放开了限制（`client_max_body_size 0` + `proxy_request_buffering off`），
+   别改回默认的 1m / 缓冲转发，否则同步带视频会直接 413 或占满磁盘内存。
+
 ## 服务器上的路径
 
 | 路径 | 用途 |
@@ -46,10 +81,12 @@
 | `/opt/infinite-canvas/current` | 软链，指向当前生效版本 |
 | `/opt/infinite-canvas/releases/canvas-*` | 历史版本，默认保留最近 5 个 |
 | `/opt/infinite-canvas/docker-compose.yml` | web + agnes 两个容器 |
-| `/opt/infinite-canvas/nginx/default.conf` | 站点与 `/agnes` 反代配置（`__AGNES_TOKEN__` 部署时会被替换） |
+| `/opt/infinite-canvas/nginx/default.conf` | 站点与 `/agnes`、`/dav` 反代配置（`__AGNES_TOKEN__` / `__AUTH_COOKIE__` 部署时会被替换） |
+| `/opt/infinite-canvas/show/` | 免门禁展示目录，交付链接走 `https://hb.cauai.fun/show/<子目录>/` |
 | `/opt/infinite-canvas/secrets/htpasswd` | Basic Auth 账号密码 |
 | `/opt/infinite-canvas/scripts/deploy/deploy.sh` | 服务器端部署脚本 |
 | `/opt/agnes-video-proxy/` | 代理代码 + `Dockerfile` + `.env`（**密钥只在这里，不进 git**） |
+| `/opt/canvas-webdav/` | 云端同步数据目录，挂进容器当 `/data`（**画布与素材的实际存放处，删了就没了**） |
 
 > 两个容易踩空的地方，改 compose 或部署脚本时别退回去：
 > 1. **挂目录，不挂单个文件**。docker 的 bind mount 是按 inode 绑的，`current` 软链切换和 `sed -i` 改配置都会换 inode，
@@ -121,6 +158,12 @@ CANVAS_SSH_HOST=<你的 ssh 别名> bash scripts/deploy/publish.sh
 它会用线上参数构建前端（`/agnes` + 访问令牌）、打包上传、在服务器做原子切换并重载 nginx。
 访问令牌默认从本机 `agnes-video-proxy/.env` 的 `PROXY_ACCESS_TOKEN` 读取，也可以用 `CANVAS_ACCESS_TOKEN=xxx` 传入。
 
+> 后端代码（`agnes-video-proxy/server.js` + `canvas-webdav/server.js` + `package.json`）**变了才会重建 agnes 镜像**，
+> 判断依据是发布机算出的代码指纹（`proxy/PROXY_FINGERPRINT`），服务器上存一份比对。
+> 改完后端代码发布时看到 `==> 更新后端代码（Agnes 代理 + 云端同步）` 才算生效——
+> 以前是拿 `server.js` 单文件比对，新增 `webdav.js` 这种兄弟模块时不会触发重建，
+> 发布日志全绿、线上却还在跑旧镜像。新增后端文件时**记得同步改 `publish.sh` 的打包列表和 `deploy/Dockerfile.proxy` 的 COPY`**。
+
 > Windows 上注意：工作区里的 `.sh` 是 CRLF，直接 scp 到 Linux 会报
 > `set: pipefail\r: invalid option name`。`publish.sh` 已经在上传统一转成 LF，别绕过它手动传。
 
@@ -161,6 +204,17 @@ curl -sS -o /dev/null -w 'nocookie=%{http_code}\n' \
 
 # 7) 第二道锁：绕开 nginx 直连代理容器，不带令牌
 docker exec canvas-agnes-proxy wget -qO- http://127.0.0.1:8787/v1/models            # 期望 401（不是 200）
+
+# 8) 云端同步：不带凭据应 401
+curl -sS -o /dev/null -w 'dav_noauth=%{http_code}\n' -X PROPFIND -H 'Depth: 0' \
+  http://127.0.0.1:18085/dav/                                                        # 期望 401
+
+# 9) 云端同步：带凭据应 207（-u 用户名:密码；密码就是站点密码）
+curl -sS -o /dev/null -w 'dav_auth=%{http_code}\n' -u canvas:<站点密码> -X PROPFIND -H 'Depth: 0' \
+  http://127.0.0.1:18085/dav/                                                        # 期望 207
+
+# 10) 数据卷真的挂上了（这里必须是挂载点，否则容器一重建数据就没了）
+docker exec canvas-agnes-proxy sh -c 'df -h /data | tail -1'
 ```
 
 第 7 项如果是 200，说明 `PROXY_ACCESS_TOKEN` 没生效（多半是 `.env` 没传上去或容器没重建），

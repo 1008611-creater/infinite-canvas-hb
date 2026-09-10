@@ -7,8 +7,9 @@ import { useTranslation } from "react-i18next";
 import { useCopyText } from "@/hooks/use-copy-text";
 import { formatBytes, readFileAsDataUrl } from "@/lib/image-utils";
 import { uploadImage } from "@/services/image-storage";
+import { uploadMediaFile } from "@/services/file-storage";
 import { cn } from "@/lib/utils";
-import { useAssetStore, type Asset, type AssetKind, type ImageAsset } from "@/stores/use-asset-store";
+import { useAssetStore, type Asset, type AssetKind, type ImageAsset, type VideoAsset } from "@/stores/use-asset-store";
 import { exportAssets, readAssetPackage } from "./asset-transfer";
 
 type AssetFormValues = {
@@ -21,7 +22,8 @@ type AssetFormValues = {
     content?: string;
 };
 
-type ImageDraft = ImageAsset["data"] | null;
+// 图片和视频都是「文件型」素材：引用同一份 blob 存储，只是取 URL 的字段不同（图片 dataUrl / 视频 url）。
+type MediaDraft = { kind: "image"; data: ImageAsset["data"] } | { kind: "video"; data: VideoAsset["data"] } | null;
 
 const kindOptions = ["all", "text", "image", "video"] as const;
 
@@ -31,7 +33,7 @@ export default function AssetsPage() {
     const copyText = useCopyText();
     const [form] = Form.useForm<AssetFormValues>();
     const coverInputRef = useRef<HTMLInputElement>(null);
-    const imageInputRef = useRef<HTMLInputElement>(null);
+    const mediaInputRef = useRef<HTMLInputElement>(null);
     const assetInputRef = useRef<HTMLInputElement>(null);
     const assets = useAssetStore((state) => state.assets);
     const addAsset = useAssetStore((state) => state.addAsset);
@@ -46,7 +48,7 @@ export default function AssetsPage() {
     const [previewAsset, setPreviewAsset] = useState<Asset | null>(null);
     const [deletingAsset, setDeletingAsset] = useState<Asset | null>(null);
     const [formKind, setFormKind] = useState<AssetKind>("text");
-    const [imageDraft, setImageDraft] = useState<ImageDraft>(null);
+    const [mediaDraft, setMediaDraft] = useState<MediaDraft>(null);
     const coverUrl = Form.useWatch("coverUrl", form) || "";
     const title = Form.useWatch("title", form) || "";
     const tags = Form.useWatch("tags", form) || [];
@@ -74,7 +76,7 @@ export default function AssetsPage() {
 
     const openCreate = () => {
         setEditingAsset(null);
-        setImageDraft(null);
+        setMediaDraft(null);
         setFormKind("text");
         form.setFieldsValue({ kind: "text", title: "", coverUrl: "", tags: [], source: t("assets.manual"), note: "", content: "" });
         setIsAssetOpen(true);
@@ -83,7 +85,7 @@ export default function AssetsPage() {
     const openEdit = (asset: Asset) => {
         setEditingAsset(asset);
         setFormKind(asset.kind);
-        setImageDraft(asset.kind === "image" ? asset.data : null);
+        setMediaDraft(asset.kind === "image" ? { kind: "image", data: asset.data } : asset.kind === "video" ? { kind: "video", data: asset.data } : null);
         form.setFieldsValue({
             kind: asset.kind,
             title: asset.title,
@@ -100,7 +102,7 @@ export default function AssetsPage() {
         const values = await form.validateFields();
         const base = {
             title: values.title.trim(),
-            coverUrl: values.coverUrl?.trim() || (values.kind === "image" && imageDraft ? imageDraft.dataUrl : ""),
+            coverUrl: values.coverUrl?.trim() || (mediaDraft?.kind === "image" ? mediaDraft.data.dataUrl : ""),
             tags: values.tags || [],
             source: values.source?.trim(),
             note: values.note?.trim(),
@@ -111,11 +113,12 @@ export default function AssetsPage() {
             const asset = { ...base, kind: "text" as const, data: { content: (values.content || "").trim() } };
             editingAsset ? updateAsset(editingAsset.id, asset) : addAsset(asset);
         } else {
-            if (!imageDraft) {
-                message.error(t("assets.selectImage"));
+            // 草稿的类型必须和表单选中的类型一致：选了「视频」却传了图片时给出明确提示，不静默存错。
+            if (!mediaDraft || mediaDraft.kind !== values.kind) {
+                message.error(t(values.kind === "video" ? "assets.selectVideo" : "assets.selectImage"));
                 return;
             }
-            const asset = { ...base, kind: "image" as const, data: imageDraft };
+            const asset = mediaDraft.kind === "video" ? ({ ...base, kind: "video" as const, data: mediaDraft.data } as const) : ({ ...base, kind: "image" as const, data: mediaDraft.data } as const);
             editingAsset ? updateAsset(editingAsset.id, asset) : addAsset(asset);
         }
 
@@ -129,12 +132,26 @@ export default function AssetsPage() {
         form.setFieldValue("coverUrl", dataUrl);
     };
 
-    const readImageFile = async (file?: File) => {
-        if (!file || !file.type.startsWith("image/")) return;
-        const image = await uploadImage(file);
-        const draft = { dataUrl: image.url, storageKey: image.storageKey, width: image.width, height: image.height, bytes: image.bytes, mimeType: image.mimeType };
-        setImageDraft(draft);
-        if (!form.getFieldValue("coverUrl")) form.setFieldValue("coverUrl", draft.dataUrl);
+    // 图片走 image-storage（会读尺寸），视频走 media 存储；两者都先落浏览器本地 blob，再由 WebDAV 同步上云。
+    // 上传的文件类型会反向同步到表单项，避免「选了图片却传视频」这种类型错配。
+    const readMediaFile = async (file?: File) => {
+        if (!file) return;
+        if (file.type.startsWith("video/")) {
+            const media = await uploadMediaFile(file, "video");
+            setMediaDraft({ kind: "video", data: { url: media.url, storageKey: media.storageKey, width: media.width ?? 1280, height: media.height ?? 720, bytes: media.bytes, mimeType: media.mimeType } });
+            setFormKind("video");
+            form.setFieldValue("kind", "video");
+        } else if (file.type.startsWith("image/")) {
+            const image = await uploadImage(file);
+            const draft = { dataUrl: image.url, storageKey: image.storageKey, width: image.width, height: image.height, bytes: image.bytes, mimeType: image.mimeType };
+            setMediaDraft({ kind: "image", data: draft });
+            setFormKind("image");
+            form.setFieldValue("kind", "image");
+            if (!form.getFieldValue("coverUrl")) form.setFieldValue("coverUrl", draft.dataUrl);
+        } else {
+            message.error(t("assets.selectMediaFile"));
+            return;
+        }
         if (!form.getFieldValue("title")) form.setFieldValue("title", file.name);
     };
 
@@ -290,6 +307,7 @@ export default function AssetsPage() {
                                 options={[
                                     { label: t("assets.kinds.text"), value: "text" },
                                     { label: t("assets.kinds.image"), value: "image" },
+                                    { label: t("assets.kinds.video"), value: "video" },
                                 ]}
                                 onChange={(value) => setFormKind(value)}
                             />
@@ -321,18 +339,18 @@ export default function AssetsPage() {
                                 <Input.TextArea rows={8} placeholder={t("assets.fields.textPlaceholder")} />
                             </Form.Item>
                         ) : (
-                            <Form.Item label={t("assets.fields.imageContent")} required>
+                            <Form.Item label={formKind === "video" ? t("assets.fields.videoContent") : t("assets.fields.imageContent")} required>
                                 <div className="rounded-lg border border-dashed border-stone-300 p-4 dark:border-stone-700">
-                                    <Button icon={<Upload className="size-4" />} onClick={() => imageInputRef.current?.click()}>
-                                        {t("assets.selectImageFile")}
+                                    <Button icon={<Upload className="size-4" />} onClick={() => mediaInputRef.current?.click()}>
+                                        {t("assets.selectMediaFile")}
                                     </Button>
-                                    {imageDraft ? (
+                                    {mediaDraft ? (
                                         <Typography.Text type="secondary" className="ml-3 text-xs">
-                                            {imageDraft.width}x{imageDraft.height} · {formatBytes(imageDraft.bytes)}
+                                            {mediaDraft.data.width}x{mediaDraft.data.height} · {formatBytes(mediaDraft.data.bytes)}
                                         </Typography.Text>
                                     ) : (
                                         <Typography.Text type="secondary" className="ml-3 text-xs">
-                                            {t("assets.noImageSelected")}
+                                            {t("assets.noMediaSelected")}
                                         </Typography.Text>
                                     )}
                                 </div>
@@ -342,8 +360,10 @@ export default function AssetsPage() {
                     <div className="rounded-xl border border-stone-200 bg-stone-50 p-4 dark:border-stone-800 dark:bg-stone-950">
                         <Typography.Text strong>{t("assets.preview")}</Typography.Text>
                         <div className="mt-3 overflow-hidden rounded-lg border border-stone-200 bg-background dark:border-stone-800">
-                            {coverUrl || imageDraft?.dataUrl ? (
-                                <img src={coverUrl || imageDraft?.dataUrl} alt="" className="aspect-[4/3] w-full object-cover" />
+                            {mediaDraft?.kind === "video" ? (
+                                <video src={mediaDraft.data.url} controls muted playsInline className="aspect-[4/3] w-full bg-black object-contain" />
+                            ) : coverUrl || (mediaDraft?.kind === "image" ? mediaDraft.data.dataUrl : "") ? (
+                                <img src={coverUrl || (mediaDraft?.kind === "image" ? mediaDraft.data.dataUrl : "")} alt="" className="aspect-[4/3] w-full object-cover" />
                             ) : (
                                 <div className="flex aspect-[4/3] items-center justify-center bg-stone-100 p-5 text-center text-sm text-stone-500 dark:bg-stone-900">{content || t("assets.noCover")}</div>
                             )}
@@ -377,12 +397,12 @@ export default function AssetsPage() {
                     }}
                 />
                 <input
-                    ref={imageInputRef}
+                    ref={mediaInputRef}
                     type="file"
-                    accept="image/*"
+                    accept="image/*,video/*"
                     className="hidden"
                     onChange={(event) => {
-                        void readImageFile(event.target.files?.[0]);
+                        void readMediaFile(event.target.files?.[0]);
                         event.target.value = "";
                     }}
                 />
@@ -412,6 +432,9 @@ function AssetCard({ asset, onOpen, onEdit, onCopy, onDownload, onDelete }: { as
                 <button type="button" className="block w-full text-left" onClick={onOpen}>
                     {cover ? (
                         <img src={cover} alt={asset.title} className="aspect-[4/3] w-full object-cover" />
+                    ) : asset.kind === "video" ? (
+                        // 视频没有封面时用 <video> 取首帧充当缩略图：加 #t=0.1 才会渲染画面，否则是黑块。
+                        <video src={`${asset.data.url}#t=0.1`} muted playsInline preload="metadata" className="aspect-[4/3] w-full bg-black object-cover" />
                     ) : (
                         <div className="flex aspect-[4/3] items-center justify-center bg-stone-100 p-5 text-center text-sm leading-6 text-stone-600 dark:bg-stone-900 dark:text-stone-300">{asset.kind === "text" ? asset.data.content : t("assets.noCover")}</div>
                     )}
@@ -446,11 +469,9 @@ function AssetCard({ asset, onOpen, onEdit, onCopy, onDownload, onDelete }: { as
                 <Button size="small" onClick={onOpen}>
                     {t("common.view")}
                 </Button>
-                {asset.kind !== "video" ? (
-                    <Button size="small" icon={<PencilLine className="size-3.5" />} onClick={onEdit}>
-                        {t("common.edit")}
-                    </Button>
-                ) : null}
+                <Button size="small" icon={<PencilLine className="size-3.5" />} onClick={onEdit}>
+                    {t("common.edit")}
+                </Button>
                 {asset.kind === "text" ? (
                     <Button size="small" icon={<Copy className="size-3.5" />} onClick={() => void onCopy(asset)}>
                         {t("common.copy")}
@@ -494,12 +515,10 @@ function AssetDrawer({ asset, onClose, onCopy, onDownload }: { asset: Asset | nu
                     </div>
                     <div className="rounded-lg border border-stone-200 p-4 dark:border-stone-800">
                         <Typography.Text type="secondary" className="block text-xs">
-                            {t("assets.fields.textContent")}
+                            {t(asset.kind === "video" ? "assets.fields.videoContent" : asset.kind === "image" ? "assets.fields.imageContent" : "assets.fields.textContent")}
                         </Typography.Text>
                         {asset.kind === "text" ? (
                             <Typography.Paragraph className="mt-2 whitespace-pre-wrap">{asset.data.content}</Typography.Paragraph>
-                        ) : asset.kind === "video" ? (
-                            <video src={asset.data.url} controls className="mt-2 aspect-video w-full rounded-lg bg-black" />
                         ) : (
                             <Typography.Text className="mt-2 block">
                                 {asset.data.width}x{asset.data.height} · {formatBytes(asset.data.bytes)} · {asset.data.mimeType}

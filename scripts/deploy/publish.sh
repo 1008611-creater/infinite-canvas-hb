@@ -85,13 +85,39 @@ rm -rf "$STAGE" 2>/dev/null || true
 mkdir -p "$STAGE/dist" "$STAGE/proxy"
 cp -r web/dist/. "$STAGE/dist/"
 cp agnes-video-proxy/server.js agnes-video-proxy/package.json "$STAGE/proxy/"
+# 云端同步服务（WebDAV）：源码在 canvas-webdav/，进容器后与代理同目录，名字固定为 webdav.js
+# （agnes-video-proxy/server.js 里就是按 ./webdav 去 require 的）。
+cp canvas-webdav/server.js "$STAGE/proxy/webdav.js"
+
+# 后端代码指纹：deploy.sh 靠它决定「要不要重建 agnes 镜像」。
+# 以前是拿 server.js 单文件做 cmp，结果新增 webdav.js 这种兄弟模块时不会触发重建，
+# 表现为「发布全绿、新功能却没上线」，还得上服务器手动 docker compose build。
+# 现在把 proxy/ 下所有代码一起算进指纹。
+proxy_fingerprint() {
+    # 优先用 openssl（脚本前面已经在用它生成随机串），没有就退回 sha256sum。
+    # 末尾的 `|| true` 是有意为之：文件缺失时这里不该直接中断整个发布，
+    # 让调用方用一句人话报错（见下面的指纹为空检查）。
+    if command -v openssl >/dev/null 2>&1; then
+        cat "$STAGE/proxy/server.js" "$STAGE/proxy/webdav.js" "$STAGE/proxy/package.json" 2>/dev/null | openssl dgst -sha256 -r | cut -d' ' -f1 || true
+    else
+        cat "$STAGE/proxy/server.js" "$STAGE/proxy/webdav.js" "$STAGE/proxy/package.json" 2>/dev/null | sha256sum | cut -d' ' -f1 || true
+    fi
+}
+PROXY_FINGERPRINT="$(proxy_fingerprint)"
+if [[ -z "$PROXY_FINGERPRINT" ]]; then
+    echo "✗ 算不出后端代码指纹（缺 server.js / webdav.js / package.json？），中止发布"
+    exit 1
+fi
+printf '%s\n' "$PROXY_FINGERPRINT" > "$STAGE/proxy/PROXY_FINGERPRINT"
+echo "==> 后端代码指纹 ${PROXY_FINGERPRINT:0:12}"
+
 printf 'release=%s\ncommit=%s\nbuilt_at=%s\nagnes_base_url=%s\n' \
     "$RELEASE" "$COMMIT" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$AGNES_BASE_URL_VALUE" > "$STAGE/dist/BUILD_INFO.txt"
 TARBALL="$TMP_DIR/${RELEASE}.tar.gz"
 tar -czf "$TARBALL" -C "$STAGE" dist proxy
 
 echo "==> 上传并部署到 ${SSH_HOST}:${APP_ROOT}"
-"${SSH[@]}" "$SSH_HOST" "mkdir -p ${APP_ROOT}/releases ${APP_ROOT}/scripts/deploy ${APP_ROOT}/nginx ${CANVAS_PROXY_ROOT:-/opt/agnes-video-proxy}"
+"${SSH[@]}" "$SSH_HOST" "mkdir -p ${APP_ROOT}/releases ${APP_ROOT}/scripts/deploy ${APP_ROOT}/nginx ${CANVAS_PROXY_ROOT:-/opt/agnes-video-proxy} ${CANVAS_WEBDAV_DATA:-/opt/canvas-webdav}"
 
 # Windows 工作区里的文本文件是 CRLF，Linux 的 bash / systemd / nginx 遇到 CRLF 会直接报错
 # （典型症状：set: pipefail\r: invalid option name），所以脚本和配置上传前统一转成 LF。
@@ -150,6 +176,16 @@ fi
 remote_env_set "$ENV_FILE" AUTH_COOKIE "$AUTH_COOKIE" && ENV_CHANGED=1
 remote_env_set "$ENV_FILE" SITE_PASSWORD "$SITE_PASSWORD" && ENV_CHANGED=1
 echo "==> 站点密码已设为 ${SITE_PASSWORD}（登录凭证固定不变）"
+
+# 云端同步（WebDAV）凭据。
+# 默认直接复用站点密码：少记一个密码，且「能进后台的人才能同步」，不会多开一个口子。
+# 这一层走 Basic Auth（原生 WebDAV 客户端带不了站点的 cookie），
+# 想单独换密码就用 CANVAS_WEBDAV_PASSWORD=xxx 跑发布。
+WEBDAV_USER_VALUE="${CANVAS_WEBDAV_USER:-canvas}"
+WEBDAV_PASSWORD_VALUE="${CANVAS_WEBDAV_PASSWORD:-$SITE_PASSWORD}"
+remote_env_set "$ENV_FILE" WEBDAV_USER "$WEBDAV_USER_VALUE" && ENV_CHANGED=1
+remote_env_set "$ENV_FILE" WEBDAV_PASSWORD "$WEBDAV_PASSWORD_VALUE" && ENV_CHANGED=1
+echo "==> 云端同步已配置：WebDAV 地址 https://hb.cauai.fun/dav ，用户名 ${WEBDAV_USER_VALUE}，密码同站点密码"
 
 # 替换占位符。用「重定向回写」而不是 sed -i：sed -i 会换 inode，
 # 当年单文件挂载时就栽在这上面（容器一直读旧内容），原地写最稳。

@@ -641,3 +641,33 @@ server.listen(CONFIG.PORT, () => {
   console.log(`[代理] Agnes Base: ${CONFIG.AGNES_BASE}  默认画幅: ${CONFIG.DEFAULT_AR}  默认时长: ${CONFIG.DEFAULT_SECONDS}s`);
   if (!CONFIG.AGNES_API_KEY) console.warn('[代理] 警告：未检测到 AGNES_API_KEY，提交会失败，请检查 .env');
 });
+
+// ---------------------------------------------------------------- 云端同步（WebDAV）
+// infinite-canvas 前端自带一套完整的云同步引擎（web/src/services/app-sync.ts +
+// webdav-sync.ts），同步「画布 / 我的素材 / 生成记录 / 本地媒体文件」，但仓库里一直
+// 没有配套的服务端，所以数据只能活在浏览器 IndexedDB 里，换设备或清站点数据就没了。
+//
+// 这里把同步服务作为同进程的第二个监听端口挂上（8789），由 nginx 反代 /dav/：
+//   - 不新增容器：本栈里只有这个镜像带 Node，且它已经在跑、卷和网络都现成；
+//   - 独立端口：视频代理的 /v1/videos 链路完全不受影响；
+//   - webdav.js 内部对每个请求都做了 try/catch，异常不会冒到进程层。
+// 没配 WEBDAV_PASSWORD 时它不会启动监听（失败关闭），不会开出一个匿名可写的目录。
+function loadWebdav() {
+    // 容器里 webdav.js 与 server.js 同目录（publish.sh 把 canvas-webdav/server.js 改名放进去）；
+    // 在本机仓库里直接跑时它在 ../canvas-webdav/。两个位置都试一次。
+    for (const candidate of ['./webdav', '../canvas-webdav/server']) {
+        try {
+            return require(candidate);
+        } catch (error) {
+            if (!error || error.code !== 'MODULE_NOT_FOUND') throw error;
+        }
+    }
+    return null;
+}
+
+const webdavModule = loadWebdav();
+if (webdavModule) {
+    webdavModule.startWebdav(process.env, console).catch((error) => console.error('[webdav] 启动失败：', (error && error.message) || error));
+} else {
+    console.warn('[webdav] 未找到 webdav.js，云端同步不可用');
+}
