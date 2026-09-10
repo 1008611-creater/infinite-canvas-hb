@@ -3,6 +3,7 @@ import type { NavigateFunction } from "react-router-dom";
 import i18n from "@/i18n";
 import { fetchPrompts } from "@/services/api/prompts";
 import { uploadImage } from "@/services/image-storage";
+import { uploadMediaFile } from "@/services/file-storage";
 import { imageAspectOptions, imageQualityOptions } from "@/components/image-settings-panel";
 import { videoResolutionOptions, videoSecondOptions, videoSizeOptions } from "@/components/video-settings-panel";
 import type { CanvasAgentSnapshot } from "@/lib/canvas/canvas-agent-ops";
@@ -306,6 +307,18 @@ async function addAsset(input: SiteToolInput) {
         }
         const id = store.addAsset({ kind: "image", title, coverUrl: stored.url, tags, source, note, data: { dataUrl: stored.url, storageKey: stored.storageKey, width: stored.width, height: stored.height, bytes: stored.bytes, mimeType: stored.mimeType } });
         return { ok: true, id, kind: "image" };
+    }
+    if (kind === "video") {
+        const videoUrl = String(input.videoUrl || "").trim();
+        if (!videoUrl) throw new Error(siteText("videoUrlRequired"));
+        let stored;
+        try {
+            stored = await uploadMediaFile(videoUrl, "video");
+        } catch {
+            throw new Error(siteText("videoReadFailed"));
+        }
+        const id = store.addAsset({ kind: "video", title, coverUrl: "", tags, source, note, data: { url: stored.url, storageKey: stored.storageKey, width: stored.width ?? 1280, height: stored.height ?? 720, bytes: stored.bytes, mimeType: stored.mimeType } });
+        return { ok: true, id, kind: "video" };
     }
     throw new Error(siteText("assetKindUnsupported"));
 }

@@ -4,7 +4,7 @@
 #
 #   bash /opt/infinite-canvas/scripts/deploy/deploy.sh /opt/infinite-canvas/releases/canvas-xxx.tar.gz
 #
-# 流程：解压到 releases/<版本> → 原子切换 current 软链 → 更新 Agnes 代理 → 校验并重载 nginx。
+# 流程：解压到 releases/<版本> → 原子切换 current 软链 → 更新后端代码（代理 + 云端同步）→ 校验并重载 nginx。
 # 任何一步失败都会退出，不会把线上切到半成品（软链只在解压成功后才切换）。
 #
 # 两种运行方式：
@@ -46,11 +46,39 @@ echo "==> 切换 current 软链"
 # 用绝对路径的话容器里解析不到 /opt/infinite-canvas，root 目录不存在，所有请求 500。
 ln -sfn "releases/${NAME}" "${APP_ROOT}/current"
 
-if [[ -f "${TARGET}/proxy/server.js" ]] && ! cmp -s "${TARGET}/proxy/server.js" "${PROXY_ROOT}/server.js"; then
-    echo "==> 更新 Agnes 代理代码"
+# 后端代码（Agnes 代理 + 云端同步 WebDAV）变更检测。
+#
+# 不要再退回「拿 server.js 单文件做 cmp」：新增兄弟模块（比如 webdav.js）时它不会触发重建，
+# 发布日志一片绿，线上却还是旧镜像，还得上服务器手动 build 一次。
+# 指纹由发布机（publish.sh）算好随包带过来，覆盖 proxy/ 下全部代码。
+NEED_PROXY_UPDATE=0
+FINGERPRINT_STAMP="${PROXY_ROOT}/PROXY_FINGERPRINT"
+PACKAGE_FINGERPRINT="$(cat "${TARGET}/proxy/PROXY_FINGERPRINT" 2>/dev/null | tr -d '\r\n' || true)"
+CURRENT_FINGERPRINT="$(cat "$FINGERPRINT_STAMP" 2>/dev/null | tr -d '\r\n' || true)"
+
+if [[ -n "$PACKAGE_FINGERPRINT" ]]; then
+    if [[ "$PACKAGE_FINGERPRINT" != "$CURRENT_FINGERPRINT" ]]; then
+        NEED_PROXY_UPDATE=1
+    fi
+elif [[ -f "${TARGET}/proxy/server.js" ]] && ! cmp -s "${TARGET}/proxy/server.js" "${PROXY_ROOT}/server.js"; then
+    # 兼容旧发布包（没有指纹文件）：退回单文件比对，至少不会漏掉 server.js 的改动
+    echo "⚠ 发布包里没有后端代码指纹，退回按 server.js 单文件比对"
+    NEED_PROXY_UPDATE=1
+    PACKAGE_FINGERPRINT="legacy-$(date -u +%Y%m%d%H%M%S)"
+fi
+
+if [[ "$NEED_PROXY_UPDATE" == "1" ]]; then
+    echo "==> 更新后端代码（Agnes 代理 + 云端同步）"
     install -d "$PROXY_ROOT"
     cp "${TARGET}/proxy/server.js" "${PROXY_ROOT}/server.js"
     cp "${TARGET}/proxy/package.json" "${PROXY_ROOT}/package.json" 2>/dev/null || true
+    if [[ -f "${TARGET}/proxy/webdav.js" ]]; then
+        cp "${TARGET}/proxy/webdav.js" "${PROXY_ROOT}/webdav.js"
+    else
+        echo "⚠ 包里没有 webdav.js，云端同步不会启动"
+        rm -f "${PROXY_ROOT}/webdav.js" 2>/dev/null || true
+    fi
+    printf '%s\n' "$PACKAGE_FINGERPRINT" > "$FINGERPRINT_STAMP"
     if [[ "$RUNTIME" == "docker" ]]; then
         compose build agnes
         compose up -d agnes

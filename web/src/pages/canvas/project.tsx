@@ -461,13 +461,15 @@ function InfiniteCanvasPage() {
         return () => resizeObserver.disconnect();
     }, []);
 
-    // 连线一变，就把视频节点的生成模式对齐到上游输入：
+    // 连线一变、节点 metadata 一变，就把视频节点的生成模式对齐到上游输入：
     // 连了图却停在文生视频，参考图会被整包丢弃；选了首尾帧却只有一张图，尾帧会缺失。
-    // 统一在这里同步，覆盖所有改动连线的地方（新增、删除、撤销重做、导入）。
+    // 用户在视频设置面板里手动切换模式也得覆盖进来，否则弹层「提交时按「首尾帧」生成」
+    // 的提示会和实际提交用的 videoMode 不一致——参考图会被悄悄丢掉。
+    // 统一在这里同步，覆盖所有改动连线/参数的地方（新增、删除、撤销重做、导入、设置面板）。
     // 无需改动时 applyVideoModeUpdates 返回原数组，setNodes 会因为引用相同而跳过重渲染。
     useEffect(() => {
         setNodes((prev) => applyVideoModeUpdates(prev, connections, prev.filter((node) => node.type === CanvasNodeType.Video).map((node) => node.id)));
-    }, [connections]);
+    }, [connections, nodes]);
 
     const screenToCanvas = useCallback((clientX: number, clientY: number) => {
         const rect = containerRef.current?.getBoundingClientRect();

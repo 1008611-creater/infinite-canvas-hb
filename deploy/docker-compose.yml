@@ -1,8 +1,8 @@
 # hb.cauai.fun —— 无限画布（天宫漫剧）
 #
 # 两个容器：
-#   web   nginx，托管静态前端，并把 /agnes/ 反代给 agnes 容器
-#   agnes Agnes 视频代理（Node），只暴露在 compose 内部网络，不对公网开端口
+#   web   nginx，托管静态前端，把 /agnes/ 反代给 agnes 容器，/dav/ 反代给同步服务
+#   agnes Agnes 视频代理（Node）+ 云端同步 WebDAV（同容器另一端口），只暴露在 compose 内部网络，不对公网开端口
 #
 # 只把 18085 绑在 127.0.0.1：公网入口由 Cloudflare Tunnel 提供，不需要开对外端口。
 # 放到 /opt/infinite-canvas/docker-compose.yml
@@ -34,3 +34,13 @@ services:
     restart: unless-stopped
     env_file:
       - /opt/agnes-video-proxy/.env
+    environment:
+      # 云端同步（WebDAV）跑在同一个容器里的独立端口 8789，由 nginx 反代 /dav/。
+      # 复用这个容器是为了不新增服务：它是本栈里唯一带 Node 的镜像，
+      # 而 WebDAV 是纯文件服务、无上游依赖，独立端口 + 全量 try/catch 不会影响视频代理。
+      WEBDAV_ROOT: /data
+      WEBDAV_PORT: "8789"
+    volumes:
+      # 同步数据必须落在宿主机上：代理代码一改就会重建容器，
+      # 卷不持久化的话用户的画布、素材和成片会被一起删掉。
+      - /opt/canvas-webdav:/data
