@@ -168,6 +168,14 @@ export function AppConfigPanel({ showDoneButton = false, initialTab = "channels"
             const result = await syncAppDataToWebdav(webdav, updateWebdavProgress);
             updateWebdavConfig("lastSyncedAt", result.syncedAt);
             message.success(t("config.webdav.completed", { projects: result.projects, assets: result.assets, records: result.imageLogs + result.videoLogs, files: result.uploadedFiles, bytes: formatBytes(result.uploadedBytes) }));
+            // 个别文件没传上去（网络中断、体积超限）不影响整轮同步，但必须让用户看见
+            if (result.failedFiles.length) {
+                const names = result.failedFiles
+                    .slice(0, 3)
+                    .map((key) => key.split(":").pop() || key)
+                    .join("、");
+                message.warning(t("config.webdav.partialFailed", { count: result.failedFiles.length, files: names }), 8);
+            }
         } catch (error) {
             setWebdavSyncStatus(error instanceof Error ? error.message : t("config.webdav.failed"));
             message.error(error instanceof Error ? error.message : t("config.webdav.failed"));

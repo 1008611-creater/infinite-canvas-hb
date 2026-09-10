@@ -18,7 +18,7 @@ const http = require('http');
 const os = require('os');
 const path = require('path');
 
-const { createWebdavServer } = require('./server');
+const { createWebdavServer, sweepStaleParts, PART_DIR_NAME } = require('./server');
 
 const USER = 'canvas';
 const PASSWORD = 'selftest-password';
@@ -180,6 +180,119 @@ async function main() {
         console.log('\n[9] 落盘整洁');
         const leftover = (await fsp.readdir(path.join(root, base, 'canvas', 'files'))).filter((name) => name.startsWith('.tmp-'));
         check('没有残留临时文件', () => assert.deepStrictEqual(leftover, []));
+
+        console.log('\n[10] 分片上传（大文件走 Content-Range）');
+        const chunkBytes = 4 * 1024 * 1024;
+        const chunkTotal = chunkBytes * 2 + 12345; // 末片故意不是整片，覆盖这个边界
+        const chunkPayload = crypto.randomBytes(chunkTotal);
+        const chunkPath = rel(`canvas/files/${encodeURIComponent('分段视频.mp4')}`);
+        const chunkFsPath = path.join(root, base, 'canvas', 'files', '分段视频.mp4');
+        const partFsPath = path.join(root, base, 'canvas', 'files', PART_DIR_NAME, `分段视频.mp4.${chunkTotal}.part`);
+        const putPart = (start, end, body) =>
+            request(port, 'PUT', chunkPath, {
+                headers: { 'Content-Type': 'video/mp4', 'Content-Range': `bytes ${start}-${end}/${chunkTotal}` },
+                body,
+            });
+
+        const firstPart = await putPart(0, chunkBytes - 1, chunkPayload.subarray(0, chunkBytes));
+        check('第 1 片 → 204 且回报已持久化位置', () => {
+            assert.strictEqual(firstPart.status, 204);
+            assert.strictEqual(Number(firstPart.headers['x-upload-offset']), chunkBytes);
+            assert.strictEqual(Number(firstPart.headers['x-upload-total']), chunkTotal);
+            assert.strictEqual(firstPart.headers['x-upload-complete'], undefined);
+        });
+        const partStatsAfterFirst = await fsp.stat(partFsPath).catch(() => null);
+        check('分片写进 .parts 暂存区，长度正确', () => assert.ok(partStatsAfterFirst && partStatsAfterFirst.size === chunkBytes));
+        const whileUploading = await request(port, 'GET', chunkPath);
+        check('未传完时正式路径仍是 404（不露半截视频）', () => assert.strictEqual(whileUploading.status, 404));
+
+        const outOfOrder = await putPart(chunkBytes * 2, chunkTotal - 1, chunkPayload.subarray(chunkBytes * 2));
+        check('乱序片 → 409 且回报真实进度（前端据此续传）', () => {
+            assert.strictEqual(outOfOrder.status, 409);
+            assert.strictEqual(Number(outOfOrder.headers['x-upload-offset']), chunkBytes);
+        });
+
+        const shortBody = await putPart(chunkBytes, chunkBytes * 2 - 1, chunkPayload.subarray(chunkBytes, chunkBytes * 2 - 1024));
+        check('声明长度与实际不符 → 400', () => assert.strictEqual(shortBody.status, 400));
+        const partStatsAfterShort = await fsp.stat(partFsPath).catch(() => null);
+        check('失败片回滚到片首，重试是干净的', () => assert.ok(partStatsAfterShort && partStatsAfterShort.size === chunkBytes));
+
+        const secondPart = await putPart(chunkBytes, chunkBytes * 2 - 1, chunkPayload.subarray(chunkBytes, chunkBytes * 2));
+        check('第 2 片 → 204', () => {
+            assert.strictEqual(secondPart.status, 204);
+            assert.strictEqual(Number(secondPart.headers['x-upload-offset']), chunkBytes * 2);
+        });
+        const lastPart = await putPart(chunkBytes * 2, chunkTotal - 1, chunkPayload.subarray(chunkBytes * 2));
+        check('末片 → 201 且带 X-Upload-Complete', () => {
+            assert.strictEqual(lastPart.status, 201);
+            assert.strictEqual(lastPart.headers['x-upload-complete'], '1');
+            assert.strictEqual(Number(lastPart.headers['x-upload-offset']), chunkTotal);
+        });
+        const chunkFsBody = await fsp.readFile(chunkFsPath).catch(() => null);
+        check('拼装结果与源逐字节一致', () => {
+            assert.ok(chunkFsBody);
+            assert.strictEqual(chunkFsBody.length, chunkTotal);
+            assert.strictEqual(crypto.createHash('sha256').update(chunkFsBody).digest('hex'), crypto.createHash('sha256').update(chunkPayload).digest('hex'));
+        });
+        const dirAfterAssemble = await fsp.readdir(path.join(root, base, 'canvas', 'files'));
+        check('传完不留分片痕迹', () => assert.deepStrictEqual(dirAfterAssemble.filter((name) => name.startsWith('.')), []));
+        const replay = await putPart(chunkBytes * 2, chunkTotal - 1, chunkPayload.subarray(chunkBytes * 2));
+        check('文件已落地后重发末片 → 409 且指向 0（提示从头开始）', () => {
+            assert.strictEqual(replay.status, 409);
+            assert.strictEqual(Number(replay.headers['x-upload-offset']), 0);
+        });
+
+        const tinyBody = Buffer.from('hello-chunk');
+        const putTiny = () => request(port, 'PUT', rel('canvas/files/tiny.bin'), { headers: { 'Content-Range': `bytes 0-${tinyBody.length - 1}/${tinyBody.length}` }, body: tinyBody });
+        const tinyFirst = await putTiny();
+        const tinyAgain = await putTiny();
+        check('整文件只有一片时 → 首次 201、覆盖 204', () => {
+            assert.strictEqual(tinyFirst.status, 201);
+            assert.strictEqual(tinyAgain.status, 204);
+        });
+        const tinyRead = await request(port, 'GET', rel('canvas/files/tiny.bin'));
+        check('单片上传内容正确', () => assert.strictEqual(tinyRead.body.toString('utf8'), 'hello-chunk'));
+
+        console.log('\n[11] 分片上传的安全与清理');
+        const badRanges = ['bytes 0-100', 'bytes 5-0/100', 'bytes 0-200/100', 'bytes abc/100', 'items 0-1/2'];
+        const badStatuses = [];
+        for (const value of badRanges) badStatuses.push((await request(port, 'PUT', rel('canvas/files/bad.bin'), { headers: { 'Content-Range': value }, body: 'x' })).status);
+        check('非法 Content-Range 一律 400', () => assert.deepStrictEqual(badStatuses, [400, 400, 400, 400, 400]));
+        const partDirPut = await request(port, 'PUT', rel(`canvas/files/${PART_DIR_NAME}/evil.part`), { body: 'x' });
+        check('直接写 .parts → 403', () => assert.strictEqual(partDirPut.status, 403));
+        const partDirGet = await request(port, 'GET', rel(`canvas/files/${PART_DIR_NAME}/evil.part`));
+        check('直接读 .parts → 403', () => assert.strictEqual(partDirGet.status, 403));
+        const tmpPut = await request(port, 'PUT', rel('canvas/files/.tmp-inject'), { body: 'x' });
+        check('写内部临时路径 → 403', () => assert.strictEqual(tmpPut.status, 403));
+        const listingAfter = await request(port, 'PROPFIND', rel('canvas/files'), { headers: { Depth: '1' } });
+        check('PROPFIND 不暴露 .parts', () => assert.doesNotMatch(listingAfter.body.toString('utf8'), /\.parts/));
+
+        const staleDir = path.join(root, base, 'canvas', 'files', PART_DIR_NAME);
+        await fsp.mkdir(staleDir, { recursive: true });
+        const staleFile = path.join(staleDir, 'old.mp4.100.part');
+        const freshFile = path.join(staleDir, 'new.mp4.100.part');
+        await fsp.writeFile(staleFile, 'stale');
+        await fsp.writeFile(freshFile, 'fresh');
+        const oldTime = new Date(Date.now() - 30 * 3600 * 1000);
+        await fsp.utimes(staleFile, oldTime, oldTime);
+        const swept = await sweepStaleParts(root, 24 * 3600 * 1000);
+        const staleExists = await fsp.stat(staleFile).catch(() => null);
+        const freshExists = await fsp.stat(freshFile).catch(() => null);
+        check('过期分片被清理、新分片保留', () => {
+            assert.strictEqual(swept, 1);
+            assert.strictEqual(staleExists, null);
+            assert.ok(freshExists);
+        });
+
+        console.log('\n[12] 单文件体积上限');
+        const limited = createWebdavServer({ WEBDAV_ROOT: root, WEBDAV_USER: USER, WEBDAV_PASSWORD: PASSWORD, WEBDAV_PORT: '0', WEBDAV_MAX_BYTES: '2048' });
+        await new Promise((resolve) => limited.server.listen(0, '127.0.0.1', resolve));
+        const limitedPort = limited.server.address().port;
+        const overChunk = await request(limitedPort, 'PUT', rel('canvas/files/huge.mp4'), { headers: { 'Content-Range': 'bytes 0-1023/4096' }, body: Buffer.alloc(1024) });
+        const overWhole = await request(limitedPort, 'PUT', rel('canvas/files/huge2.mp4'), { body: Buffer.alloc(4096) });
+        limited.server.close();
+        check('分片总长超限 → 413', () => assert.strictEqual(overChunk.status, 413));
+        check('整包超限 → 413（不是连接重置）', () => assert.strictEqual(overWhole.status, 413));
     } finally {
         instance.server.close();
         await fsp.rm(root, { recursive: true, force: true });
