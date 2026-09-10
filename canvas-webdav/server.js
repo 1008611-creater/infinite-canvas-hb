@@ -28,6 +28,21 @@
  *   WEBDAV_PASSWORD  密码，未设置则不启动
  *   WEBDAV_PORT      监听端口，默认 8789（仅 compose 内网，由 nginx 反代 /dav/）
  *   WEBDAV_MAX_BYTES 单文件上限，默认 0 表示不限
+ *   WEBDAV_PART_MAX_AGE_HOURS  遗留分片的清理时延，默认 24 小时
+ *
+ * 分片上传（自研扩展，第三方 WebDAV 客户端不会用到）：
+ *   公网链路走 Cloudflare 时，PUT 的响应必须等整个请求体收完才发得出去，而它的 524
+ *   只给源站 100 秒；请求体本身也卡在 100MB。上行慢的机器传一个大视频必然被掐断。
+ *   所以大文件由前端切成若干片，逐片 PUT 到同一个目标路径，靠 Content-Range 串联：
+ *
+ *     PUT /dav/assets/files/movie.mp4
+ *     Content-Range: bytes 4194304-8388607/26214400
+ *
+ *   - 中间片：落进同目录 .parts/ 暂存，回 204 + X-Upload-Offset（已持久化字节数）
+ *   - 最后一片：原子改名成正式文件，回 201/204 + X-Upload-Complete: 1
+ *   - 位置对不上：回 409 + X-Upload-Offset，前端据此续传而不是整包重传
+ *   - 任一片中断：把暂存文件回滚到这片开始的位置，重试可以干净重来
+ *   正式文件只有在最后一片落地时才出现（原子改名），读端永远不会看到半截视频。
  */
 
 const crypto = require('crypto');
@@ -60,7 +75,17 @@ const MIME_TYPES = {
 };
 
 const DAV_ALLOW = 'OPTIONS, GET, HEAD, PUT, DELETE, MKCOL, PROPFIND, PROPPATCH, MOVE, COPY, LOCK, UNLOCK';
-const CORS_HEADERS = 'Authorization, Content-Type, Depth, Destination, Overwrite, If, Lock-Token, Timeout, X-Requested-With';
+// Content-Range 是分片 PUT 的自定义请求头，浏览器会先发预检，不放行就会被拦在预检那一步
+const CORS_HEADERS = 'Authorization, Content-Type, Content-Range, Depth, Destination, Overwrite, If, Lock-Token, Timeout, X-Requested-With';
+// 自定义响应头必须显式暴露，否则前端读不到（跨域部署时是硬要求）
+const CORS_EXPOSE_HEADERS = 'DAV, Content-Length, Content-Range, Accept-Ranges, ETag, Last-Modified, Lock-Token, X-Upload-Offset, X-Upload-Total, X-Upload-Complete';
+/** 分片暂存目录名，以点开头：PROPFIND 与目录列表页都会跳过点开头项，不会暴露给用户。 */
+const PART_DIR_NAME = '.parts';
+const PART_FILE_SUFFIX = '.part';
+/** 分片上传的响应头（前端见 web/src/services/webdav-transfer-plan.js）。 */
+const UPLOAD_OFFSET_HEADER = 'X-Upload-Offset';
+const UPLOAD_TOTAL_HEADER = 'X-Upload-Total';
+const UPLOAD_COMPLETE_HEADER = 'X-Upload-Complete';
 
 /** XML 文本转义，用于 PROPFIND 响应。 */
 function xmlEscape(value) {
@@ -96,6 +121,73 @@ function httpDate(date) {
 }
 
 /**
+ * 解析分片 PUT 的 Content-Range：`bytes <start>-<end>/<total>`（单区间、必须给定总长）。
+ * 任何不合规的写法都返回 null，由调用方回 400 —— 宁可让前端整包重传，也不能写坏文件。
+ */
+function parseContentRange(value) {
+    const match = /^bytes\s+(\d+)-(\d+)\/(\d+)$/.exec(String(value == null ? '' : value).trim());
+    if (!match) return null;
+    const start = Number(match[1]);
+    const end = Number(match[2]);
+    const total = Number(match[3]);
+    if (!Number.isSafeInteger(start) || !Number.isSafeInteger(end) || !Number.isSafeInteger(total)) return null;
+    if (start < 0 || total <= 0 || end < start || end >= total) return null;
+    return { start, end, total };
+}
+
+/** 分片上传的进度响应头。 */
+function uploadHeaders(offset, total, complete) {
+    const headers = { [UPLOAD_OFFSET_HEADER]: String(offset), [UPLOAD_TOTAL_HEADER]: String(total) };
+    if (complete) headers[UPLOAD_COMPLETE_HEADER] = '1';
+    return headers;
+}
+
+/**
+ * 清理遗留分片：上传中途关页面/断网会留下 .parts/ 里的半截文件，启动时扫一遍删掉过期的。
+ * 只往下走 4 层（画布目录结构很浅），纯尽力而为，任何异常都不影响启动。
+ */
+async function sweepStaleParts(dir, maxAgeMs, depth = 0) {
+    if (depth > 4) return 0;
+    let entries = [];
+    try {
+        entries = await fsp.readdir(dir, { withFileTypes: true });
+    } catch {
+        return 0;
+    }
+    const cutoff = Date.now() - maxAgeMs;
+    let removed = 0;
+    for (const entry of entries) {
+        if (!entry.isDirectory()) continue;
+        const child = path.join(dir, entry.name);
+        if (entry.name === PART_DIR_NAME) {
+            let parts = [];
+            try {
+                parts = await fsp.readdir(child);
+            } catch {
+                parts = [];
+            }
+            for (const name of parts) {
+                const target = path.join(child, name);
+                try {
+                    const stats = await fsp.stat(target);
+                    if (stats.mtimeMs < cutoff) {
+                        await fsp.rm(target, { force: true });
+                        removed += 1;
+                    }
+                } catch {
+                    /* 并发删除等竞态：跳过 */
+                }
+            }
+            await fsp.rmdir(child).catch(() => {}); // 空了就顺手收掉，非空说明还有在传的
+            continue;
+        }
+        if (entry.name.startsWith('.')) continue;
+        removed += await sweepStaleParts(child, maxAgeMs, depth + 1);
+    }
+    return removed;
+}
+
+/**
  * 创建一个 WebDAV 服务实例。返回 null 表示配置不全（没设密码），调用方应当跳过启动。
  */
 function createWebdavServer(env = process.env) {
@@ -104,6 +196,7 @@ function createWebdavServer(env = process.env) {
     const password = env.WEBDAV_PASSWORD || '';
     const port = Number(env.WEBDAV_PORT) || 8789;
     const maxBytes = Number(env.WEBDAV_MAX_BYTES) || 0;
+    const partMaxAgeMs = Math.max(1, Number(env.WEBDAV_PART_MAX_AGE_HOURS) || 24) * 3600 * 1000;
 
     if (!password) return null;
 
@@ -118,6 +211,8 @@ function createWebdavServer(env = process.env) {
         if (decoded.includes('\0')) throw Object.assign(new Error('bad path'), { status: 400 });
         const segments = decoded.split('/').filter((segment) => segment && segment !== '.');
         if (segments.some((segment) => segment === '..')) throw Object.assign(new Error('path traversal'), { status: 403 });
+        // 内部工作目录不给外部碰：.parts 是分片暂存区，.tmp-* 是写盘中的临时文件
+        if (segments.some((segment) => segment === PART_DIR_NAME || segment.startsWith('.tmp-'))) throw Object.assign(new Error('reserved path'), { status: 403 });
         const target = path.join(root, ...segments);
         if (target !== root && !target.startsWith(root + path.sep)) throw Object.assign(new Error('path escape'), { status: 403 });
         return target;
@@ -271,6 +366,10 @@ function createWebdavServer(env = process.env) {
     }
 
     async function handlePut(req, res, fsPath) {
+        // 带 Content-Range 的是分片上传（画布前端切大文件用），走另一条路径
+        const rangeHeader = req.headers['content-range'];
+        if (rangeHeader != null && String(rangeHeader).trim() !== '') return handleChunkedPut(req, res, fsPath, rangeHeader);
+
         const existing = await statOrNull(fsPath);
         if (existing && existing.isDirectory()) return send(res, 405, 'Target is a collection');
         await fsp.mkdir(path.dirname(fsPath), { recursive: true });
@@ -288,7 +387,11 @@ function createWebdavServer(env = process.env) {
                     if (maxBytes && bytes > maxBytes) {
                         aborted = true;
                         reject(Object.assign(new Error('payload too large'), { status: 413 }));
-                        req.destroy();
+                        // 先让它把 413 读走再断开：直接 destroy 会变成 ECONNRESET，
+                        // 客户端只会报「无法连接」，看不出是文件太大
+                        req.pause();
+                        const timer = setTimeout(() => req.destroy(), 2000);
+                        if (typeof timer.unref === 'function') timer.unref();
                     }
                 });
                 req.on('error', reject);
@@ -304,6 +407,78 @@ function createWebdavServer(env = process.env) {
             await cleanup();
             throw error;
         }
+    }
+
+    /**
+     * 分片 PUT：把这一片接进 .parts 暂存文件，最后一片原子改名成正式文件。
+     * 中间任何异常都回滚到这一片开始的位置，保证「重试」是干净的、不会越写越歪。
+     */
+    async function handleChunkedPut(req, res, fsPath, rangeHeader) {
+        const range = parseContentRange(rangeHeader);
+        if (!range) {
+            req.resume();
+            return send(res, 400, 'Invalid Content-Range');
+        }
+        if (maxBytes && range.total > maxBytes) {
+            req.resume();
+            return send(res, 413, 'Payload too large');
+        }
+        const existing = await statOrNull(fsPath);
+        if (existing && existing.isDirectory()) {
+            req.resume();
+            return send(res, 405, 'Target is a collection');
+        }
+
+        const dir = path.dirname(fsPath);
+        await fsp.mkdir(dir, { recursive: true });
+        const partDir = path.join(dir, PART_DIR_NAME);
+        await fsp.mkdir(partDir, { recursive: true });
+        // 暂存名固定（含总长），中断后重试能接着上次的进度，而不是从零开始
+        const partPath = path.join(partDir, `${path.basename(fsPath)}.${range.total}${PART_FILE_SUFFIX}`);
+
+        if (range.start === 0) await fsp.writeFile(partPath, '');
+        const currentStats = await statOrNull(partPath);
+        const current = currentStats ? currentStats.size : 0;
+        if (range.start !== current) {
+            // 位置对不上（上次传了一半，或前端重算过切点）：把真实进度告诉它，接着传就行
+            req.resume();
+            return send(res, 409, 'Chunk out of order', uploadHeaders(current, range.total, false));
+        }
+
+        const expected = range.end - range.start + 1;
+        let written = 0;
+        try {
+            await new Promise((resolve, reject) => {
+                const out = fs.createWriteStream(partPath, { flags: 'a' });
+                req.on('data', (chunk) => {
+                    written += chunk.length;
+                });
+                req.on('error', reject);
+                out.on('error', reject);
+                out.on('finish', resolve);
+                req.pipe(out);
+            });
+        } catch (error) {
+            await rollbackPart(partPath, range.start);
+            throw error;
+        }
+
+        if (written !== expected) {
+            // 传输中途断了：回滚这一片，让重试从同一个位置干净重来
+            await rollbackPart(partPath, range.start);
+            return send(res, 400, 'Chunk size mismatch', uploadHeaders(range.start, range.total, false));
+        }
+
+        const persisted = range.start + written;
+        if (persisted < range.total) return send(res, 204, null, { 'Content-Length': '0', ...uploadHeaders(persisted, range.total, false) });
+
+        await fsp.rename(partPath, fsPath); // 原子落地：读端永远看不到半截文件
+        await fsp.rmdir(partDir).catch(() => {}); // 空了就顺手收掉，非空说明还有别的文件在传
+        return send(res, existing ? 204 : 201, null, { 'Content-Length': '0', ...uploadHeaders(range.total, range.total, true) });
+    }
+
+    async function rollbackPart(partPath, size) {
+        await fsp.truncate(partPath, size).catch(() => {});
     }
 
     async function handleMkcol(req, res, fsPath) {
@@ -358,10 +533,12 @@ function createWebdavServer(env = process.env) {
     }
 
     async function handle(req, res) {
+        // 客户端中途断开时写响应会触发 error 事件，没有监听器就会冒到进程层
+        res.on('error', () => {});
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Headers', CORS_HEADERS);
         res.setHeader('Access-Control-Allow-Methods', DAV_ALLOW);
-        res.setHeader('Access-Control-Expose-Headers', 'DAV, Content-Length, Content-Range, Accept-Ranges, ETag, Last-Modified, Lock-Token');
+        res.setHeader('Access-Control-Expose-Headers', CORS_EXPOSE_HEADERS);
         res.setHeader('DAV', '1, 2');
         res.setHeader('MS-Author-Via', 'DAV');
 
@@ -443,6 +620,9 @@ async function startWebdav(env = process.env, logger = console) {
         return false;
     }
     await fsp.mkdir(instance.root, { recursive: true });
+    const maxAgeMs = Math.max(1, Number(env.WEBDAV_PART_MAX_AGE_HOURS) || 24) * 3600 * 1000;
+    const swept = await sweepStaleParts(instance.root, maxAgeMs).catch(() => 0);
+    if (swept) logger.log(`[webdav] 已清理 ${swept} 个过期上传分片`);
     await new Promise((resolve, reject) => {
         instance.server.once('error', reject);
         instance.server.listen(instance.port, () => {
@@ -454,4 +634,4 @@ async function startWebdav(env = process.env, logger = console) {
     return true;
 }
 
-module.exports = { createWebdavServer, startWebdav, MIME_TYPES };
+module.exports = { createWebdavServer, startWebdav, sweepStaleParts, parseContentRange, MIME_TYPES, PART_DIR_NAME };
