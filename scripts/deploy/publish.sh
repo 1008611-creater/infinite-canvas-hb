@@ -82,12 +82,14 @@ echo "==> 产物校验通过：已注入 ${AGNES_BASE_URL_VALUE}"
 echo "==> 打包 $RELEASE"
 STAGE="$TMP_DIR/stage"
 rm -rf "$STAGE" 2>/dev/null || true
-mkdir -p "$STAGE/dist" "$STAGE/proxy"
+mkdir -p "$STAGE/dist" "$STAGE/proxy" "$STAGE/api"
 cp -r web/dist/. "$STAGE/dist/"
 cp agnes-video-proxy/server.js agnes-video-proxy/package.json "$STAGE/proxy/"
 # 云端同步服务（WebDAV）：源码在 canvas-webdav/，进容器后与代理同目录，名字固定为 webdav.js
 # （agnes-video-proxy/server.js 里就是按 ./webdav 去 require 的）。
 cp canvas-webdav/server.js "$STAGE/proxy/webdav.js"
+# 服务端 API（账号 / 项目 / 素材 / 媒体）：源码在 canvas-api/，落到服务器 /opt/infinite-canvas/api
+cp canvas-api/server.js canvas-api/db.js canvas-api/auth.js canvas-api/schema.sql canvas-api/package.json "$STAGE/api/"
 
 # 后端代码指纹：deploy.sh 靠它决定「要不要重建 agnes 镜像」。
 # 以前是拿 server.js 单文件做 cmp，结果新增 webdav.js 这种兄弟模块时不会触发重建，
@@ -111,13 +113,29 @@ fi
 printf '%s\n' "$PROXY_FINGERPRINT" > "$STAGE/proxy/PROXY_FINGERPRINT"
 echo "==> 后端代码指纹 ${PROXY_FINGERPRINT:0:12}"
 
+# API 代码指纹：同理，api/ 下所有源码一起算，避免改了 db.js 却不重建镜像。
+api_fingerprint() {
+    if command -v openssl >/dev/null 2>&1; then
+        cat "$STAGE/api/server.js" "$STAGE/api/db.js" "$STAGE/api/auth.js" "$STAGE/api/schema.sql" "$STAGE/api/package.json" 2>/dev/null | openssl dgst -sha256 -r | cut -d ' ' -f1 || true
+    else
+        cat "$STAGE/api/server.js" "$STAGE/api/db.js" "$STAGE/api/auth.js" "$STAGE/api/schema.sql" "$STAGE/api/package.json" 2>/dev/null | sha256sum | cut -d ' ' -f1 || true
+    fi
+}
+API_FINGERPRINT="$(api_fingerprint)"
+if [[ -z "$API_FINGERPRINT" ]]; then
+    echo "✗ 算不出 API 代码指纹（缺 canvas-api/ 下的文件？），中止发布"
+    exit 1
+fi
+printf '%s\n' "$API_FINGERPRINT" > "$STAGE/api/API_FINGERPRINT"
+echo "==> API 代码指纹 ${API_FINGERPRINT:0:12}"
+
 printf 'release=%s\ncommit=%s\nbuilt_at=%s\nagnes_base_url=%s\n' \
     "$RELEASE" "$COMMIT" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$AGNES_BASE_URL_VALUE" > "$STAGE/dist/BUILD_INFO.txt"
 TARBALL="$TMP_DIR/${RELEASE}.tar.gz"
-tar -czf "$TARBALL" -C "$STAGE" dist proxy
+tar -czf "$TARBALL" -C "$STAGE" dist proxy api
 
 echo "==> 上传并部署到 ${SSH_HOST}:${APP_ROOT}"
-"${SSH[@]}" "$SSH_HOST" "mkdir -p ${APP_ROOT}/releases ${APP_ROOT}/scripts/deploy ${APP_ROOT}/nginx ${CANVAS_PROXY_ROOT:-/opt/agnes-video-proxy} ${CANVAS_WEBDAV_DATA:-/opt/canvas-webdav}"
+"${SSH[@]}" "$SSH_HOST" "mkdir -p ${APP_ROOT}/releases ${APP_ROOT}/scripts/deploy ${APP_ROOT}/nginx ${APP_ROOT}/api ${CANVAS_PROXY_ROOT:-/opt/agnes-video-proxy} ${CANVAS_WEBDAV_DATA:-/opt/canvas-webdav} ${CANVAS_API_MEDIA:-/opt/canvas-api-media} ${CANVAS_API_SYNC:-/opt/canvas-api-sync} ${CANVAS_POSTGRES_DATA:-/opt/canvas-postgres}"
 
 # Windows 工作区里的文本文件是 CRLF，Linux 的 bash / systemd / nginx 遇到 CRLF 会直接报错
 # （典型症状：set: pipefail\r: invalid option name），所以脚本和配置上传前统一转成 LF。
@@ -187,6 +205,33 @@ remote_env_set "$ENV_FILE" WEBDAV_USER "$WEBDAV_USER_VALUE" && ENV_CHANGED=1
 remote_env_set "$ENV_FILE" WEBDAV_PASSWORD "$WEBDAV_PASSWORD_VALUE" && ENV_CHANGED=1
 echo "==> 云端同步已配置：WebDAV 地址 https://hb.cauai.fun/dav ，用户名 ${WEBDAV_USER_VALUE}，密码同站点密码"
 
+# ---------------------------------------------------------------------------
+# 服务端 API 的密钥与数据库口令
+#
+# 这两个值都必须持久化，理由和 AUTH_COOKIE 一样：每次部署都重新生成的话，
+# JWT_SECRET 一换所有人的登录态立刻全掉，PG_PASSWORD 一换新容器就连不上老库
+# （postgresql 的初始密码只在数据目录首次初始化时生效，改了也白改）。
+# ---------------------------------------------------------------------------
+API_ENV_FILE="${APP_ROOT}/api/api.env"
+API_ENV_CHANGED=0
+JWT_SECRET="$(remote_env_get "$API_ENV_FILE" JWT_SECRET)"
+if [[ -z "$JWT_SECRET" ]]; then
+    JWT_SECRET="$(openssl rand -hex 32 2>/dev/null || head -c 64 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+    echo "==> 首次部署：生成 API 令牌密钥"
+fi
+PG_PASSWORD_VALUE="$(remote_env_get "$API_ENV_FILE" PG_PASSWORD)"
+if [[ -z "$PG_PASSWORD_VALUE" ]]; then
+    PG_PASSWORD_VALUE="$(openssl rand -hex 16 2>/dev/null || head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+    echo "==> 首次部署：生成数据库口令"
+fi
+remote_env_set "$API_ENV_FILE" JWT_SECRET "$JWT_SECRET" && API_ENV_CHANGED=1
+remote_env_set "$API_ENV_FILE" PG_PASSWORD "$PG_PASSWORD_VALUE" && API_ENV_CHANGED=1
+# 注册开关：老大建好自己账号后，用 CANVAS_ALLOW_REGISTER=0 跑一次发布就关掉公开注册
+CANVAS_ALLOW_REGISTER_VALUE="${CANVAS_ALLOW_REGISTER:-1}"
+remote_env_set "$API_ENV_FILE" ALLOW_REGISTER "$CANVAS_ALLOW_REGISTER_VALUE" && API_ENV_CHANGED=1
+"${SSH[@]}" "$SSH_HOST" "chmod 600 '$API_ENV_FILE'"
+echo "==> API 密钥已配置（公开注册：${CANVAS_ALLOW_REGISTER_VALUE}）"
+
 # 替换占位符。用「重定向回写」而不是 sed -i：sed -i 会换 inode，
 # 当年单文件挂载时就栽在这上面（容器一直读旧内容），原地写最稳。
 "${SSH[@]}" "$SSH_HOST" "cd ${APP_ROOT}/nginx && \
@@ -194,7 +239,16 @@ echo "==> 云端同步已配置：WebDAV 地址 https://hb.cauai.fun/dav ，用�
     cat .default.conf.new > default.conf && rm -f .default.conf.new && \
     (grep -c '__AGNES_TOKEN__\|__AUTH_COOKIE__' default.conf || true)"
 
+# docker-compose 里也有占位符（数据库口令、站点 cookie），同样原地回写。
+# 注意顺序：必须先上传仓库里的模板（上面已做），再替换，
+# 否则会把上一轮已经替换过值的文件再 sed 一遍（幂等，但占位符早已不在了）。
+"${SSH[@]}" "$SSH_HOST" "cd ${APP_ROOT} && \
+    sed -e 's|__AUTH_COOKIE__|${AUTH_COOKIE}|g' -e 's|__PG_PASSWORD__|${PG_PASSWORD_VALUE}|g' docker-compose.yml > .docker-compose.yml.new && \
+    cat .docker-compose.yml.new > docker-compose.yml && rm -f .docker-compose.yml.new && \
+    (grep -c '__AUTH_COOKIE__\|__PG_PASSWORD__' docker-compose.yml || true)"
+
 upload_lf deploy/Dockerfile.proxy "${PROXY_ROOT}/Dockerfile"
+upload_lf deploy/Dockerfile.api "${APP_ROOT}/api/Dockerfile"
 # 隧道服务单元（老大在 CF 后台建好 tunnel 后，用它在服务器上把隧道跑起来）
 upload_lf deploy/cloudflared-canvas.service "${APP_ROOT}/cloudflared-canvas.service"
 
@@ -212,7 +266,22 @@ else
     echo "⚠ 本机没有 agnes-video-proxy/.env，服务器若也没有，代理会因缺 Agnes Key 而生成失败"
 fi
 
+# API 源码直接上传，不走发布包：
+#   docker-compose 的 build.context 是固定目录 /opt/infinite-canvas/api，
+#   而发布包要等 deploy.sh 才解到 releases/<版本>/ 下，每次版本还不一样。
+#   更关键的是 deploy.sh 里有 `compose up -d`，会连带拉起 api ——
+#   那时若构建上下文还是空的，compose 会失败。所以必须在 deploy.sh 之前把源码放好。
+upload_lf canvas-api/server.js "${APP_ROOT}/api/server.js"
+upload_lf canvas-api/db.js "${APP_ROOT}/api/db.js"
+upload_lf canvas-api/auth.js "${APP_ROOT}/api/auth.js"
+upload_lf canvas-api/schema.sql "${APP_ROOT}/api/schema.sql"
+upload_lf canvas-api/package.json "${APP_ROOT}/api/package.json"
+echo "==> API 源码已就位"
+
 "${SSH[@]}" "$SSH_HOST" "CANVAS_RUNTIME=${CANVAS_RUNTIME:-docker} bash ${APP_ROOT}/scripts/deploy/deploy.sh ${APP_ROOT}/releases/${RELEASE}.tar.gz"
+
+echo "==> 构建并启动 API（账号 / 项目 / 素材 / 媒体）"
+"${SSH[@]}" "$SSH_HOST" "cd ${APP_ROOT} && docker compose build api 2>&1 | tail -4 && docker compose up -d --force-recreate api 2>&1 | tail -4"
 
 # 环境变量是容器启动时注入的：.env 改了不重建容器就不会生效，
 # 表现为「密码明明改了却还是旧的」，而且看日志看不出来，只能靠这里兜住。

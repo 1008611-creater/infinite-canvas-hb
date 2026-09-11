@@ -10,7 +10,8 @@ import { ConfigPromptSources } from "@/components/layout/config-prompt-sources";
 import { ConfigLocalStorage } from "@/components/layout/config-local-storage";
 import type { AppLocale } from "@/i18n";
 import { exportAppConfig, importAppConfig } from "@/services/config-file";
-import { syncAppDataToWebdav, type AppSyncDomainKey, type AppSyncProgressEvent } from "@/services/app-sync";
+import { ConfigAccount } from "@/components/layout/config-account";
+import { createWebdavTransport, syncAppData, type AppSyncDomainKey, type AppSyncProgressEvent } from "@/services/app-sync";
 import { testWebdavConnection, WEBDAV_MANIFEST_FILE_NAME } from "@/services/webdav-sync";
 import { audioFormatOptions, audioVoiceOptions, normalizeAudioSpeedValue } from "@/lib/audio-generation";
 import { channelTemplates, createChannelFromTemplate } from "@/stores/channel-templates";
@@ -165,7 +166,7 @@ export function AppConfigPanel({ showDoneButton = false, initialTab = "channels"
         setWebdavDomainProgress(createWebdavDomainProgress());
         setWebdavSyncStatus(t("config.webdav.preparing"));
         try {
-            const result = await syncAppDataToWebdav(webdav, updateWebdavProgress);
+            const result = await syncAppData(createWebdavTransport(webdav), updateWebdavProgress);
             updateWebdavConfig("lastSyncedAt", result.syncedAt);
             message.success(t("config.webdav.completed", { projects: result.projects, assets: result.assets, records: result.imageLogs + result.videoLogs, files: result.uploadedFiles, bytes: formatBytes(result.uploadedBytes) }));
             // 个别文件没传上去（网络中断、体积超限）不影响整轮同步，但必须让用户看见
@@ -299,6 +300,11 @@ export function AppConfigPanel({ showDoneButton = false, initialTab = "channels"
                         key: "prompt-sources",
                         label: t("config.tabs.promptSources"),
                         children: <ConfigPromptSources />,
+                    },
+                    {
+                        key: "account",
+                        label: t("config.tabs.account"),
+                        children: <ConfigAccount />,
                     },
                     {
                         key: "webdav",
