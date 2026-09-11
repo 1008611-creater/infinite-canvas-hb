@@ -1,8 +1,10 @@
 # hb.cauai.fun —— 无限画布（天宫漫剧）
 #
-# 两个容器：
-#   web   nginx，托管静态前端，把 /agnes/ 反代给 agnes 容器，/dav/ 反代给同步服务
+# 四个容器：
+#   web   nginx，托管静态前端，把 /agnes/ 反代给 agnes 容器，/dav/ 反代给同步服务，/api/ 反代给 API
 #   agnes Agnes 视频代理（Node）+ 云端同步 WebDAV（同容器另一端口），只暴露在 compose 内部网络，不对公网开端口
+#   api   画布服务端 API：账号 / 项目 / 素材 / 媒体。**服务端是真相来源**，浏览器只是视图。
+#   db    PostgreSQL，api 的存储。数据与媒体都落宿主机卷，重建容器不丢。
 #
 # 只把 18085 绑在 127.0.0.1：公网入口由 Cloudflare Tunnel 提供，不需要开对外端口。
 # 放到 /opt/infinite-canvas/docker-compose.yml
@@ -44,3 +46,47 @@ services:
       # 同步数据必须落在宿主机上：代理代码一改就会重建容器，
       # 卷不持久化的话用户的画布、素材和成片会被一起删掉。
       - /opt/canvas-webdav:/data
+
+  api:
+    build:
+      context: /opt/infinite-canvas/api
+      dockerfile: Dockerfile
+    image: canvas-api:latest
+    container_name: canvas-api
+    restart: unless-stopped
+    env_file:
+      - /opt/infinite-canvas/api/api.env
+    environment:
+      # 数据库在 compose 内部网络，靠服务名 db 解析；不对公网开端口。
+      DATABASE_URL: postgres://canvas:__PG_PASSWORD__@db:5432/canvas
+      MEDIA_ROOT: /data/media
+      SYNC_ROOT: /data/sync
+      PORT: "8790"
+      # 旧站点 cookie 的值：登录成功时补发它，用户就不用「先输站点密码再登账号」两次。
+      # 同时它也是 /api/auth/verify 的后门 —— API 挂了也不至于把人锁死在门外。
+      CANVAS_LEGACY_TOKEN: __AUTH_COOKIE__
+    volumes:
+      # 媒体文件必须落宿主机：容器随时会重建。
+      - /opt/canvas-api-media:/data/media
+      # 账号隔离的同步文件柜（各域 manifest.json + 媒体副本）
+      - /opt/canvas-api-sync:/data/sync
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    container_name: canvas-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: canvas
+      POSTGRES_PASSWORD: __PG_PASSWORD__
+      POSTGRES_DB: canvas
+    volumes:
+      - /opt/canvas-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U canvas -d canvas"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
