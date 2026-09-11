@@ -18,6 +18,7 @@ import {
     listBackendSync,
     loginBackend,
     logoutBackend,
+    registerBackend,
     type BackendUser,
 } from "@/services/backend-sync";
 
@@ -42,9 +43,17 @@ export function ConfigAccount() {
 
     const [user, setUser] = useState<BackendUser | null>(null);
     const [checking, setChecking] = useState(true);
+    // 登录 / 注册两个模式共用一个表单：注册只多一个昵称字段，
+    // 分成两块 UI 反而让人找不到「没有账号怎么办」。
+    // 默认停在「注册」：这站点第一个用的人必然没账号，少点一次切换。
+    // 若服务端关了公开注册（收到 403），下面会自动退回登录态并把入口收起来。
+    const [mode, setMode] = useState<"login" | "register">("register");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [displayName, setDisplayName] = useState("");
     const [loggingIn, setLoggingIn] = useState(false);
+    // 服务端 ALLOW_REGISTER=0 时会返 403，收到就别再让人白填一遍
+    const [registrationClosed, setRegistrationClosed] = useState(false);
 
     const [syncing, setSyncing] = useState(false);
     const [syncStatus, setSyncStatus] = useState("");
@@ -73,19 +82,30 @@ export function ConfigAccount() {
         };
     }, []);
 
-    const login = async () => {
+    const submit = async () => {
         if (!email.trim() || !password) {
             message.error(t("config.account.needLogin"));
             return;
         }
+        if (mode === "register" && password.length < 8) {
+            message.error(t("config.account.passwordTooShort"));
+            return;
+        }
         setLoggingIn(true);
         try {
-            const account = await loginBackend(email.trim(), password);
+            const account = mode === "register"
+                ? await registerBackend(email.trim(), password, displayName.trim() || undefined)
+                : await loginBackend(email.trim(), password);
             setUser(account);
             setPassword("");
             message.success(t("config.account.loggedInAs", { email: account.email }));
         } catch (error) {
-            message.error(error instanceof Error ? error.message : t("config.account.loginFailed"));
+            // 服务端关了公开注册：把入口收掉，别让人一直试
+            if (mode === "register" && error instanceof Error && "code" in error && (error as { code?: string }).code === "registration_closed") {
+                setRegistrationClosed(true);
+                setMode("login");
+            }
+            message.error(error instanceof Error ? error.message : t(mode === "register" ? "config.account.registerFailed" : "config.account.loginFailed"));
         } finally {
             setLoggingIn(false);
         }
@@ -193,22 +213,45 @@ export function ConfigAccount() {
                         {syncStatus ? <span className="text-xs text-stone-500">{syncStatus}</span> : null}
                     </div>
                 ) : (
-                    <div className="grid gap-4 md:grid-cols-2">
+                    <div className={mode === "register" ? "grid gap-4 md:grid-cols-3" : "grid gap-4 md:grid-cols-2"}>
+                        {mode === "register" ? (
+                            <Form.Item label={t("config.account.displayName")} className="mb-4">
+                                <Input value={displayName} placeholder={t("config.account.displayNamePlaceholder")} onChange={(event) => setDisplayName(event.target.value)} />
+                            </Form.Item>
+                        ) : null}
                         <Form.Item label={t("config.account.email")} className="mb-4">
                             <Input value={email} autoComplete="username" placeholder="you@example.com" onChange={(event) => setEmail(event.target.value)} />
                         </Form.Item>
-                        <Form.Item label={t("config.account.password")} className="mb-0">
-                            <Input.Password value={password} autoComplete="current-password" onChange={(event) => setPassword(event.target.value)} onPressEnter={() => void login()} />
+                        <Form.Item label={t("config.account.password")} className="mb-0" extra={mode === "register" ? t("config.account.passwordHint") : undefined}>
+                            <Input.Password
+                                value={password}
+                                autoComplete={mode === "register" ? "new-password" : "current-password"}
+                                onChange={(event) => setPassword(event.target.value)}
+                                onPressEnter={() => void submit()}
+                            />
                         </Form.Item>
                     </div>
                 )}
 
                 {!user ? (
                     <div className="mt-3 flex flex-wrap items-center gap-2">
-                        <Button type="primary" icon={<LogIn className="size-4" />} loading={loggingIn} onClick={() => void login()}>
-                            {t(loggingIn ? "config.account.loggingIn" : "config.account.login")}
+                        <Button type="primary" icon={<LogIn className="size-4" />} loading={loggingIn} onClick={() => void submit()}>
+                            {t(mode === "register" ? (loggingIn ? "config.account.registering" : "config.account.register") : loggingIn ? "config.account.loggingIn" : "config.account.login")}
                         </Button>
-                        <span className="text-xs text-stone-500">{t("config.account.registrationClosed")}</span>
+                        {mode === "login" ? (
+                            <Button type="link" size="small" disabled={registrationClosed} onClick={() => setMode("register")}>
+                                {t("config.account.switchToRegister")}
+                            </Button>
+                        ) : (
+                            <Button type="link" size="small" onClick={() => setMode("login")}>
+                                {t("config.account.switchToLogin")}
+                            </Button>
+                        )}
+                        {registrationClosed ? (
+                            <span className="text-xs text-stone-500">{t("config.account.registrationClosed")}</span>
+                        ) : mode === "register" ? (
+                            <span className="text-xs text-stone-500">{t("config.account.registerHint")}</span>
+                        ) : null}
                     </div>
                 ) : null}
 

@@ -91,6 +91,22 @@ export async function backendFetch(path: string, init: RequestInit = {}, timeout
     return response;
 }
 
+/**
+ * 注册。服务端可以关掉公开注册（ALLOW_REGISTER=0），那时会返 403 + registration_closed，
+ * 前端据此把入口收起来，而不是让人填半天才发现不让注。
+ */
+export async function registerBackend(email: string, password: string, displayName?: string): Promise<BackendUser> {
+    const response = await fetch(`${API_BASE}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password, displayName }),
+    });
+    if (!response.ok) throw await readError(response, "注册失败");
+    const payload = (await response.json()) as { user: BackendUser };
+    return payload.user;
+}
+
 export async function loginBackend(email: string, password: string): Promise<BackendUser> {
     const response = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
