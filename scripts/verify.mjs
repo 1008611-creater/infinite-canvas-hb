@@ -244,11 +244,14 @@ function checkConsistency() {
       if (markers.some((m) => t.includes(m))) landed++;
     }
   }
-  const expected = 0;
-  if (landed !== expected) {
-    d.push(`⚠ 权威树中批次 1 关键词命中 ${landed} 个文件（治理文档口径：未落地=0）。若批次 1 已落地，请更新 ROADMAP/DECISIONS/LIFECYCLE。`);
+  // 期望值随落地进度推进。改这个常量前先看 docs/DECISIONS.md D12，并同步 ROADMAP/LIFECYCLE/BACKLOG。
+  const BATCH1_LANDED = true;
+  if (BATCH1_LANDED && landed > 0) {
+    d.push(`✓ 批次 1 已落地（权威树关键词命中 ${landed} 个文件），与 D12 口径一致`);
+  } else if (!BATCH1_LANDED && landed === 0) {
+    d.push('✓ 批次 1 未落地（权威树 6 关键词零命中），与治理文档口径一致');
   } else {
-    d.push('✓ 批次 1 未落地（权威树 6 关键词零命中，与治理文档口径一致）');
+    d.push(`✗ 实测与文档口径矛盾：期望「${BATCH1_LANDED ? '已落地' : '未落地'}」，实测命中 ${landed} 个文件。请更新 ROADMAP/DECISIONS/LIFECYCLE（或本常量）。`);
   }
 
   // 5.3 canvas-agent 工具数

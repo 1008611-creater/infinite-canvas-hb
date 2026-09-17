@@ -365,3 +365,31 @@
 - `GET /api/v1/models` → **44 个模型**（39 video + 5 image）；`cost` 取值集合 **27 档**（新增 `600`）。
 - `GET /api/v1/me` → `credits = 12000`。
 - `GET /api/v1/jobs?limit=100` → 38 条：completed 19 / failed 19；failed **19/19 全退**（3430 / 3430，净支出 0）。
+
+---
+
+## D12 · 批次 1 已落地 —— ✅ 已执行（2026-09-17）
+
+**决策：owner 于 2026-09-17 书面批准，批次 1 已写入权威源码树。**
+
+D8 / D9 里「实现未落地」的口径**到此为止**。以下为执行记录：
+
+| 项 | 结果 |
+|---|---|
+| 闸门 | G3 四条全过：a 零写入干跑 exit 0 / b 不涉及数据卷 / c 回滚方案（git + `ROLLBACK.md`）已确认 / d owner 书面批准 |
+| 提交 | `ff6200a`（分支 `feat-server-deploy`，已推送远端） |
+| 改动 | 新增 4 个后端模块（`credits.js` 549 / `ziyu.js` 464 / `routes-credits.js` 421 / `ldxp-redeem.js` 149），改 6 个文件，合计 +2332 行 |
+| 语法 | `publish.sh` `bash -n` 通过；4 个新模块 `node --check` 通过 |
+| 密钥 | nginx 用 `__ZIYU_KEY__` 占位符，发布时由脚本注入；仓库内无真 Key |
+| 备份 | 6 个 `.bak-20260917`，已 gitignore |
+
+**同批附带修复**：`publish.sh` 与 `docs/deployment-server.md` 里的站点密码明文已清除（提交 `4c7f48e`）。
+⚠️ **历史提交中仍留有该密码字面量**，仓库当前为私有，风险可控；若要彻底清除需重写历史（`git filter-repo` + force push），**另行确认后再做**。
+
+**落地 ≠ 可用。** 以下三件事没做，线上仍然不能收费：
+
+1. 服务器 `/opt/infinite-canvas/api/api.env` 补 `LDXP_REDEEM_SECRET`（`openssl rand -hex 32`）
+2. 执行发布（`CANVAS_ZIYU_API_KEY=...`）+ 服务器 `nginx -t && nginx -s reload`
+3. 重建 api 容器，再走 `implementation/deploy/ACCEPTANCE.md` 的 A-00~A-27
+
+**B-2 阻塞项由此关闭。**
