@@ -581,3 +581,49 @@ Node 不在意，但会让「本地 vs 线上」的 diff 永远全文件变更�
 - 新建 skill：**`~/.workbuddy-ai/skills/secret-leak-response/SKILL.md`**
   （密钥泄露标准处置：先换凭证 → 再判断要不要清历史 → 防复发；含命令与决策表）
 - 写入 `~/.workbuddy-ai/MEMORY.md`「固定规则」两节：密钥泄露处置、解释动作要讲清四件事
+
+---
+
+## D17 · 免费出片关停（已执行）+ 邮箱验证码注册（方案待 SMTP）—— 2026-09-18 02:0x
+
+### 17.1 免费出片已关停 ✅ 已执行
+
+老大决策：「不加免费出片就好了」（作为开放注册的配套：没免费额度 → 注册小号也刷不了东西）。
+
+| 项 | 内容 |
+|---|---|
+| 做法 | 服务器 `/opt/infinite-canvas/api/api.env`：`FREE_TRIAL_MONTHLY_LIMIT` 3 → **0** → 重建 api 容器 |
+| 为什么是 0 而不是"无限" | `credits.js:431` `if (monthlyLimit === 0)` → 返回 `FREE_TRIAL_DISABLED`；`routes-credits.js:92` 也把 0 当合法值。**0 = 关闭** |
+| 验证 | 容器内值 `0`；`/api/credits/free-trial` → `{"limit":0,"remaining":0}`；`/free-trial/check` → **403**（nginx auth_request 拦截生效） |
+| 回归检查 | `/api/health` 200、`/api/credits/me` 200、`/api/ziyu/models` 200、`/admin/credits/reconcile` 200、站点首页 200 |
+| 回滚 | `api.env.bak-before-freetrial-off-20260918-0205` 存在；改回 3 + `docker compose up -d api` |
+| 影响面 | 只关 Agnes flash 免费试拍；**紫域点数出片不受影响** |
+
+### 17.2 邮箱验证码注册 —— 方案已定，**卡在 SMTP 凭据**
+
+老大决策：注册保持公开（不要邀请码），但**必须走邮箱验证码**。
+
+**流程改造**
+1. `POST /api/auth/register/code` `{ email }` → 生成 6 位码 → 存 hash → 发信
+2. `POST /api/auth/register` `{ email, password, displayName, code }` → 校验码 → 建号
+   （现有路由 `server.js:115` 保留入口，增加 code 校验）
+
+**验证码存储**：新表 `email_verification_codes`
+- 字段：`email` / `code_hash`（**SHA256，不明文**）/ `expires_at` / `attempts` / `consumed_at` / `ip`
+- 有效期 10 分钟；最多试 5 次；用过即作废
+
+**防刷**
+- 同邮箱 60 秒 1 次；同 IP 每小时上限
+- 只存 hash → 数据库泄露也拿不到可用验证码
+- ⚠️ **SMTP 未配置时 fail-closed（拒绝注册）**，否则等于没验证
+
+**🔴 唯一硬阻塞：用哪个 SMTP 发信**（需老大提供凭据，存服务器 `api.env`，**不进仓库**）
+
+| 选项 | 优点 | 缺点 |
+|---|---|---|
+| QQ 邮箱 SMTP | 成本 0、已有账号 | 发信量小、易进垃圾箱 |
+| 阿里云/腾讯云邮件推送 | 送达率高、有免费额度 | 需域名 SPF/DKIM 验证 |
+| Resend / SendGrid | API 最简单 | 需注册、超出免费额度要付费 |
+| 自有 cauai.fun 域名邮箱 | 品牌一致 | 同样要配 SPF/DKIM |
+
+**待老大回答后才能开工。**
