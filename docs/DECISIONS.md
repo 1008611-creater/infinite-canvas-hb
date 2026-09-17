@@ -627,3 +627,58 @@ Node 不在意，但会让「本地 vs 线上」的 diff 永远全文件变更�
 | 自有 cauai.fun 域名邮箱 | 品牌一致 | 同样要配 SPF/DKIM |
 
 **待老大回答后才能开工。**
+
+---
+
+## D18 · 邮箱验证码注册（设计 + 实现）—— 2026-09-18
+
+老大决策：**注册保持公开（不要邀请码），但必须走邮箱验证码**。发信渠道：**QQ 邮箱 SMTP**。
+
+### 18.1 流程
+
+1. `POST /api/auth/register/code` `{ email }` → 发 6 位码到邮箱
+2. `POST /api/auth/register` `{ email, password, displayName, code }` → 验码 → 建号
+
+`ALLOW_REGISTER` **保持 1 不变**（注册仍然公开）。
+
+### 18.2 为什么拆成两个模块
+
+| 模块 | 职责 |
+|---|---|
+| `canvas-api/email.js` | 只管发信（外部依赖：会超时、会挂） |
+| `canvas-api/email-verify.js` | 只管验证码状态（纯本地） |
+
+**拆开的理由**：发信是外部依赖，验证码是本地状态。混在一起会出现
+「邮件发出去了但数据库没记下」这类对不上的问题——和 `CONSTRAINTS.md` 里
+「扣了钱没记账 / 记了账没扣钱」是同一类错误。
+
+### 18.3 安全要点（每条都有对应代码位置）
+
+| 要点 | 做法 |
+|---|---|
+| **只存 HMAC，不存明文** | `email-verify.js:codeHash()` = HMAC-SHA256(key=JWT_SECRET, msg=`<email>:<code>`) |
+| **必须用 HMAC 而不是裸 SHA256** | 6 位数字只有 100 万种组合，裸哈希可枚举反推（秒级）。带密钥后数据库泄露也拿不到可用码 |
+| **fail-closed** | SMTP 未配置 → `/register/code` 直接 503，**绝不放行**。放行 = 验证码形同虚设，比报错危险 |
+| **发信失败要撤码** | `revokeLatestCode()`：邮件没发出去，码却处于可校验状态，别留着 |
+| **统一错误码** | 码错 / 过期 / 已用一律 `code_invalid`，避免被拿来探测 |
+| **防刷** | 同邮箱 60 秒 1 次；同 IP 每小时 10 次；单码最多错 5 次；10 分钟过期 |
+| **明文码只出现在邮件里** | 不进日志、不进响应体 |
+
+⚠️ **副作用**：JWT_SECRET 更换会让所有未使用的验证码立即失效（可接受）。
+
+### 18.4 改动清单
+
+**后端**：`schema.sql`（+`email_verification_codes` 表）、`email.js`（新）、`email-verify.js`（新）、
+`server.js`（+发码路由、注册路由加验码）、`package.json`（+nodemailer）、
+`deploy/Dockerfile.api`（COPY 加新文件）、`scripts/deploy/publish.sh`（**打包/指纹/上传三处**都加）
+
+**前端**：`services/backend-sync.ts`（+`sendRegisterCodeBackend`、`registerBackend` 加 code 参数）、
+`components/layout/config-account.tsx`（+验证码输入框与发送按钮、60 秒倒计时）、
+`i18n/locales/{zh-CN,en-US}.ts`（+7 个 key）
+
+### 18.5 待办（**未做**）
+
+- 🔴 **QQ 邮箱授权码**：老大去 QQ 邮箱设置开启 SMTP、拿授权码
+- 服务器 `api.env` 加 `SMTP_HOST=smtp.qq.com` / `SMTP_PORT=465` / `SMTP_USER` / `SMTP_PASS`
+  （**授权码不是 QQ 登录密码**；凭据只放服务器，不进仓库）
+- 填好凭据后跑 `publish.sh` 发布，并重建 api 容器
