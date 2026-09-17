@@ -513,12 +513,16 @@ async function adminCreditOverview({ limit = 200 } = {}) {
  *   - 金额对不上              → 真正的算错
  */
 async function reconcileChannelUsage({ days = 1 } = {}) {
+    // ⚠️ $2 必须显式 ::numeric。
+    // 原因：ziyu_cost 是 integer，Postgres 会据此把 $2 推断成 integer，
+    // 于是 1.5 传进去直接报 22P02 "invalid input syntax for type integer: 1.5"，
+    // 对账接口整个 500 —— 表面上"对账失败"，实际是类型推断问题。
     const res = await query(
         `SELECT task_id, user_id, model_id, status, ziyu_cost, charged_credits, created_at
            FROM channel_usage
           WHERE created_at > NOW() - ($1 || ' days')::interval
             AND (ziyu_cost IS NULL OR charged_credits IS NULL
-                 OR charged_credits <> CASE WHEN ziyu_cost <= 0 THEN 0 ELSE GREATEST(1, CEIL(ziyu_cost * $2)) END)
+                 OR charged_credits <> CASE WHEN ziyu_cost <= 0 THEN 0 ELSE GREATEST(1, CEIL(ziyu_cost * $2::numeric)) END)
           ORDER BY created_at DESC`,
         [String(Math.max(1, Number(days) || 1)), CHANNEL_CREDIT_MULTIPLIER]
     );

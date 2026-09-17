@@ -98,8 +98,6 @@ function requireAdmin(req, res, next) {
 app.get("/api/auth/verify", (req, res) => {
     const token = readAccessToken(req);
     if (token && auth.verifyAccessToken(token)) return res.sendStatus(200);
-    const legacy = process.env.CANVAS_LEGACY_TOKEN;
-    if (legacy && req.cookies?.[auth.LEGACY_COOKIE] === legacy) return res.sendStatus(200);
     return res.sendStatus(401);
 });
 
@@ -183,6 +181,7 @@ app.post("/api/auth/logout", async (req, res) => {
 
 app.get("/api/auth/me", requireAuth, (req, res) => res.json({ user: req.user }));
 
+// 额度 / 卡密 / 紫域目录 / 落盘 / 管理员对账（批次 1）
 mountCreditRoutes(app, { requireAuth, requireAdmin, registerMedia, query });
 
 // ---------------------------------------------------------------- 通用 CRUD
