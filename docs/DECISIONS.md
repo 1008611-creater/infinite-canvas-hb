@@ -449,3 +449,72 @@ D8 / D9 里「实现未落地」的口径**到此为止**。以下为执行记�
 
 **`LDXP_REDEEM_SECRET` 的严重性**：卡密格式 `NN-{点数}-{随机串}-{HMAC签名}`，
 签名密钥 = **造卡密的能力**。谁拿到谁就能无限生成充值码。绝不进仓库，丢了必须全部作废重发。
+
+---
+
+## D15 · 线上真实状态校准：批次 1 已在生产跑通，但**源码落后于线上** —— ✅ 已实测（2026-09-18）
+
+### 15.1 结论（推翻此前三条判断）
+
+此前文档说「B-3 服务器 .env 未就绪」「H-1 真出片未验证」。**实测证明这两条都已不成立。**
+
+| 之前说 | 实测 | 证据 |
+|---|---|---|
+| B-3 服务器 .env 四个变量未就绪 | ❌ 错，7 个变量全有值 | 容器内 `ZIYU_API_BASE` len=18、`ZIYU_API_KEY` len=48、`LDXP_REDEEM_SECRET` len=64、`FREE_TRIAL_MONTHLY_LIMIT`=3 |
+| H-1 真出片没验过（真花钱） | ❌ 错，已跑过 3 次 | `channel_usage` 3 条：紫域积分合计 55、扣点合计 133 |
+| 批次 1 未部署 | ❌ 错，镜像 2026-09-17 12:10 构建并运行 | 容器 `/app` 含 credits.js(553) / ziyu.js(464) / routes-credits.js(421) / ldxp-redeem.js(149) |
+
+### 15.2 实测证据（只读 SSH，2026-09-18）
+
+- **DB 6 张新表已建**：`user_credits` `credit_ledger` `credit_redemptions` `credit_adjustments` `channel_usage` `free_trial_usage`
+- **接口全通**（容器内签 JWT + 直连 nginx `:18085`）：
+  `/api/credits/me` 200、`/api/ziyu/models` 200、`/api/ziyu/me` 200、
+  `/api/admin/credits/overview` 200、`/api/admin/credits/reconcile` 200（`{"diffs":[]}`）
+- **资金链路真实闭环**：`credit_ledger` = 充值 3 笔(+300) / 预扣 3 笔(-208) / 结算 2 笔(+75)；
+  `user_credits` 两个账户余额 100 与 67
+- **定价公式验证通过**：`ziyuCost 5 → actualCost 8`（5 × 1.5 = 7.5，向上取整 = 8）✓
+- **紫域账户**：`credits: 8370`，账号 `1453637677@qq.com`
+- **门禁有效**：无 cookie 时 `/ziyu/api/v1/models` → 401、`/api/credits/me` → 401
+
+### 15.3 ⚠️ 真正的风险：源码树落后于线上一个热修复
+
+逐字节 diff（去除 CRLF 后）结果：
+
+| 文件 | 状态 |
+|---|---|
+| `ziyu.js` / `routes-credits.js` / `ldxp-redeem.js` / `schema.sql` | 与线上**完全一致** |
+| `credits.js` | ❌ **本地缺 `ziyu_cost * $2::numeric` 修复**（线上有，本地没有，差 4 行注释 + 1 行 cast） |
+| `server.js` | ❌ 本地比线上**多 2 行** `CANVAS_LEGACY_TOKEN` 200 分支，少 1 行注释 |
+
+**为什么这条是 P0**：`ziyu_cost` 是 integer，Postgres 会据此把 `$2` 推断成 integer，
+`1.5` 传进去报 `22P02 invalid input syntax for type integer`，**对账接口整个 500**。
+线上已修，**本地没修 → 下次按本地源码发布就回归**。
+
+### 15.4 部署拓扑更正（此前记录有误）
+
+- canvas-api 的代码**打进镜像**（`context: /opt/infinite-canvas/api`，`dockerfile: Dockerfile`），
+  **不是**从 `current/api` 挂载的。`current/api` 里的旧文件（9/11）是残留，**不参与运行**。
+- `canvas-api` 容器端口 8790 **未映射到宿主机**，只能经 `canvas-web`(nginx `:18085`) 访问。
+  直接 curl `:3001` 会打到**别的服务**（ans-platform），这是排查时的一个坑。
+- `LDXP_REDEEM_SECRET` 线上已存在（64 位，**非** 2026-09-18 本地生成的那个）→ **不替换**，
+  替换会使已发出的卡密全部失效。
+
+### 15.5 处置结果（2026-09-18，老大批准）
+
+提交 **`24a28ae`** `fix(billing): 回写线上热修复，源码树与生产逐字节对齐`，已推送 `feat-server-deploy`。
+
+| 项 | 处置 |
+|---|---|
+| H-2 `credits.js` 缺 `::numeric` | ✅ 已回写（1 行 cast + 4 行说明注释） |
+| H-3 `server.js` legacy token 200 分支 | ✅ 老大裁决：**删除，与线上对齐**。旧站点 cookie 实际由 nginx `map` 层放行，不走 `/api/auth/verify` 端点 |
+
+**对齐校验**：6 个后端模块与线上容器 `/app` **逐字节一致**（去 CRLF 后）——
+`credits.js` 553 / `server.js` 749 / `ziyu.js` 464 / `routes-credits.js` 421 /
+`ldxp-redeem.js` 149 / `schema.sql` 269；`node --check` 全过。
+
+**⚠️ 遗留（未做，不影响正确性）**：本地工作区文件是 **CRLF**，线上是 LF。
+Node 不在意，但会让「本地 vs 线上」的 diff 永远全文件变更。
+**下次比对必须先归一化**：`diff <(sed 's/\r$//' 本地) 线上`。
+根因是 `apply-batch1.mjs` 在 Windows 上生成文件。要不要统一转 LF，**待老大决定**。
+
+**⚠️ 分支状态**：`feat-server-deploy` 领先 `origin/master` **22 个提交**，未合入、未建 PR。
