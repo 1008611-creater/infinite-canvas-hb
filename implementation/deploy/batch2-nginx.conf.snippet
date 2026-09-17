@@ -1,0 +1,208 @@
+# ============================================================================
+# 无限画布 · 批次 2「放得开」nginx 改动片段  —— 撤门禁 + 免费试拍限次
+# 文件：implementation/deploy/batch2-nginx.conf.snippet
+# 目标文件（权威源码树）：deploy/nginx-docker.conf（当前 165 行 / LF）
+# 状态：设计稿。**尚未写入权威源码树，尚未发布。**
+# 前置：批次 1（apply-batch1.mjs）已跑过。本片段假定 /ziyu/ 块已存在。
+# ============================================================================
+#
+# 为什么要有这个文件
+#   批次 2 要「放得开」：让不持有站点 cookie 的访客也能打开 hb.cauai.fun 并注册。
+#   但门禁一撤，/agnes/ 这条会用真钱调上游的路径就跟着裸奔了。
+#   所以撤门禁与「免费试拍限次」必须**同一次发布**落地，不能分两次。
+#
+# 本文件分两部分，落地器 apply-batch2.mjs 会分别执行：
+#   一、删除四处门禁（逐块精确匹配，**绝不做全局替换**）
+#   二、插入免费试拍限次片段
+#
+# ⚠️ 为什么绝不能全局替换 `if ($canvas_authed = 0)`：
+#   批次 1 插进去的 /ziyu/ 块**自带**同一个 if 块（那是故意的，见
+#   ziyu-nginx.conf.snippet 第 28-35 行）。全局替换会把紫域那道门也一起拆掉，
+#   等于给全网开了一台刷你紫域余额的免费出片机。
+#
+# ⚠️ B-6（2026-09-13 线上实测）：**/ziyu/ 的门禁不是资金防线。**
+#   服务端在注册/登录成功时会自动下发门禁 cookie（canvas-api/auth.js setSitePassCookie()
+#   写 canvas_auth），而 /api/ 刻意不吃门禁 —— 注册接口敞开的期间，任何人注册一次就拿到 cookie。
+#   所以「保住 /ziyu/ 那道 if」只能挡住**从不注册的纯路人**；真正的防线是批次 1 的
+#   requireAuth + 余额预扣。别把这段 if 当成钱包的锁。详见 batch2-acceptance.md §0.1。
+#   本文件第一节因此把「要删的原文」逐字抄录，落地器按整块匹配删除。
+
+# ----------------------------------------------------------------------------
+# 一、要删除的四处门禁（原文逐字，含首尾大括号）
+# ----------------------------------------------------------------------------
+#
+# 锚点：deploy/nginx-docker.conf 当前行号。批次 1 已在 L101 前插入约 40 行，
+#       行号会整体下移 —— **落地器一律按文本匹配，不按行号。**
+
+# 【删除 1】当前 L52-58 · 页面门禁
+# 删掉 if 块，只留 try_files。注意：`location / {` 与 `try_files` 都要保留。
+#     # 页面：没 cookie 就踢去登录页。
+#     location / {
+#         if ($canvas_authed = 0) {          ← 删这 3 行
+#             return 302 /login.html;
+#         }
+#         try_files $uri $uri/ /index.html;
+#     }
+
+# 【删除 2】当前 L60-67 · 静态资源门禁
+#     location /assets/ {
+#         if ($canvas_authed = 0) {          ← 删这 3 行
+#             return 403;
+#         }
+#         expires 30d;
+#         add_header Cache-Control "public, immutable";
+#     }
+
+# 【删除 3】当前 L69-75 · 运行期配置门禁
+#     location = /config.js {
+#         if ($canvas_authed = 0) {          ← 删这 3 行
+#             return 403;
+#         }
+#         add_header Cache-Control "no-store";
+#     }
+
+# 【删除 4】当前 L79-83 · Agnes 代理门禁
+#     location /agnes/ {
+#         if ($canvas_authed = 0) {          ← 删这 3 行（连同它上面的空行一起收掉）
+#             return 403;
+#         }
+#
+#         以下 proxy_* 全部原样保留，一行都不改：
+#             proxy_set_header Authorization "Bearer __AGNES_TOKEN__";
+#             proxy_pass http://agnes:8787/;
+#             ... proxy_read_timeout 600s; proxy_send_timeout 600s; client_max_body_size 64m;
+
+# 【明确不动的地方】
+#   - L10-15  map $http_cookie $canvas_authed  —— 保留。批次 2 之后它只剩
+#             /ziyu/ 一个使用者；删掉它会让 /ziyu/ 的 if 直接报错。
+#   - L28-32  location = /login.html          —— 保留（登录页永远免门禁）。
+#   - L35-50  location = /agnes/auth 及其 logout —— 保留。撤门禁后前端仍然要能登录。
+#   - L101 前 由批次 1 插入的 /ziyu/ 块        —— **保留其 if 门禁**（但要知道：这个 if 可被
+#             注册接口绕过，见上方 B-6；它挡路人，不挡钱）。
+#   - L126-154 /dav/ 块                       —— 本阶段不动（Q-10：先抓主要矛盾）。
+#   - L156-163 /show/ 块                      —— 本来就免门禁，不动。
+#   - /api/ 块                                —— 本来就免门禁，不动。
+
+# ----------------------------------------------------------------------------
+# 二、要插入的免费试拍限次片段
+# ----------------------------------------------------------------------------
+#
+# 位置：插在 /agnes/ 块之后、「# 画布服务端 API」注释行之前。
+# 机制：落地器按下面的 BEGIN/END 标记取行，每行统一加 4 个空格缩进，
+#       再在前面加一段 banner 注释。行号不写死。
+
+# >>>>>>>>>> BATCH2-NGINX-FRAGMENT-BEGIN >>>>>>>>>>
+location = /agnes/v1/videos {
+    # ★ 免费试拍的唯一消耗端点 ★
+    #   精确匹配（=）优先级最高，所以它会抢在 location /agnes/ 前面命中，
+    #   而轮询 /agnes/v1/videos/<id>、/v1/models、/health 仍旧走 /agnes/，不受限次影响。
+    #
+    #   为什么必须按 URI 而不是按方法判定：nginx 的 auth_request 发出去的是
+    #   **GET 子请求**，子请求里 $request_method 恒为 GET，拿不到原始 POST。
+    #   所以「只看 URI、不看方法」是这里唯一可行的做法。
+    auth_request /_canvas_free_trial_check;
+
+    # 未登录 → 401；本月免费次数用尽 → 403。两个具名 location 在下面定义。
+    error_page 401 = @canvas_need_login;
+    error_page 403 = @canvas_trial_used;
+
+    # 以下与 location /agnes/ 完全一致（含 __AGNES_TOKEN__ 注入）。
+    # ⚠️ __AGNES_TOKEN__ 由 publish.sh 在发布时替换；若发布链路漏了这一步，
+    #    这里会把字面量发出去 → 必然 401，且发布日志全绿看不出异常。
+    proxy_set_header Authorization "Bearer __AGNES_TOKEN__";
+    proxy_pass http://agnes:8787/v1/videos;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    proxy_read_timeout 600s;
+    proxy_send_timeout 600s;
+    client_max_body_size 64m;
+}
+
+# 校验子请求：internal 表示外部访问不到，只能被 auth_request 调用。
+# 它只做两件事：确认是真会话（否则 401）、扣一次免费额度（否则 403）。
+location = /_canvas_free_trial_check {
+    internal;
+    proxy_pass http://api:8790/api/credits/free-trial/check;
+
+    # 子请求不需要 body，也不该把用户的 64MB 首尾帧再复制一份给 api 容器。
+    proxy_pass_request_body off;
+    proxy_set_header Content-Length "";
+
+    # 把原始请求的会话 cookie 传给 api —— 这是"必须登录"的判据来源。
+    proxy_set_header Cookie $http_cookie;
+    # 保留原始 URI 供 api 侧日志与将来扩展使用（当前实现只看 URI 不看方法）。
+    proxy_set_header X-Original-URI $request_uri;
+
+    # 校验必须快：它是用户请求的关键路径，卡住等于出片按钮卡住。
+    proxy_connect_timeout 5s;
+    proxy_read_timeout 10s;
+}
+
+# 401：没有有效会话（含只持旧站点 cookie、没注册过的访客）。
+location @canvas_need_login {
+    default_type application/json;
+    return 401 '{"error":"auth_required","hint":"请先登录后再使用免费试拍"}';
+}
+
+# 403：本月免费次数已用完。文案与 api 侧保持一致，前端可据此弹"购买兑换码"。
+location @canvas_trial_used {
+    default_type application/json;
+    return 403 '{"error":"FREE_TRIAL_EXHAUSTED","hint":"免费试拍次数已用完，购买兑换码可获得更多额度"}';
+}
+# <<<<<<<<<< BATCH2-NGINX-FRAGMENT-END <<<<<<<<<<
+
+# ----------------------------------------------------------------------------
+# 三、发布链路（改完源码树之后）
+# ----------------------------------------------------------------------------
+#
+# 1) 本批次**只改 nginx 配置**，没有新增后端文件、没有改前端源码。
+#    因此：不需要改 publish.sh 的打包列表，也不需要改 deploy/Dockerfile.api 的 COPY。
+# 2) 但 nginx-docker.conf 是在发布时被 sed 替换占位符后覆盖到容器的，
+#    必须走一次完整发布才生效（不能只在服务器上手改 default.conf —— 下次
+#    发布会把它盖掉，而且没人会记得）。
+# 3) 发布后确认容器内文件确实换了：
+#    进 web 容器看 default.conf 里有没有 /_canvas_free_trial_check。
+# 4) 本次改动**不涉及** .env 变量，所以不存在"改了 .env 没重建容器"的坑。
+#    但若同时改了 api.env（例如 FREE_TRIAL_MONTHLY_LIMIT），那必须重建 api 容器。
+
+# ----------------------------------------------------------------------------
+# 四、风险与取舍（如实记录）
+# ----------------------------------------------------------------------------
+#
+# R1 · 资金风险：撤门禁之后，/agnes/ 的轮询与 /v1/models 变成公开可读。
+#      它们不产生上游费用（不消耗 Agnes 免费次数），可以接受；
+#      唯一消耗端点 /agnes/v1/videos 由本片段挡住。
+#      ⚠️ B-6 订正：撤门禁后 /agnes/ 与 /ziyu/ 的 cookie 门禁都**可被自助绕过**
+#      （注册一次即得 cookie），因此上面这句「由本片段挡住」的强度要按「挡住不注册的访客」理解，
+#      不能按「挡住所有人」理解。付费路径的真实防线是批次 1 的额度体系。
+#
+# R2 · 免费试拍"提交即扣次"：auth_request 只能先放行后转发，无法知道上游是否
+#      真的接受了这次请求。所以一次提交消耗一次，**即使上游随后拒绝也不退**。
+#      这是本方案已知的、不可消除的代价。
+#
+# R3 · api 容器成为关键路径：api 挂了 → /agnes/v1/videos 全部 401/502。
+#      属于可接受耦合（api 挂了本来整个画布也不能用）。
+#
+# R4 · 只持旧站点 cookie 的老用户会被 401 挡住：
+#      /api/auth/verify 对旧 cookie 是放行的，但本片段用的是
+#      /api/credits/free-trial/check，它走 requireAuth，**只认真正注册过的会话**。
+#      这是有意为之：免费额度必须能归属到某个账号，否则无从限次。
+#
+# R5 · 具名 location 返回的静态 JSON 能否被 error_page 接住 —— 见第五节。
+
+# ----------------------------------------------------------------------------
+# 五、未验证声明（不许当成已验证）
+# ----------------------------------------------------------------------------
+#
+# U1 · 本片段**从未在真实 nginx 上跑过**。auth_request + error_page + 具名 location
+#      返回 JSON 的组合写法在文档上成立，但本环境没有可用的 nginx 与浏览器，
+#      **未做真机验证**。上线前必须按 batch2-acceptance.md 的 B2-2 逐条实测。
+# U2 · auth_request 子请求里 proxy_set_header Cookie $http_cookie 是否真的把
+#      浏览器 cookie 带到了 api —— 未验证。若带不过去，表现为"已登录用户也 401"。
+# U3 · 精确匹配 location 与 error_page 的相互作用（401/403 是否被正确替换为 JSON）—— 未验证。
+# U4 · 免费试拍额度按**服务器本地月**重置（credits.js currentPeriod() 取 YYYY-MM），
+#      不是自然月零点整，也未处理时区；未验证在服务器时区下的实际表现。

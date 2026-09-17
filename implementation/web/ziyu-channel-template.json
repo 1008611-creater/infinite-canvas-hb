@@ -1,0 +1,256 @@
+{
+  "_note": "紫域渠道交付清单（批次 1 · 收得到钱）。设计稿，尚未写入权威源码树，尚未发布。",
+  "_status": "UNVERIFIED — 模型目录与响应形状已按 2026-09-13 线上实测校准（收录 27/44 档）；插件脚本仍从未在真实浏览器执行过",
+  "channel": {
+    "id": "ziyu",
+    "name": "紫域",
+    "baseUrl": "/ziyu/api",
+    "apiFormat": "openai",
+    "apiKey": "ziyu-proxy",
+    "apiKeyNote": "apiKey 必须是**非空**的占位串。原因：video.ts L85 与 L194 都会在 apiKey 为空时直接抛 apiKeyRequired，出片主链路走不到插件脚本。\n真实的紫域 Key 由 nginx 的 proxy_set_header Authorization 在服务端注入，浏览器发来的这个值会被整条覆盖，所以它写什么都不会泄露，也不影响鉴权。\n★ 已定稿（D-web-1，2026-09-13）：ChannelTemplate 增加可选 script / apiKey 字段；createChannelFromTemplate() 改为 apiKey: template.apiKey ?? \"\"，script 一并透传。落地器 S8 已按此生成渠道条目。",
+    "models": [
+      {
+        "name": "紫域·H3-720p-特惠",
+        "capability": "video",
+        "modelId": "zy_model_2134621044047793db22",
+        "cost": 50,
+        "costPerSecond": 10,
+        "tier": "720p · 50 积分 + 10/秒 · 目录内最便宜档"
+      },
+      {
+        "name": "紫域·H3-720p-快速",
+        "capability": "video",
+        "modelId": "zy_model_e0ace95d32d34e9b5dc2",
+        "cost": 100,
+        "costPerSecond": 20,
+        "tier": "720p · 100 积分 + 20/秒"
+      },
+      {
+        "name": "紫域·H3-720p-高质",
+        "capability": "video",
+        "modelId": "zy_model_0c36ad7e45cbb626aac8",
+        "cost": 150,
+        "costPerSecond": 30,
+        "tier": "720p · 150 积分 + 30/秒"
+      },
+      {
+        "name": "紫域·H3-768p-特惠",
+        "capability": "video",
+        "modelId": "zy_model_48a5c6c6d3de6916ac2f",
+        "cost": 150,
+        "costPerSecond": 0,
+        "tier": "768p · 150 积分 · 固定价 · 1–15 秒"
+      },
+      {
+        "name": "紫域·H3-2K",
+        "capability": "video",
+        "modelId": "zy_model_cf5be430b4e3ab4c4498",
+        "cost": 250,
+        "costPerSecond": 0,
+        "tier": "250 积分 · 固定价 · 仅图生视频"
+      },
+      {
+        "name": "紫域·2.0满血-480p",
+        "capability": "video",
+        "modelId": "zy_model_bcb64b317b3d8edc06d5",
+        "cost": 300,
+        "costPerSecond": 0,
+        "tier": "480p · 300 积分 · 固定价 · 5–15 秒 · 紫域当前默认档"
+      },
+      {
+        "name": "紫域·2.0满血-720p",
+        "capability": "video",
+        "modelId": "zy_model_99772dace509a3b6b681",
+        "cost": 100,
+        "costPerSecond": 25,
+        "tier": "720p · 100 积分 + 25/秒 · 4–15 秒"
+      },
+      {
+        "name": "紫域·2.0满血-720p-不排队",
+        "capability": "video",
+        "modelId": "zy_model_f8fee57342aa4f8e6384",
+        "cost": 500,
+        "costPerSecond": 0,
+        "tier": "500 积分 · 固定价"
+      },
+      {
+        "name": "紫域·2.0-480p-933参考",
+        "capability": "video",
+        "modelId": "zy_model_46db9c27eca45182d978",
+        "cost": 155,
+        "costPerSecond": 31,
+        "tier": "480p · 155 积分 + 31/秒 · 5–15 秒"
+      },
+      {
+        "name": "紫域·2.0-720p-933参考",
+        "capability": "video",
+        "modelId": "zy_model_4212fc28430ffb92094c",
+        "cost": 225,
+        "costPerSecond": 45,
+        "tier": "720p · 225 积分 + 45/秒 · 5–15 秒"
+      },
+      {
+        "name": "紫域·2.0-1080p-933参考",
+        "capability": "video",
+        "modelId": "zy_model_d9be148a37cb18696367",
+        "cost": 500,
+        "costPerSecond": 100,
+        "tier": "1080p · 500 积分 + 100/秒 · 5–15 秒"
+      },
+      {
+        "name": "紫域·2.0-4K-933参考",
+        "capability": "video",
+        "modelId": "zy_model_14a92040d40382a95959",
+        "cost": 950,
+        "costPerSecond": 190,
+        "tier": "4k · 950 积分 + 190/秒 · 5–15 秒 · 目录内最贵档"
+      },
+      {
+        "name": "紫域·2.5Pro-480p",
+        "capability": "video",
+        "modelId": "zy_model_2db335ab16705b6ffb21",
+        "cost": 200,
+        "costPerSecond": 50,
+        "tier": "480p · 200 积分 + 50/秒 · 4–30 秒"
+      },
+      {
+        "name": "紫域·2.5Pro-720p",
+        "capability": "video",
+        "modelId": "zy_model_a81f14445928bb8a6484",
+        "cost": 264,
+        "costPerSecond": 66,
+        "tier": "720p · 264 积分 + 66/秒 · 4–30 秒"
+      },
+      {
+        "name": "紫域·2.5Pro-1080p",
+        "capability": "video",
+        "modelId": "zy_model_ee8a33d39b0f8dad8587",
+        "cost": 444,
+        "costPerSecond": 111,
+        "tier": "1080p · 444 积分 + 111/秒 · 4–30 秒"
+      },
+      {
+        "name": "紫域·2.5-480p-高质",
+        "capability": "video",
+        "modelId": "zy_model_0f6e5dd0dff747d88d68",
+        "cost": 200,
+        "costPerSecond": 50,
+        "tier": "480p · 200 积分 + 50/秒 · 4–30 秒"
+      },
+      {
+        "name": "紫域·2.5-480p-30图按秒",
+        "capability": "video",
+        "modelId": "zy_model_ea07dbc744e29cb7dfd2",
+        "cost": 260,
+        "costPerSecond": 65,
+        "tier": "480p · 260 积分 + 65/秒 · 4–30 秒"
+      },
+      {
+        "name": "紫域·2.5-720p-高质",
+        "capability": "video",
+        "modelId": "zy_model_6d56e828407bbad8b792",
+        "cost": 360,
+        "costPerSecond": 90,
+        "tier": "720p · 360 积分 + 90/秒 · 4–30 秒"
+      },
+      {
+        "name": "紫域·2.5-720p-30图按秒",
+        "capability": "video",
+        "modelId": "zy_model_495df357d12e52dd490d",
+        "cost": 392,
+        "costPerSecond": 98,
+        "tier": "720p · 392 积分 + 98/秒 · 4–30 秒"
+      },
+      {
+        "name": "紫域·2.5-1080p-30秒",
+        "capability": "video",
+        "modelId": "zy_model_96ec60c1cc8f5a8bb9d6",
+        "cost": 750,
+        "costPerSecond": 150,
+        "tier": "1080p · 750 积分 + 150/秒 · 5–30 秒"
+      },
+      {
+        "name": "紫域·2.5-720p-30秒-9图",
+        "capability": "video",
+        "modelId": "zy_model_a5eb1f4d514aee1acdae",
+        "cost": 350,
+        "costPerSecond": 0,
+        "tier": "720p · 350 积分 · 固定价 · 30 秒"
+      },
+      {
+        "name": "紫域·2.5-720p-9图按次",
+        "capability": "video",
+        "modelId": "zy_model_65274b763eb0c446ddc8",
+        "cost": 650,
+        "costPerSecond": 0,
+        "tier": "720p · 650 积分 · 固定价 · 5/10/15/30 秒"
+      },
+      {
+        "name": "紫域·图片-1K",
+        "capability": "image",
+        "modelId": "zy_model_90a6992dde387d5233f4",
+        "cost": 5,
+        "costPerSecond": 0,
+        "tier": "5 积分 · 固定价 · 有超时记录，上线降权"
+      },
+      {
+        "name": "紫域·图片-2K",
+        "capability": "image",
+        "modelId": "zy_model_914ad5f4b56ac5c18e73",
+        "cost": 10,
+        "costPerSecond": 0,
+        "tier": "10 积分 · 固定价"
+      },
+      {
+        "name": "紫域·图片-线路A",
+        "capability": "image",
+        "modelId": "zy_model_06c91a5564fe967cdeef",
+        "cost": 10,
+        "costPerSecond": 0,
+        "tier": "10 积分 · 固定价 · 紫域未命名线路"
+      },
+      {
+        "name": "紫域·图片-线路B",
+        "capability": "image",
+        "modelId": "zy_model_c06ef7730346116bf714",
+        "cost": 10,
+        "costPerSecond": 0,
+        "tier": "10 积分 · 固定价 · 紫域未命名线路"
+      },
+      {
+        "name": "紫域·图片-线路C",
+        "capability": "image",
+        "modelId": "zy_model_f5fca7d1b56d4c116976",
+        "cost": 20,
+        "costPerSecond": 0,
+        "tier": "20 积分 · 固定价 · 紫域未命名线路"
+      }
+    ]
+  },
+  "scripts": {
+    "_usage": "同一渠道里的所有视频模型共用同一段视频脚本；图片同理。video 的 MODEL_MAP 只列视频档，image 的 MODEL_MAP 只列图片档 —— 两者都与 channel.models 的展示名逐字一致，改名必须两处同改。",
+    "video": "// ===========================================================================\n// 紫域 · 视频插件脚本（贴进渠道模型编辑器的 script 字段）\n// 沙箱变量只有 15 个：prompt / images / messages / params / model / baseUrl\n//   / apiKey / systemPrompt / reasoningEffort / http / request / poll / sleep\n//   / signal / onDelta。不要引用其它任何东西。\n//\n// 路径纪律：只写 \"/models\" \"/uploads\" \"/jobs\"，不要写 ${baseUrl}/v1/... ——\n//   因为 model-plugin.ts L40-43 会把非 http(s) 开头的路径交给 buildApiUrl()\n//   拼装，正好拼成 /ziyu/api/v1/...，再由 nginx 剥掉 /ziyu 前缀。\n//\n// ★ 2026-09-13 实测口径（脚本按此重写，仍未经真实浏览器执行）：\n//   - 提交 POST /jobs → HTTP 202，返回 { ok, job:{...}, user, billing, submitPending, credits }\n//   - 轮询 GET  /jobs/{id} → { ok:true, job:{...} }（job 嵌在 .job 下）\n//   - 结果在**顶层** job.resultUrl（previewUrl / preview 同值）；job.assets 是输入参考素材，不是产出\n//   - 失败任务实测 19/19 全额退款（refunded:true, refundAmount==cost），但脚本仍按字段提示，不写死\n//   - 上传 POST /uploads 是 JSON body（base64 data URL），不是 multipart\n//\n// ⚠️ 本脚本从未在真实浏览器里跑过一次（编写环境无浏览器）。\n//    首次启用必须按 ACCEPTANCE.md 的 A-06 真机验证。\n// ===========================================================================\n\n// 本地展示名 → 紫域模型 id。展示名可随时改，id 以 GET /api/v1/models 为准。\n// 新增模型时在这里补一行，并把同名模型加进渠道的 models 列表。\n// 本文件收录 27 档代表模型（22 视频 + 5 图片）；紫域线上目录共 44 档，未收录的档位可按 id 直填。\nvar MODEL_MAP = {\"紫域·H3-720p-特惠\":\"zy_model_2134621044047793db22\",\"紫域·H3-720p-快速\":\"zy_model_e0ace95d32d34e9b5dc2\",\"紫域·H3-720p-高质\":\"zy_model_0c36ad7e45cbb626aac8\",\"紫域·H3-768p-特惠\":\"zy_model_48a5c6c6d3de6916ac2f\",\"紫域·H3-2K\":\"zy_model_cf5be430b4e3ab4c4498\",\"紫域·2.0满血-480p\":\"zy_model_bcb64b317b3d8edc06d5\",\"紫域·2.0满血-720p\":\"zy_model_99772dace509a3b6b681\",\"紫域·2.0满血-720p-不排队\":\"zy_model_f8fee57342aa4f8e6384\",\"紫域·2.0-480p-933参考\":\"zy_model_46db9c27eca45182d978\",\"紫域·2.0-720p-933参考\":\"zy_model_4212fc28430ffb92094c\",\"紫域·2.0-1080p-933参考\":\"zy_model_d9be148a37cb18696367\",\"紫域·2.0-4K-933参考\":\"zy_model_14a92040d40382a95959\",\"紫域·2.5Pro-480p\":\"zy_model_2db335ab16705b6ffb21\",\"紫域·2.5Pro-720p\":\"zy_model_a81f14445928bb8a6484\",\"紫域·2.5Pro-1080p\":\"zy_model_ee8a33d39b0f8dad8587\",\"紫域·2.5-480p-高质\":\"zy_model_0f6e5dd0dff747d88d68\",\"紫域·2.5-480p-30图按秒\":\"zy_model_ea07dbc744e29cb7dfd2\",\"紫域·2.5-720p-高质\":\"zy_model_6d56e828407bbad8b792\",\"紫域·2.5-720p-30图按秒\":\"zy_model_495df357d12e52dd490d\",\"紫域·2.5-1080p-30秒\":\"zy_model_96ec60c1cc8f5a8bb9d6\",\"紫域·2.5-720p-30秒-9图\":\"zy_model_a5eb1f4d514aee1acdae\",\"紫域·2.5-720p-9图按次\":\"zy_model_65274b763eb0c446ddc8\"};\n\nvar requestedModel = String(model || \"\").trim();\nvar modelId = MODEL_MAP[requestedModel] || requestedModel;\n\n// 目录实时拉取：紫域目录会变，本地只缓存分组与展示名。\n// 2026-09-13 实测：目录共 44 个模型（39 video + 5 image），全部字段如下；\n//   若这里查不到，说明该档位已被紫域下架，必须让用户重选，不要静默降级。\nvar catalog = await http.get(\"/models\");\nvar list = (catalog && catalog.models) || [];\nvar entry = null;\nfor (var i = 0; i < list.length; i++) {\n  var m = list[i];\n  if (!m) continue;\n  if (m.id === modelId || String(m.name || \"\").trim() === requestedModel) { entry = m; break; }\n}\nif (!entry) throw new Error(\"紫域目录里找不到模型 \" + requestedModel + \"，请到渠道设置里刷新模型列表\");\n\n// ---- 时长归一化：params.seconds 是字符串（1-20），allowedDurations 是整数数组 ----\nvar allowed = [];\nif (entry.allowedDurations && entry.allowedDurations.length) {\n  for (var j = 0; j < entry.allowedDurations.length; j++) {\n    var d = Number(entry.allowedDurations[j]);\n    if (d > 0) allowed.push(d);\n  }\n  allowed.sort(function (a, b) { return a - b; });\n}\nvar seconds = Math.floor(Number(params && params.seconds) || 5);\nif (!(seconds > 0)) seconds = 5;\nif (allowed.length && allowed.indexOf(seconds) < 0) {\n  var pick = allowed[0];\n  for (var k = 0; k < allowed.length; k++) { if (allowed[k] <= seconds) pick = allowed[k]; }\n  seconds = pick;\n}\n\n// ---- 模式：有参考图走 i2v，否则 t2v ----\nvar refs = [];\nif (images && images.length) {\n  for (var r = 0; r < images.length; r++) { if (images[r]) refs.push(images[r]); }\n}\nvar mode = refs.length ? \"i2v\" : \"t2v\";\nif (entry.modes && entry.modes.length && entry.modes.indexOf(mode) < 0) {\n  throw new Error(\"模型 \" + requestedModel + \" 不支持 \" + mode + \"（可用：\" + entry.modes.join(\"/\") + \"）\");\n}\n\n// ---- 参考图上传：JSON body + base64 data URL，不是 multipart ----\n// 紫域只收 JPG/PNG/WebP 静态图，一次最多 10 张；其它格式会被拒。\nvar assetUrls = [];\nif (refs.length) {\n  var files = [];\n  for (var f = 0; f < refs.length && f < 10; f++) {\n    var data = refs[f];\n    if (data.indexOf(\"data:\") !== 0) data = \"data:image/png;base64,\" + data;\n    files.push({ type: \"image\", name: \"ref\" + (f + 1) + \".png\", data: data });\n  }\n  var uploaded = await http.post(\"/uploads\", { files: files });\n  var assets = (uploaded && uploaded.assets) || [];\n  for (var a = 0; a < assets.length; a++) {\n    if (assets[a] && assets[a].url) assetUrls.push(assets[a].url);\n  }\n}\n\n// ---- 画幅：画布给的是 \"auto\" 或 \"1280x720\" 这类像素值 ----\nvar ratio = \"16:9\";\nvar rawRatio = String((params && params.ratio) || \"\");\nif (/^(16:9|9:16|1:1|3:4|4:3)$/.test(rawRatio)) {\n  ratio = rawRatio;\n} else {\n  var wh = /^(\\d+)x(\\d+)$/.exec(rawRatio);\n  if (wh && Number(wh[1]) > 0 && Number(wh[2]) > 0) ratio = Number(wh[1]) >= Number(wh[2]) ? \"16:9\" : \"9:16\";\n}\n\n// ---- 幂等键：同一次调用内复用同一个值，网络超时重试不会重复扣费 ----\nvar idem = (typeof crypto !== \"undefined\" && crypto.randomUUID)\n  ? crypto.randomUUID()\n  : (\"canvas-\" + Date.now() + \"-\" + Math.random().toString(36).slice(2));\n\nvar body = { modelId: entry.id, mode: mode, prompt: prompt, ratio: ratio, duration: seconds + \"秒\" };\nif (assetUrls.length) {\n  var imgAssets = [];\n  for (var u = 0; u < assetUrls.length; u++) imgAssets.push({ url: assetUrls[u] });\n  body.assets = { image: imgAssets, video: [], audio: [] };\n}\n\nvar created = await http.post(\"/jobs\", body, { headers: { \"Idempotency-Key\": idem } });\nvar jobId = (created && (created.jobId || created.id)) || (created && created.job && created.job.id) || null;\nif (!jobId) throw new Error(\"紫域没有返回任务号：\" + JSON.stringify(created));\n\n// ---- 轮询 4 秒一次，最长 45 分钟（6 分钟出片档位要留足）----\nvar done = await poll(\n  function () { return http.get(\"/jobs/\" + jobId); },\n  function (state) {\n    // 实测：提交与轮询都返回 { ok, job:{...} }，job 嵌在 .job 下；外层兜底留给未来的扁平形状。\n    var job = (state && state.job) || state;\n    if (!job || !job.status) return null;\n    if (job.status === \"failed\") {\n      var why = job.failureReason || job.message || \"紫域任务失败\";\n      var tail = job.refunded ? \"（已退回 \" + (job.refundAmount || 0) + \" 积分）\" : \"（未退回积分，请以紫域账单为准）\";\n      throw new Error(why + tail);\n    }\n    if (job.status === \"completed\") return job;\n    return null;\n  },\n  { intervalMs: 4000, timeoutMs: 45 * 60 * 1000 }\n);\n\n// ★ 实测订正（旧结论写反，已作废）：产出只在**顶层** resultUrl（previewUrl / preview 同值）。\n//   job.assets 是用户上传的**输入参考素材**，绝不能当产出 ——\n//   实测反例 195f4a3a：结果已过 24 小时被清理，assets 里只剩输入参考视频；\n//   若拿 assets 兜底，用户会收到\"自己上传的输入\"当成品。\nvar url = done.resultUrl || done.previewUrl || done.preview || null;\nif (!url) throw new Error(\"紫域任务完成但没有产出地址（多半是结果 URL 已过 24 小时被紫域清理，不要标记为成功）\");\n\n// 返回 { url } 即可：video.ts L112-122 会认 url / video_url / result_url。\n// 结果地址 24 小时后会被紫域清理，画布随后会把它落盘到本站媒体库。\nreturn { url: url, ziyuCost: done.cost, ziyuJobId: jobId, durationSeconds: seconds };",
+    "image": "// ===========================================================================\n// 紫域 · 图片插件脚本（贴进渠道模型编辑器的 script 字段）\n// 与视频脚本同源，差异只有：mode 固定 t2i、一次可出多张、无时长。\n//\n// ⚠️ 两条未验证分支：\n//   1) 多张（count > 1）是串行提交 N 个任务，未真机验证；\n//   2) 图生图（requestEdit 带参考图）把参考图放进 assets.image，\n//      但紫域图片模型的 modes 只声明了 t2i，是否真的吃参考图**未验证**。\n//      在验证通过之前，图生图请继续用 OpenLux 渠道。\n//\n// ⚠️ 2026-09-13 新增实测风险：image-2-1k（cost=5）实测提交后卡在 processing 5 分钟，\n//   最终 status=timed out 失败（全额退款）。图片模型可能长时间卡住甚至超时，\n//   UI 必须给出\"排队/可能超时\"的提示，不能静默转圈。\n// ===========================================================================\n\nvar MODEL_MAP = {\"紫域·图片-1K\":\"zy_model_90a6992dde387d5233f4\",\"紫域·图片-2K\":\"zy_model_914ad5f4b56ac5c18e73\",\"紫域·图片-线路A\":\"zy_model_06c91a5564fe967cdeef\",\"紫域·图片-线路B\":\"zy_model_c06ef7730346116bf714\",\"紫域·图片-线路C\":\"zy_model_f5fca7d1b56d4c116976\"};\n\nvar requestedModel = String(model || \"\").trim();\nvar modelId = MODEL_MAP[requestedModel] || requestedModel;\n\nvar catalog = await http.get(\"/models\");\nvar list = (catalog && catalog.models) || [];\nvar entry = null;\nfor (var i = 0; i < list.length; i++) {\n  var m = list[i];\n  if (!m) continue;\n  if (m.id === modelId || String(m.name || \"\").trim() === requestedModel) { entry = m; break; }\n}\nif (!entry) throw new Error(\"紫域目录里找不到模型 \" + requestedModel + \"，请到渠道设置里刷新模型列表\");\n\nvar ratio = \"1:1\";\nvar rawRatio = String((params && params.ratio) || (params && params.size) || \"\");\nif (/^(16:9|9:16|1:1|3:4|4:3)$/.test(rawRatio)) {\n  ratio = rawRatio;\n} else {\n  var wh = /^(\\d+)x(\\d+)$/.exec(rawRatio);\n  if (wh && Number(wh[1]) > 0 && Number(wh[2]) > 0) {\n    var w = Number(wh[1]), h = Number(wh[2]);\n    ratio = w === h ? \"1:1\" : (w > h ? \"16:9\" : \"9:16\");\n  }\n}\n\n// 参考图（图生图）：上传后放进 assets.image —— 这一分支未验证。\nvar assetUrls = [];\nif (images && images.length) {\n  var files = [];\n  for (var f = 0; f < images.length && f < 10; f++) {\n    var data = images[f];\n    if (!data) continue;\n    if (data.indexOf(\"data:\") !== 0) data = \"data:image/png;base64,\" + data;\n    files.push({ type: \"image\", name: \"ref\" + (f + 1) + \".png\", data: data });\n  }\n  if (files.length) {\n    var uploaded = await http.post(\"/uploads\", { files: files });\n    var assets = (uploaded && uploaded.assets) || [];\n    for (var a = 0; a < assets.length; a++) { if (assets[a] && assets[a].url) assetUrls.push(assets[a].url); }\n  }\n}\n\nvar want = Math.floor(Number(params && params.count) || 1);\nif (!(want > 0)) want = 1;\nif (want > 4) want = 4;\n\n// 收集一次任务里的所有图片地址。\n// ★ 实测订正（旧结论写反，已作废）：产出只在**顶层** resultUrl / previewUrl / preview（三字段同值）。\n//   job.assets.image 是用户上传的**输入参考图**，绝不能当产出返回 ——\n//   实测反例 0046e0d8：assets.image 那 3 条是任务创建前上传的参考图，不是出片结果。\n//   一个任务可能有多个产出（多图），全部去重收集，不能只取第一个。\nfunction collectImages(job) {\n  var urls = [];\n  var top = [job.resultUrl, job.previewUrl, job.preview];\n  for (var q = 0; q < top.length; q++) { if (top[q] && urls.indexOf(top[q]) < 0) urls.push(top[q]); }\n  return urls;\n}\n\nvar out = [];\nfor (var n = 0; n < want; n++) {\n  var idem = (typeof crypto !== \"undefined\" && crypto.randomUUID)\n    ? crypto.randomUUID()\n    : (\"canvas-img-\" + Date.now() + \"-\" + n + \"-\" + Math.random().toString(36).slice(2));\n\n  var body = { modelId: entry.id, mode: \"t2i\", prompt: prompt, ratio: ratio };\n  if (assetUrls.length) {\n    var imgAssets = [];\n    for (var v = 0; v < assetUrls.length; v++) imgAssets.push({ url: assetUrls[v] });\n    body.assets = { image: imgAssets, video: [], audio: [] };\n  }\n\n  var created = await http.post(\"/jobs\", body, { headers: { \"Idempotency-Key\": idem } });\n  var jobId = (created && (created.jobId || created.id)) || (created && created.job && created.job.id) || null;\n  if (!jobId) throw new Error(\"紫域没有返回任务号：\" + JSON.stringify(created));\n\n  var done = await poll(\n    function () { return http.get(\"/jobs/\" + jobId); },\n    function (state) {\n      // 实测：轮询返回 { ok:true, job:{...} }，job 嵌在 .job 下。\n      var job = (state && state.job) || state;\n      if (!job || !job.status) return null;\n      if (job.status === \"failed\") {\n        var why = job.failureReason || job.message || \"紫域任务失败\";\n        var tail = job.refunded ? \"（已退回 \" + (job.refundAmount || 0) + \" 积分）\" : \"（未退回积分，请以紫域账单为准）\";\n        throw new Error(why + tail);\n      }\n      if (job.status === \"completed\") return job;\n      return null;\n    },\n    { intervalMs: 4000, timeoutMs: 20 * 60 * 1000 }\n  );\n\n  var urls = collectImages(done);\n  if (!urls.length) throw new Error(\"紫域任务完成但没有图片地址\");\n  out = out.concat(urls);\n}\n\n// normalizePluginImages 认字符串数组、{url}、{dataUrl}。\nreturn out;"
+  },
+  "pricingRule": {
+    "estimate": "costPerSecond > 0 ? costPerSecond × 秒数 : cost",
+    "settle": "一律以紫域任务返回的 cost 字段为准（提交后轮询可见）",
+    "customer": "ceil(紫域积分 × 1.5)，最低 1 点；1 点 = ¥0.10（仅展示口径）",
+    "warning": "models 目录里的 cost **不是总价**。实测 zy_model_2db335ab16705b6ffb21 提交 30 秒实际扣 1500，而目录里 cost=200 / costPerSecond=50 → 真实价 = costPerSecond × 秒数。\n2026-09-13 复核：durationCosts 字段实测**全部为空 {}**，不要依赖它；统一用 costPerSecond > 0 ? costPerSecond × 秒数 : cost。\n因此预扣只能按上式估算，结算必须用任务返回的 cost 做差额多退少补（settleTaskCredits 已支持）。"
+  },
+  "knownGaps": [
+    "★ 脚本仍从未在真实浏览器执行过一次（编写环境无浏览器）。首次启用前必须按 ACCEPTANCE.md 真机冒烟。",
+    "★ 已关闭：提交响应形状已实测 —— POST /jobs 返回 HTTP 202 + { ok, job:{...}, user, billing, submitPending, credits }，job 嵌在 .job 下。",
+    "★ 已关闭：结果字段已实测订正（旧结论写反，已作废）—— 真实产出在**顶层** job.resultUrl（previewUrl / preview 同值）；job.assets 是**输入参考素材**，不是产出。脚本已按此改写。",
+    "★ 已关闭：失败退款口径已订正 —— 全量 19/19 失败样本 refunded:true 且 refundAmount==cost（cost 合计 3430 / 退款 3430 / 净支出 0）；仍按字段对账，不写死\"必退\"。",
+    "★ 收录范围（2026-09-13 定）：线上 44 档（39 video + 5 image），本模板只收录 27 档代表档（22 video + 5 image）—— 覆盖最便宜 50、最贵 950、以及各价格带的固定价档；其余 17 档（含多条未命名线路）不展示，需要时可按 id 直填或扩表。",
+    "★ 模型下拉框没有搜索：web/src/components/model-picker.tsx 是朴素 Radix Select，无搜索框、无分组、无虚拟滚动（全仓搜 cmdk/CommandInput/Combobox 零命中），高度上限 18rem。39 个视频档全塞进去极难用 —— 这也是只收代表档的直接原因；后续要扩容必须先改造选择器。",
+    "图片的图生图分支未验证；验证前请继续用 OpenLux 出图改图。",
+    "★ 图片模型超时风险：image-2-1k（cost=5）实测卡 processing 5 分钟后 timed out（已退款），样本仅 1 个。上线时该档需降权或从默认展示摘掉。",
+    "多张出图是串行发 N 个任务，未验证并发与限流表现。",
+    "目录会动态变化：MODEL_MAP 的 id 以 GET /api/v1/models 为准；本文件快照为 2026-09-13（线上 44 档，本模板收录 27 档），上线前要再刷一次。",
+    "★ 用户点名的 zy_model_8ca86ee8119ded45fe00（官转满血2.5 720p 6分钟）已从目录下架；2026-09-13 复核线上目录内已无 cost ≥ 1000 的档位，最高 950。",
+    "/ziyu/ 的反代与 Key 注入依赖 publish.sh 同步替换 __ZIYU_KEY__，漏改则必然 401。",
+    "★ 已删除：zy_model_470346a7b94a0605d6f6（紫域·2.5-720p-30秒-30图，cost=500）2026-09-13 复核已不在线上目录，已从模板与 MODEL_MAP 移除，否则用户选中后会直接报「目录里找不到模型」。"
+  ]
+}

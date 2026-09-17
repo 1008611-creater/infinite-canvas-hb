@@ -1,0 +1,5 @@
+# 治理仓本地 gitignore
+.workbuddy-ai/
+node_modules/
+*.bak-*
+

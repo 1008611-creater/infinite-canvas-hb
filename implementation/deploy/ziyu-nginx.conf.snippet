@@ -1,0 +1,142 @@
+# ============================================================================
+# 无限画布 · 紫域（ziyuai.vip）网关片段  —— 批次 1 · 收得到钱
+# 文件：implementation/deploy/ziyu-nginx.conf.snippet
+# 目标文件（权威源码树）：deploy/nginx-docker.conf
+# 状态：设计稿。**尚未写入权威源码树，尚未发布。**
+# ============================================================================
+#
+# 作用
+#   把浏览器发往本站的 /ziyu/... 反向代理到紫域 API，并在服务端注入
+#   Authorization 头。这样前端渠道模板里的 apiKey 可以是一个不含机密的
+#   占位串，真实 Key 永远不出服务器。
+#
+# 先例
+#   deploy/nginx-docker.conf 第 85 行（/agnes/ 块）已经在用同一手法：
+#       proxy_set_header Authorization "Bearer __AGNES_TOKEN__";
+#   本片段沿用该做法，只换占位符名。
+#
+# ----------------------------------------------------------------------------
+# 一、要粘进 nginx-docker.conf 的内容
+# ----------------------------------------------------------------------------
+#
+# 位置：紧跟在 /agnes/ 的 location 块之后、/api/ 的 location 块之前。
+# （顺序不敏感，但放在一起便于日后排查。）
+#
+# 片段开始 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+location /ziyu/ {
+    # ★★★ 批次 1 必须保留站点门禁 ★★★
+    #   这与 /api/、/dav/ 的既有做法不同，是有意为之：
+    #   /ziyu/ 会花真金白银调用上游付费接口，一旦免门禁就是一台
+    #   公开的烧钱代理。门禁取消只在批次 2 且必须与额度体系同时生效，
+    #   详见本文件第四节。
+    if ($canvas_authed = 0) {
+        return 403;
+    }
+
+    # 服务端注入紫域 Key。浏览器发来的同名头会被这一行覆盖，
+    # 所以前端填什么 apiKey 都不会影响安全性。
+    # ⚠️ __ZIYU_KEY__ 必须由 publish.sh 在发布时替换，否则容器会把
+    #    字面量 "Bearer __ZIYU_KEY__" 发给紫域 → 必然 401，且日志里
+    #    看不出任何异常（发布日志仍然全绿）。见第三节。
+    proxy_set_header Authorization "Bearer __ZIYU_KEY__";
+
+    # 尾斜杠会剥掉 /ziyu 前缀再拼接：
+    #   /ziyu/api/v1/jobs  →  https://<上游>/api/v1/jobs  ✅
+    # 注意：这里写的是紫域根域名（不带 /api），因为紫域路径自带 /api/v1。
+    proxy_pass https://ziyuai.vip/;
+
+    proxy_http_version 1.1;
+    proxy_set_header Host ziyuai.vip;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    # 长任务：紫域轮询 + 大素材上传都要留足时间。
+    # Cloudflare 给源站的 100 秒上限仍在，超时表现为 524 —— 那是 CF 层的事，
+    # 这里只是不让自己成为更早的那道瓶颈。
+    proxy_read_timeout 600s;
+    proxy_send_timeout 600s;
+    proxy_connect_timeout 30s;
+    proxy_buffering off;
+    client_max_body_size 64m;
+}
+
+# 片段结束 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+# ----------------------------------------------------------------------------
+# 二、前端如何调用（路径拼接的坑）
+# ----------------------------------------------------------------------------
+#
+# 前端渠道 baseUrl 填： /ziyu/api
+#
+# 为什么不是 /ziyu/v1 或 /ziyu？
+#   web/src/stores/use-config-store.ts 的 buildApiUrl()（L489-494）会自动补 /v1：
+#       baseUrl="/ziyu/api"  →  前缀 "/ziyu/api"
+#       buildApiUrl("/ziyu/api", "/models")  →  "/ziyu/api/v1/models"
+#   经上面 nginx 剥掉 /ziyu 前缀后 → https://ziyuai.vip/api/v1/models  ✅
+#
+#   而插件脚本里的路径**必须**只写 "/jobs"、"/models"、"/uploads"：
+#       baseUrl="/ziyu/api" + "/jobs"  →  "/ziyu/api/v1/jobs"  ✅
+#   绝对不要在脚本里写 "/ziyu/api/v1/jobs" 或 `${baseUrl}/v1/jobs`：
+#       → "/ziyu/api/v1/ziyu/api/v1/jobs" 或路径重复  ❌
+#   理由见 model-plugin.ts L40-43：只有 /^https?:/i 开头的路径才会被原样
+#   返回，其余一律走 buildApiUrl() 拼装。
+#
+# ----------------------------------------------------------------------------
+# 三、★ 发布链路必须同步改的三处（漏一处 = 线上必然 401）★
+# ----------------------------------------------------------------------------
+#
+# 现状：scripts/deploy/publish.sh L237-240 只替换两个占位符：
+#     sed -e 's|__AGNES_TOKEN__|${ACCESS_TOKEN}|g' -e 's|__AUTH_COOKIE__|${AUTH_COOKIE}|g'
+#
+# 必须改成三个（新增 __ZIYU_KEY__）：
+#     sed -e 's|__AGNES_TOKEN__|${ACCESS_TOKEN}|g' \
+#         -e 's|__AUTH_COOKIE__|${AUTH_COOKIE}|g' \
+#         -e 's|__ZIYU_KEY__|${ZIYU_API_KEY}|g'
+#
+# 同一条命令末尾的守卫 grep 也要同步（L240 现为）：
+#     (grep -c '__AGNES_TOKEN__\|__AUTH_COOKIE__' default.conf || true)
+# 改成：
+#     (grep -c '__AGNES_TOKEN__\|__AUTH_COOKIE__\|__ZIYU_KEY__' default.conf || true)
+#
+# ZIYU_API_KEY 的取值来源：publish.sh 已有 remote_env_get() 现成函数，
+# 从服务器 API_ENV_FILE（/opt/infinite-canvas/api/api.env）读取即可。
+# 该文件与站点密码、AUTH_COOKIE 同级的机密，**不得进仓库、不得进本文件夹**。
+#
+# 提醒：nginx 配置是挂目录生效的，改完 config 后需要
+#     docker compose exec -T web nginx -s reload
+# 而不是重建 web 容器（重建不会让新版 conf 生效的典型误操作见 AGENTS.md §4）。
+#
+# ----------------------------------------------------------------------------
+# 四、★★ 批次 2 撤门禁时的一个真实资金风险 ★★
+# ----------------------------------------------------------------------------
+#
+# 批次 2 要撤掉 /、/assets/、/config.js、/agnes/ 四处 cookie 门禁。
+# 但 /ziyu/ 的门禁**不能跟着一起撤**，原因不在 nginx，在 API 服务：
+#
+#   canvas-api/server.js L89-96 的 /api/auth/verify 同时接受
+#   "真会话（canvas_session JWT）" **或** "legacy 站点 cookie"。
+#
+#   也就是说：批次 2 公开注册之后，任何**曾经拿到过旧站点密码的人**，
+#   只要手里还留着那枚 canvas_auth cookie，就能继续拿到通过 verify 的
+#   身份，进而调用 /ziyu/ 花掉服务器上的紫域额度 —— 而他可能并没有本站账号、
+#   也没有余额。这是一个**先花钱后记账**的敞口。
+#
+# 因此批次 2 的正确顺序是：
+#   1. 先让额度体系对所有 /ziyu/ 调用生效（预扣 + 结算）；
+#   2. 再把 /api/auth/verify 的 legacy 分支收紧为只读 / 或直接下线；
+#   3. 最后才考虑 /ziyu/ 门禁。
+#   三者顺序颠倒的任一种组合，都等于给陌生人开了一台免费出片机。
+#
+# 决策项：D-batch2-ziyu-gate（见 implementation/deploy/ACCEPTANCE.md 附录）
+#
+# ----------------------------------------------------------------------------
+# 五、未验证声明
+# ----------------------------------------------------------------------------
+#
+# - 本片段**未在任何真实 nginx 上加载过**（本会话无 shell、无浏览器）。
+# - 紫域上游域名 ziyuai.vip 与 /api/v1/* 路径来自官方文档逐字复核，
+#   但**本片段未真实发过一次请求**。
+# - proxy_pass 的尾斜杠剥前缀行为是 nginx 通用语义，未在本项目实测。
+# - 上线前必须在真实环境按 ACCEPTANCE.md 的 A-01 / A-02 两项验证。
