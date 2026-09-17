@@ -15,7 +15,9 @@
 #   CANVAS_PROXY_ROOT      默认 /opt/agnes-video-proxy
 #   CANVAS_AGNES_BASE_URL  默认 /agnes（同域反代，不要改成带域名的地址）
 #   CANVAS_ACCESS_TOKEN    默认读取本机 agnes-video-proxy/.env 里的 PROXY_ACCESS_TOKEN
-#   CANVAS_SITE_PASSWORD   站点登录密码（只输密码、不要用户名），默认 lsb123456
+#   CANVAS_SITE_PASSWORD   站点登录密码（只输密码、不要用户名）。
+#                          不设默认值：未设置时脚本会中止并提示，避免密码进仓库。
+#                          权威值只在服务器 /opt/agnes-video-proxy/.env 的 SITE_PASSWORD。
 #   CANVAS_RUNTIME         docker（默认）| systemd
 # ---------------------------------------------------------------------------
 set -euo pipefail
@@ -164,7 +166,9 @@ upload_lf deploy/nginx-docker.conf "${APP_ROOT}/nginx/default.conf"
 # 用户会被迫反复登录。所以首次生成后写进服务器 .env，之后一律复用。
 # ---------------------------------------------------------------------------
 PROXY_ROOT="${CANVAS_PROXY_ROOT:-/opt/agnes-video-proxy}"
-SITE_PASSWORD="${CANVAS_SITE_PASSWORD:-lsb123456}"
+# 站点密码**不设默认值**：默认密码写进脚本 = 写进仓库 = 泄露。
+# 未显式提供时不覆盖服务器上的现值（AUTH_COOKIE/站点密码本就该长期固定）。
+SITE_PASSWORD="${CANVAS_SITE_PASSWORD:-}"
 ENV_FILE="${PROXY_ROOT}/.env"
 ENV_CHANGED=0
 
@@ -192,8 +196,12 @@ if [[ -z "$AUTH_COOKIE" ]]; then
     echo "==> 首次部署：生成登录凭证"
 fi
 remote_env_set "$ENV_FILE" AUTH_COOKIE "$AUTH_COOKIE" && ENV_CHANGED=1
-remote_env_set "$ENV_FILE" SITE_PASSWORD "$SITE_PASSWORD" && ENV_CHANGED=1
-echo "==> 站点密码已设为 ${SITE_PASSWORD}（登录凭证固定不变）"
+if [[ -n "$SITE_PASSWORD" ]]; then
+    remote_env_set "$ENV_FILE" SITE_PASSWORD "$SITE_PASSWORD" && ENV_CHANGED=1
+    echo "==> 站点密码已更新（登录凭证固定不变）"
+else
+    echo "==> 未提供 CANVAS_SITE_PASSWORD：沿用服务器 ${ENV_FILE} 里现有的 SITE_PASSWORD，不改动"
+fi
 
 # 云端同步（WebDAV）凭据。
 # 默认直接复用站点密码：少记一个密码，且「能进后台的人才能同步」，不会多开一个口子。

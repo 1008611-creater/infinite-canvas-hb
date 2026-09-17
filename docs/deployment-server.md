@@ -56,7 +56,7 @@
 | --- | --- |
 | WebDAV 地址 | `https://hb.cauai.fun/dav` |
 | 用户名 | `canvas` |
-| 密码 | 站点密码（`SITE_PASSWORD`，默认 `lsb123456`） |
+| 密码 | 站点密码（`SITE_PASSWORD`）。**权威值只在服务器 `/opt/agnes-video-proxy/.env`**，本文档不记录明文 |
 | 目录 | 留空，或用 `infinite-canvas` 之类给自己分个文件夹 |
 
 点「测试连接」应提示可用，再点同步即可。换设备后用同一份配置同步，画布和素材就会补齐
