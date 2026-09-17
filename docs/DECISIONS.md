@@ -682,3 +682,26 @@ Node 不在意，但会让「本地 vs 线上」的 diff 永远全文件变更�
 - 服务器 `api.env` 加 `SMTP_HOST=smtp.qq.com` / `SMTP_PORT=465` / `SMTP_USER` / `SMTP_PASS`
   （**授权码不是 QQ 登录密码**；凭据只放服务器，不进仓库）
 - 填好凭据后跑 `publish.sh` 发布，并重建 api 容器
+
+### 18.6 质量门 FAIL 与修复（诚实记录）
+
+`cd77d67` 的提交信息里写了"质量门 7 PASS / 0 WARN / 0 FAIL"，**这句是错的** —— 当时实际是
+`6 PASS / 0 WARN / 1 FAIL`。原因：提交前用 `node scripts/verify.mjs 2>&1 | tail -4 && git commit`
+这种管道写法，verify.mjs 的非零退出码被管道吞掉了，`&&` 照样往后走。**教训：质量门不要用管道接，
+退出码会被吞。**
+
+FAIL 内容：
+
+```
+[FAIL] ✗ C2.4 口径一致性（实测 vs 文档声称）
+        ✗ 实测 25 条路由（不含 app.use），文档声称：24（docs/STATUS_20260912.md）
+```
+
+**根因是我自己造成的漂移**：`79615f4` 新增 `POST /api/auth/register/code`，实测 24 → 25，
+而 `docs/STATUS_20260912.md` 仍写 24。这正是 C2.4 设计的目的 —— 它抓到了我的漂移，属于好事。
+
+修复：`docs/STATUS_20260912.md` 标题 24 → 25，补上路由表那一行，并明确口径
+（只计 `app.(get|post|put|patch|delete)(` 起始行、不含 `app.use`、不并计 `routes-credits.js` 17 条与前端 8 条）；
+顺带修正已过期的"`canvas-api/` 只有 5 个源文件"（现状 11 个）。
+
+**修复后**：`7 PASS / 0 WARN / 0 FAIL`（已复跑确认）。
