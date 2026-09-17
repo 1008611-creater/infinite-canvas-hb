@@ -105,11 +105,14 @@ nginx 片段 `implementation/deploy/batch2-nginx.conf.snippet`（含 R1~R5 风�
 > 因此 `apply-batch3.mjs` 的形态也不同：**只做前置校验 + 打印待执行清单**，
 > **不代做任何 SSH / docker / netsh / 隧道操作，也不写源码树**（沿批次 2 脚本 L23-25 的「有意不做」写法）。
 > **前置**：批次 1 已落地（对账接口由批次 1 提供）；批次 2 的 L2 真机冒烟已补做。
-> **★ 本批次唯一硬阻塞**：`D-agent-auth` 未裁决前 **A-19 不许开始**（见下）。
+> ✅ **`D-agent-auth` 已于 2026-09-18 裁决（D13）**：不对外、只本机用 + 支持用户自带 agent（BYO）。
+> 原「A-19 不许开始」的阻塞**解除**；A-19 的范围同时**改为 BYO 配置入口**（见下）。
 
-- [ ] `canvas-agent` 对外能力（**已构建**，`dist/` 2026-08-27，**34 个工具**）走守卫反代 + 具名隧道
-      —— ⚠️ **卡在待裁决 `D-agent-auth`**（沿用现有 token / 另发凭据 + 守卫反代 / 不对外暴露，三选一未定）
-      —— 34 工具证据：`canvas-agent/src/canvas/schemas.ts` 的 `toolNames`（与 `dist/canvas/schemas.js` 一致）；`src/server/mcp.ts` L15 全量注册
+- [ ] ~~`canvas-agent` 对外能力走守卫反代 + 具名隧道~~ → **改为：用户自带 agent（BYO）配置入口**
+      —— ✅ **D13 已裁决**：平台不对外提供、不托管、不兜底；用户填自己的地址与凭据
+      —— BYO 两条硬要求：**凭据只存浏览器本地，不同步服务端**；**前端直连，平台不做代理转发**
+      —— 已知副作用：https 页面直连 http 地址会被浏览器混合内容策略拦截，UI 需提示
+      —— 34 工具清单**仅作本机能力参考**：`canvas-agent/src/canvas/schemas.ts` 的 `toolNames`；`src/server/mcp.ts` L15 全量注册
 - [ ] LLM 中转跨设备：`tools/omniroute-guard`（20129）+ 具名隧道，**不用 Cloudflare Access**
       —— 守卫反代已写完（`server.js` 136 行、零依赖）；`GUARD_TOKEN` 必填，缺则拒绝启动；默认只绑 `127.0.0.1`
 - [ ] 同时处置两个风险：20128 加防火墙限本机（**WSL 用户不要加这条规则**）、quick tunnel 保持关闭
