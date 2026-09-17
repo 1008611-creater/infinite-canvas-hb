@@ -13,7 +13,9 @@ WORKDIR /app
 COPY package.json ./
 RUN npm install --omit=dev --no-audit --no-fund
 
-COPY server.js db.js auth.js schema.sql credits.js ldxp-redeem.js ziyu.js routes-credits.js ./
+# ⚠️ 新增后端文件必须同时改这一行 —— 漏了会表现为「构建成功但运行时 MODULE_NOT_FOUND」，
+#    而发布日志可能全绿（历史上一字排开 COPY 就是为了出问题时一眼看出缺谁）。
+COPY server.js db.js auth.js schema.sql credits.js ldxp-redeem.js ziyu.js routes-credits.js email.js email-verify.js ./
 
 ENV PORT=8790
 ENV MEDIA_ROOT=/data/media

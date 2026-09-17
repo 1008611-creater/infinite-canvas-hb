@@ -25,6 +25,8 @@ import express from "express";
 import { query, migrate, closeDb } from "./db.js";
 import * as auth from "./auth.js";
 import { mountCreditRoutes } from "./routes-credits.js";
+import { sendMail, smtpConfigured } from "./email.js";
+import { issueCode, verifyCode, revokeLatestCode, TTL_SECONDS } from "./email-verify.js";
 
 const app = express();
 const PORT = Number(process.env.PORT || 8790);
@@ -112,15 +114,72 @@ app.get("/api/health", async (_req, res) => {
     }
 });
 
+/** 客户端 IP。已开 trust proxy，req.ip 会解析 X-Forwarded-For。 */
+function clientIp(req) {
+    return String(req.ip || req.socket?.remoteAddress || "").slice(0, 64);
+}
+
+// POST /api/auth/register/code —— 发注册验证码
+//
+// ⚠️ fail-closed：SMTP 没配就 503，**绝不放行**。
+//    放行等于"验证码形同虚设"，比明确报错危险得多 —— 你会以为已经验证过了。
+app.post("/api/auth/register/code", async (req, res) => {
+    try {
+        if (process.env.ALLOW_REGISTER === "0") return res.status(403).json({ error: "registration_closed" });
+        if (!smtpConfigured()) {
+            console.error("[auth] 请求发码但 SMTP 未配置 —— 拒绝（fail-closed）");
+            return res.status(503).json({ error: "mail_not_configured" });
+        }
+        const email = String(req.body?.email || "").trim().toLowerCase();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ error: "invalid_email" });
+        if (await auth.findUserByEmail(email)) return res.status(409).json({ error: "email_taken" });
+
+        const issued = await issueCode({ email, ip: clientIp(req), purpose: "register" });
+        if (!issued.ok) return res.status(429).json({ error: issued.reason, retryAfter: issued.retryAfter });
+
+        try {
+            await sendMail({
+                to: email,
+                subject: "无限画布 · 注册验证码",
+                text: [
+                    `你的注册验证码是 ${issued.code}`,
+                    "",
+                    `${Math.round(TTL_SECONDS / 60)} 分钟内有效，最多可试 5 次。`,
+                    "如果这不是你本人操作，忽略本邮件即可。",
+                ].join("\n"),
+            });
+        } catch (mailError) {
+            console.error("[auth] 验证码邮件发送失败:", mailError && mailError.message);
+            await revokeLatestCode({ email, purpose: "register" }).catch(() => {});
+            return res.status(502).json({ error: "mail_send_failed" });
+        }
+
+        // ⚠️ 明文验证码只出现在邮件里，不进日志、不进响应体
+        res.json({ ok: true, ttlSeconds: issued.ttlSeconds });
+    } catch (error) {
+        console.error("[auth] 发码失败:", error && error.message);
+        res.status(500).json({ error: "code_issue_failed" });
+    }
+});
+
 app.post("/api/auth/register", async (req, res) => {
     try {
         if (process.env.ALLOW_REGISTER === "0") return res.status(403).json({ error: "registration_closed" });
         const email = String(req.body?.email || "").trim().toLowerCase();
         const password = String(req.body?.password || "");
         const displayName = String(req.body?.displayName || "").trim();
+        const code = String(req.body?.code || "").trim();
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ error: "invalid_email" });
         if (password.length < 8) return res.status(400).json({ error: "password_too_short" });
+        if (!/^\d{6}$/.test(code)) return res.status(400).json({ error: "invalid_code" });
         if (await auth.findUserByEmail(email)) return res.status(409).json({ error: "email_taken" });
+
+        // 邮箱验证码：未通过一律拒绝，不做"配置缺失就放行"的降级
+        const checked = await verifyCode({ email, code, purpose: "register" });
+        if (!checked.ok) {
+            const status = checked.reason === "code_locked" ? 429 : 400;
+            return res.status(status).json({ error: checked.reason });
+        }
 
         const user = await auth.createUser({ email, password, displayName });
         await auth.promoteToAdminIfFirst(user.id);

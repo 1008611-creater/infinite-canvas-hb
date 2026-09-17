@@ -265,5 +265,33 @@ CREATE INDEX IF NOT EXISTS idx_credit_adjustments_user
     ON credit_adjustments (user_id, created_at DESC);
 
 -- ---------------------------------------------------------------------------
+-- 7. 邮箱验证码（注册 / 后续可复用于找回密码）
+--
+--    ⚠️ 只存 code_hash，绝不存明文验证码。
+--    code_hash = HMAC-SHA256(key = JWT_SECRET, msg = "<email>:<code>")
+--
+--    为什么必须带服务端密钥而不是裸 SHA256：6 位数字只有 100 万种组合，
+--    裸哈希可被枚举反推（秒级）。带密钥后，数据库泄露也拿不到可用验证码。
+--    ⚠️ 因此 JWT_SECRET 一旦更换，所有未使用的验证码立即失效（可接受）。
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS email_verification_codes (
+    id           BIGSERIAL PRIMARY KEY,
+    email        TEXT NOT NULL,
+    code_hash    TEXT NOT NULL,
+    purpose      TEXT NOT NULL DEFAULT 'register',
+    expires_at   TIMESTAMPTZ NOT NULL,
+    attempts     INTEGER NOT NULL DEFAULT 0,
+    consumed_at  TIMESTAMPTZ,
+    ip           TEXT,
+    created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_email_codes_lookup
+    ON email_verification_codes (email, purpose, created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_email_codes_ip
+    ON email_verification_codes (ip, created_at DESC);
+
+-- ---------------------------------------------------------------------------
 -- 完成。所有语句均幂等，可在已有数据的库上重复执行。
 -- ---------------------------------------------------------------------------

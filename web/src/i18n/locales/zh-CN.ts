@@ -575,6 +575,13 @@ export default {
             displayNamePlaceholder: "怎么称呼你",
             passwordHint: "至少 8 位",
             passwordTooShort: "密码至少 8 位",
+            emailCode: "邮箱验证码",
+            emailCodeHint: "先点「发送验证码」，去邮箱里取 6 位数字",
+            sendCode: "发送验证码",
+            codeSent: "验证码已发送，{seconds} 分钟内有效",
+            codeSendFailed: "验证码发送失败",
+            codeInvalid: "请填写邮箱收到的 6 位数字验证码",
+            needValidEmail: "请先填写正确的邮箱地址",
             registrationClosed: "本站已关闭公开注册，请联系管理员开号",
         },
         webdav: {

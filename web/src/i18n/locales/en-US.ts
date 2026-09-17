@@ -575,6 +575,13 @@ export default {
             displayNamePlaceholder: "What should we call you",
             passwordHint: "At least 8 characters",
             passwordTooShort: "Password must be at least 8 characters",
+            emailCode: "Email verification code",
+            emailCodeHint: "Click \"Send code\" first, then enter the 6-digit code from your inbox",
+            sendCode: "Send code",
+            codeSent: "Code sent. Valid for {seconds} minutes",
+            codeSendFailed: "Failed to send the verification code",
+            codeInvalid: "Enter the 6-digit code you received by email",
+            needValidEmail: "Enter a valid email address first",
             registrationClosed: "Public registration is closed. Ask an admin to create an account.",
         },
         webdav: {

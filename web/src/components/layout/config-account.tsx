@@ -19,6 +19,7 @@ import {
     loginBackend,
     logoutBackend,
     registerBackend,
+    sendRegisterCodeBackend,
     type BackendUser,
 } from "@/services/backend-sync";
 
@@ -54,6 +55,33 @@ export function ConfigAccount() {
     const [loggingIn, setLoggingIn] = useState(false);
     // 服务端 ALLOW_REGISTER=0 时会返 403，收到就别再让人白填一遍
     const [registrationClosed, setRegistrationClosed] = useState(false);
+    // 邮箱验证码：注册模式必填。发码后 60 秒内禁止重发（服务端也在限，这里只是别让用户白点）
+    const [code, setCode] = useState("");
+    const [codeSending, setCodeSending] = useState(false);
+    const [codeCooldown, setCodeCooldown] = useState(0);
+
+    useEffect(() => {
+        if (codeCooldown <= 0) return;
+        const timer = window.setInterval(() => setCodeCooldown((n) => (n <= 1 ? 0 : n - 1)), 1000);
+        return () => window.clearInterval(timer);
+    }, [codeCooldown]);
+
+    const sendCode = async () => {
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+            message.error(t("config.account.needValidEmail"));
+            return;
+        }
+        setCodeSending(true);
+        try {
+            const result = await sendRegisterCodeBackend(email.trim());
+            setCodeCooldown(60);
+            message.success(t("config.account.codeSent", { seconds: Math.round(result.ttlSeconds / 60) }));
+        } catch (error) {
+            message.error(error instanceof Error ? error.message : t("config.account.codeSendFailed"));
+        } finally {
+            setCodeSending(false);
+        }
+    };
 
     const [syncing, setSyncing] = useState(false);
     const [syncStatus, setSyncStatus] = useState("");
@@ -91,10 +119,15 @@ export function ConfigAccount() {
             message.error(t("config.account.passwordTooShort"));
             return;
         }
+        // 邮箱验证码：注册必须先验证邮箱，不然开放注册等于谁都能批量建号
+        if (mode === "register" && !/^\d{6}$/.test(code.trim())) {
+            message.error(t("config.account.codeInvalid"));
+            return;
+        }
         setLoggingIn(true);
         try {
             const account = mode === "register"
-                ? await registerBackend(email.trim(), password, displayName.trim() || undefined)
+                ? await registerBackend(email.trim(), password, displayName.trim() || undefined, code.trim())
                 : await loginBackend(email.trim(), password);
             setUser(account);
             setPassword("");
@@ -213,7 +246,7 @@ export function ConfigAccount() {
                         {syncStatus ? <span className="text-xs text-stone-500">{syncStatus}</span> : null}
                     </div>
                 ) : (
-                    <div className={mode === "register" ? "grid gap-4 md:grid-cols-3" : "grid gap-4 md:grid-cols-2"}>
+                    <div className="grid gap-4 md:grid-cols-2">
                         {mode === "register" ? (
                             <Form.Item label={t("config.account.displayName")} className="mb-4">
                                 <Input value={displayName} placeholder={t("config.account.displayNamePlaceholder")} onChange={(event) => setDisplayName(event.target.value)} />
@@ -230,6 +263,23 @@ export function ConfigAccount() {
                                 onPressEnter={() => void submit()}
                             />
                         </Form.Item>
+                        {mode === "register" ? (
+                            <Form.Item label={t("config.account.emailCode")} className="mb-0" extra={t("config.account.emailCodeHint")}>
+                                <Space.Compact className="w-full">
+                                    <Input
+                                        value={code}
+                                        inputMode="numeric"
+                                        maxLength={6}
+                                        placeholder="6 位数字"
+                                        onChange={(event) => setCode(event.target.value.replace(/\D/g, ""))}
+                                        onPressEnter={() => void submit()}
+                                    />
+                                    <Button loading={codeSending} disabled={codeCooldown > 0} onClick={() => void sendCode()}>
+                                        {codeCooldown > 0 ? `${codeCooldown}s` : t("config.account.sendCode")}
+                                    </Button>
+                                </Space.Compact>
+                            </Form.Item>
+                        ) : null}
                     </div>
                 )}
 

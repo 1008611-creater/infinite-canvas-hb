@@ -95,12 +95,29 @@ export async function backendFetch(path: string, init: RequestInit = {}, timeout
  * 注册。服务端可以关掉公开注册（ALLOW_REGISTER=0），那时会返 403 + registration_closed，
  * 前端据此把入口收起来，而不是让人填半天才发现不让注。
  */
-export async function registerBackend(email: string, password: string, displayName?: string): Promise<BackendUser> {
+/**
+ * 发注册验证码到邮箱。
+ *
+ * ⚠️ 服务端在 SMTP 没配好时会返回 503 mail_not_configured（fail-closed），
+ *    这里原样抛出让 UI 显示 —— 不要吞掉，否则用户会以为"点了没反应"。
+ */
+export async function sendRegisterCodeBackend(email: string): Promise<{ ttlSeconds: number }> {
+    const response = await fetch(`${API_BASE}/auth/register/code`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email }),
+    });
+    if (!response.ok) throw await readError(response, "验证码发送失败");
+    return (await response.json()) as { ttlSeconds: number };
+}
+
+export async function registerBackend(email: string, password: string, displayName?: string, code?: string): Promise<BackendUser> {
     const response = await fetch(`${API_BASE}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ email, password, displayName }),
+        body: JSON.stringify({ email, password, displayName, code }),
     });
     if (!response.ok) throw await readError(response, "注册失败");
     const payload = (await response.json()) as { user: BackendUser };
