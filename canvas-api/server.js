@@ -24,6 +24,7 @@ import express from "express";
 
 import { query, migrate, closeDb } from "./db.js";
 import * as auth from "./auth.js";
+import { mountCreditRoutes } from "./routes-credits.js";
 
 const app = express();
 const PORT = Number(process.env.PORT || 8790);
@@ -51,7 +52,7 @@ app.use((req, res, next) => {
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setHeader(
             "Access-Control-Allow-Headers",
-            "Content-Type, Authorization, Content-Range, X-Upload-Offset",
+            "Content-Type, Authorization, Content-Range, X-Upload-Offset, Idempotency-Key",
         );
         res.setHeader("Access-Control-Expose-Headers", "X-Upload-Offset, X-Upload-Total, X-Upload-Complete");
         res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
@@ -84,6 +85,13 @@ async function requireAuth(req, res, next) {
         console.error("[auth] 鉴权异常:", error && error.message);
         res.status(500).json({ error: "auth_failed" });
     }
+}
+
+/** 管理员守卫：未登录 401，非管理员 403。只用于 /api/admin/* 与 /api/ziyu/me。 */
+function requireAdmin(req, res, next) {
+    if (!req.user) return res.status(401).json({ error: "auth_required" });
+    if (req.user.role !== "admin") return res.status(403).json({ error: "admin_required" });
+    next();
 }
 
 /** nginx auth_request 用：真会话 或 旧站点 cookie 都放行（后者仅开页面） */
@@ -174,6 +182,8 @@ app.post("/api/auth/logout", async (req, res) => {
 });
 
 app.get("/api/auth/me", requireAuth, (req, res) => res.json({ user: req.user }));
+
+mountCreditRoutes(app, { requireAuth, requireAdmin, registerMedia, query });
 
 // ---------------------------------------------------------------- 通用 CRUD
 

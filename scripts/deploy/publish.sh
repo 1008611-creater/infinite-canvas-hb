@@ -25,6 +25,17 @@ set -euo pipefail
 SSH_HOST="${CANVAS_SSH_HOST:-haika-kidswear-1757}"
 APP_ROOT="${CANVAS_APP_ROOT:-/opt/infinite-canvas}"
 
+# 紫域（ziyuai.vip）上游 Key —— 只从命令行参数或环境变量读，绝不写进仓库。
+#   优先级：--ziyu-key=<key>  >  $CANVAS_ZIYU_API_KEY
+#   ${VAR:-} 的写法不是啰嗦：脚本开头是 set -euo pipefail，裸写 $CANVAS_ZIYU_API_KEY
+#   在变量未设置时会先崩在「unbound variable」，下面那段友好提示永远走不到。
+ZIYU_API_KEY="${CANVAS_ZIYU_API_KEY:-}"
+for CANVAS_ARG in "$@"; do
+    case "$CANVAS_ARG" in
+        --ziyu-key=*) ZIYU_API_KEY="${CANVAS_ARG#--ziyu-key=}" ;;
+    esac
+done
+
 # -n 必须加：ssh 默认会把脚本自己的 stdin 吃掉，导致 ssh 之后的命令读不到输入，
 # bash 会报 "line N: unexpected EOF while looking for matching `\"'" 且后面的步骤静默不执行。
 SSH=(ssh -n)
@@ -91,7 +102,7 @@ cp agnes-video-proxy/server.js agnes-video-proxy/package.json "$STAGE/proxy/"
 # （agnes-video-proxy/server.js 里就是按 ./webdav 去 require 的）。
 cp canvas-webdav/server.js "$STAGE/proxy/webdav.js"
 # 服务端 API（账号 / 项目 / 素材 / 媒体）：源码在 canvas-api/，落到服务器 /opt/infinite-canvas/api
-cp canvas-api/server.js canvas-api/db.js canvas-api/auth.js canvas-api/schema.sql canvas-api/package.json "$STAGE/api/"
+cp canvas-api/server.js canvas-api/db.js canvas-api/auth.js canvas-api/schema.sql canvas-api/credits.js canvas-api/ldxp-redeem.js canvas-api/ziyu.js canvas-api/routes-credits.js canvas-api/package.json "$STAGE/api/"
 
 # 后端代码指纹：deploy.sh 靠它决定「要不要重建 agnes 镜像」。
 # 以前是拿 server.js 单文件做 cmp，结果新增 webdav.js 这种兄弟模块时不会触发重建，
@@ -118,9 +129,9 @@ echo "==> 后端代码指纹 ${PROXY_FINGERPRINT:0:12}"
 # API 代码指纹：同理，api/ 下所有源码一起算，避免改了 db.js 却不重建镜像。
 api_fingerprint() {
     if command -v openssl >/dev/null 2>&1; then
-        cat "$STAGE/api/server.js" "$STAGE/api/db.js" "$STAGE/api/auth.js" "$STAGE/api/schema.sql" "$STAGE/api/package.json" 2>/dev/null | openssl dgst -sha256 -r | cut -d ' ' -f1 || true
+        cat "$STAGE/api/server.js" "$STAGE/api/db.js" "$STAGE/api/auth.js" "$STAGE/api/schema.sql" "$STAGE/api/credits.js" "$STAGE/api/ldxp-redeem.js" "$STAGE/api/ziyu.js" "$STAGE/api/routes-credits.js" "$STAGE/api/package.json" 2>/dev/null | openssl dgst -sha256 -r | cut -d ' ' -f1 || true
     else
-        cat "$STAGE/api/server.js" "$STAGE/api/db.js" "$STAGE/api/auth.js" "$STAGE/api/schema.sql" "$STAGE/api/package.json" 2>/dev/null | sha256sum | cut -d ' ' -f1 || true
+        cat "$STAGE/api/server.js" "$STAGE/api/db.js" "$STAGE/api/auth.js" "$STAGE/api/schema.sql" "$STAGE/api/credits.js" "$STAGE/api/ldxp-redeem.js" "$STAGE/api/ziyu.js" "$STAGE/api/routes-credits.js" "$STAGE/api/package.json" 2>/dev/null | sha256sum | cut -d ' ' -f1 || true
     fi
 }
 API_FINGERPRINT="$(api_fingerprint)"
@@ -238,14 +249,34 @@ remote_env_set "$API_ENV_FILE" PG_PASSWORD "$PG_PASSWORD_VALUE" && API_ENV_CHANG
 CANVAS_ALLOW_REGISTER_VALUE="${CANVAS_ALLOW_REGISTER:-1}"
 remote_env_set "$API_ENV_FILE" ALLOW_REGISTER "$CANVAS_ALLOW_REGISTER_VALUE" && API_ENV_CHANGED=1
 "${SSH[@]}" "$SSH_HOST" "chmod 600 '$API_ENV_FILE'"
+
+if [[ -z "$ZIYU_API_KEY" ]]; then
+    echo "✗ 未提供紫域 API Key，中止发布。"
+    echo "    用法：CANVAS_ZIYU_API_KEY=<key> bash scripts/deploy/publish.sh"
+    echo "      或：bash scripts/deploy/publish.sh --ziyu-key=<key>"
+    echo "    否则 nginx 里的 __ZIYU_KEY__ 会被替换成空串，紫域必然 401，"
+    echo "    而发布日志仍然全绿，线上排查会非常痛苦。"
+    exit 1
+fi
+# 紫域上游地址与 Key 一并写进服务器 api.env（改了必须重建容器才生效）。
+remote_env_set "$API_ENV_FILE" ZIYU_API_BASE "https://ziyuai.vip" && API_ENV_CHANGED=1
+remote_env_set "$API_ENV_FILE" ZIYU_API_KEY "$ZIYU_API_KEY" && API_ENV_CHANGED=1
+echo "==> 紫域上游已配置（Key 长度 ${#ZIYU_API_KEY}，不打印内容）"
 echo "==> API 密钥已配置（公开注册：${CANVAS_ALLOW_REGISTER_VALUE}）"
 
 # 替换占位符。用「重定向回写」而不是 sed -i：sed -i 会换 inode，
 # 当年单文件挂载时就栽在这上面（容器一直读旧内容），原地写最稳。
 "${SSH[@]}" "$SSH_HOST" "cd ${APP_ROOT}/nginx && \
-    sed -e 's|__AGNES_TOKEN__|${ACCESS_TOKEN}|g' -e 's|__AUTH_COOKIE__|${AUTH_COOKIE}|g' default.conf > .default.conf.new && \
+    sed -e 's|__AGNES_TOKEN__|${ACCESS_TOKEN}|g' -e 's|__AUTH_COOKIE__|${AUTH_COOKIE}|g' -e 's|__ZIYU_KEY__|${ZIYU_API_KEY}|g' default.conf > .default.conf.new && \
     cat .default.conf.new > default.conf && rm -f .default.conf.new && \
-    (grep -c '__AGNES_TOKEN__\|__AUTH_COOKIE__' default.conf || true)"
+    (grep -c '__AGNES_TOKEN__\|__AUTH_COOKIE__\|__ZIYU_KEY__' default.conf || true)"
+
+# 占位符自检：只要还剩一个没被替换，线上就是「日志全绿但必然 401」。
+NGINX_REMAIN=$("${SSH[@]}" "$SSH_HOST" "grep -c '__AGNES_TOKEN__\|__AUTH_COOKIE__\|__ZIYU_KEY__' '${APP_ROOT}/nginx/default.conf' || true")
+if [[ "$NGINX_REMAIN" != 0 ]]; then
+    echo "✗ nginx 配置里仍有 ${NGINX_REMAIN} 处未替换的占位符，中止发布"
+    exit 1
+fi
 
 # docker-compose 里也有占位符（数据库口令、站点 cookie），同样原地回写。
 # 注意顺序：必须先上传仓库里的模板（上面已做），再替换，
@@ -284,6 +315,10 @@ upload_lf canvas-api/db.js "${APP_ROOT}/api/db.js"
 upload_lf canvas-api/auth.js "${APP_ROOT}/api/auth.js"
 upload_lf canvas-api/schema.sql "${APP_ROOT}/api/schema.sql"
 upload_lf canvas-api/package.json "${APP_ROOT}/api/package.json"
+upload_lf canvas-api/credits.js "${APP_ROOT}/api/credits.js"
+upload_lf canvas-api/ldxp-redeem.js "${APP_ROOT}/api/ldxp-redeem.js"
+upload_lf canvas-api/ziyu.js "${APP_ROOT}/api/ziyu.js"
+upload_lf canvas-api/routes-credits.js "${APP_ROOT}/api/routes-credits.js"
 echo "==> API 源码已就位"
 
 "${SSH[@]}" "$SSH_HOST" "CANVAS_RUNTIME=${CANVAS_RUNTIME:-docker} bash ${APP_ROOT}/scripts/deploy/deploy.sh ${APP_ROOT}/releases/${RELEASE}.tar.gz"

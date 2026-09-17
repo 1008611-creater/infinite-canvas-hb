@@ -13,7 +13,7 @@ WORKDIR /app
 COPY package.json ./
 RUN npm install --omit=dev --no-audit --no-fund
 
-COPY server.js db.js auth.js schema.sql ./
+COPY server.js db.js auth.js schema.sql credits.js ldxp-redeem.js ziyu.js routes-credits.js ./
 
 ENV PORT=8790
 ENV MEDIA_ROOT=/data/media
