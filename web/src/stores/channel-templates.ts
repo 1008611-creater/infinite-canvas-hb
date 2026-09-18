@@ -8,6 +8,8 @@ import type { ApiCallFormat, ChannelModel, ModelCapability, ModelChannel } from 
  */
 export type ChannelTemplate = {
     id: string;
+    /** Templates can provision platform-managed channels whose endpoint/key is controlled by the site. */
+    ownership?: "platform" | "byo";
     /** 模板名，直接作为渠道名 */
     name: string;
     baseUrl: string;
@@ -513,6 +515,7 @@ export const channelTemplates: ChannelTemplate[] = [
     {
         id: "ziyu",
         name: "紫域",
+        ownership: "platform",
         baseUrl: "/ziyu/api",
         apiFormat: "openai",
         // 占位串：真实 Key 由 nginx 在服务端注入并整条覆盖浏览器同名头，写什么都不会泄露。
@@ -556,6 +559,7 @@ export function createChannelFromTemplate(template: ChannelTemplate): ModelChann
         id: template.id,
         name: template.name,
         baseUrl: template.baseUrl,
+        ownership: template.ownership || "byo",
         apiKey: template.apiKey ?? "",
         apiFormat: template.apiFormat,
         models: template.models.map((model): ChannelModel => ({

@@ -27,6 +27,7 @@ export function ChannelEditorDrawer({ open, channel, onSave, onClose }: { open: 
     if (!draft) return null;
 
     const patch = (value: Partial<ModelChannel>) => setDraft((current) => (current ? { ...current, ...value } : current));
+    const isPlatformChannel = draft.ownership === "platform";
     const setModels = (models: ChannelModel[]) => patch({ models });
 
     const changeApiFormat = (apiFormat: ApiCallFormat) => {
@@ -35,6 +36,7 @@ export function ChannelEditorDrawer({ open, channel, onSave, onClose }: { open: 
     };
 
     const applySelection = (names: string[]) => {
+        if (isPlatformChannel) return;
         const map = new Map(draft.models.map((model) => [model.name, model]));
         setModels(names.map((name) => map.get(name) || { name, capability: guessCapability(name) }));
     };
@@ -42,11 +44,35 @@ export function ChannelEditorDrawer({ open, channel, onSave, onClose }: { open: 
     const setCapability = (name: string, capability: ModelCapability) => setModels(draft.models.map((model) => (model.name === name ? { ...model, capability } : model)));
     const setScript = (name: string, script: string) => setModels(draft.models.map((model) => (model.name === name ? { ...model, script: script || undefined } : model)));
     const removeModel = (name: string) => setModels(draft.models.filter((model) => model.name !== name));
-
     const save = () => {
         onSave({ ...draft, name: draft.name.trim() || t("config.channels.unnamed"), models: normalizeChannelModels(draft.models) });
         onClose();
     };
+
+    if (isPlatformChannel) {
+        return (
+            <Drawer
+                open={open}
+                width={640}
+                title={t("config.channelEditor.title")}
+                onClose={onClose}
+                styles={{ body: { paddingTop: 16 } }}
+                extra={<Button onClick={onClose}>{t("common.cancel")}</Button>}
+            >
+                <div className="space-y-4">
+                    <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm">
+                        平台渠道由网站统一管理。地址、凭据、模型白名单和请求脚本不可在浏览器中修改。
+                    </div>
+                    <div className="grid gap-3 text-sm">
+                        <div><span className="text-stone-500">渠道名称：</span>{draft.name}</div>
+                        <div><span className="text-stone-500">接口地址：</span>{draft.baseUrl}</div>
+                        <div><span className="text-stone-500">凭据：</span>由平台服务端管理，浏览器不保存明文 Key</div>
+                        <div><span className="text-stone-500">可用模型：</span>{draft.models.length} 个（平台白名单）</div>
+                    </div>
+                </div>
+            </Drawer>
+        );
+    }
 
     return (
         <Drawer
@@ -75,11 +101,11 @@ export function ChannelEditorDrawer({ open, channel, onSave, onClose }: { open: 
                 </label>
                 <label className="block md:col-span-2">
                     <span className="mb-1 block text-sm font-medium">{t("config.channelEditor.baseUrl")}</span>
-                    <Input value={draft.baseUrl} onChange={(event) => patch({ baseUrl: event.target.value })} placeholder="https://api.example.com" />
+                    <Input value={draft.baseUrl} onChange={(event) => patch({ baseUrl: event.target.value })} placeholder="https://api.example.com" disabled={isPlatformChannel} />
                 </label>
                 <label className="block md:col-span-2">
                     <span className="mb-1 block text-sm font-medium">API Key</span>
-                    <Input.Password value={draft.apiKey} onChange={(event) => patch({ apiKey: event.target.value })} placeholder="sk-..." />
+                    <Input.Password value={isPlatformChannel ? "" : draft.apiKey} onChange={(event) => patch({ apiKey: event.target.value })} placeholder={isPlatformChannel ? "由平台服务端管理" : "sk-..."} disabled={isPlatformChannel} />
                 </label>
                 <label className="block">
                     <span className="mb-1 block text-sm font-medium">{t("config.channelEditor.imageBatchLimit")}</span>
@@ -110,9 +136,9 @@ export function ChannelEditorDrawer({ open, channel, onSave, onClose }: { open: 
                     <div className="text-sm font-semibold">{t("config.channelEditor.models")}</div>
                     <div className="mt-0.5 text-xs text-stone-500">{t("config.channelEditor.modelDescription", { count: draft.models.length })}</div>
                 </div>
-                <Button type="primary" icon={<ListPlus className="size-4" />} onClick={() => setSelectOpen(true)}>
+                {!isPlatformChannel && <Button type="primary" icon={<ListPlus className="size-4" />} onClick={() => setSelectOpen(true)}>
                     {t("config.channelEditor.selectModels")}
-                </Button>
+                </Button>}
             </div>
 
             <div className="space-y-2 rounded-lg border border-stone-200 p-2 dark:border-stone-800">
@@ -123,11 +149,11 @@ export function ChannelEditorDrawer({ open, channel, onSave, onClose }: { open: 
                                 {model.name}
                             </span>
                             <div className="flex shrink-0 items-center gap-2">
-                                <Segmented size="small" value={model.capability} options={capabilityOptions} onChange={(value) => setCapability(model.name, value as ModelCapability)} />
-                                <Button size="small" type={model.script ? "primary" : "default"} ghost={Boolean(model.script)} onClick={() => setScriptTarget({ name: model.name, capability: model.capability, value: model.script || "" })}>
+                                <Segmented size="small" value={model.capability} options={capabilityOptions} onChange={(value) => setCapability(model.name, value as ModelCapability)} disabled={isPlatformChannel} />
+                                {!isPlatformChannel && <Button size="small" type={model.script ? "primary" : "default"} ghost={Boolean(model.script)} onClick={() => setScriptTarget({ name: model.name, capability: model.capability, value: model.script || "" })}>
                                     {t(model.script ? "config.channelEditor.scriptReady" : "config.channelEditor.script")}
-                                </Button>
-                                <Button size="small" danger type="text" icon={<Trash2 className="size-3.5" />} onClick={() => removeModel(model.name)} />
+                                </Button>}
+                                {!isPlatformChannel && <Button size="small" danger type="text" icon={<Trash2 className="size-3.5" />} onClick={() => removeModel(model.name)} />}
                             </div>
                         </div>
                     ))

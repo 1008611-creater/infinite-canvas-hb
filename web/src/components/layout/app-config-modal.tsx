@@ -94,6 +94,7 @@ export function AppConfigPanel({ showDoneButton = false, initialTab = "channels"
     };
 
     const updateChannels = (channels: ModelChannel[]) => saveConfig(withChannels(config, channels));
+    const isPlatformChannel = (channel: ModelChannel) => channel.ownership === "platform";
 
     const addChannel = () => {
         const channel = createModelChannel({ name: t("config.channels.numberedName", { count: config.channels.length + 1 }) });
@@ -116,6 +117,11 @@ export function AppConfigPanel({ showDoneButton = false, initialTab = "channels"
     };
 
     const deleteChannel = (id: string) => {
+        const channel = config.channels.find((item) => item.id === id);
+        if (channel && isPlatformChannel(channel)) {
+            message.warning("平台渠道由网站统一管理，不能在浏览器中删除");
+            return;
+        }
         if (config.channels.length <= 1) {
             message.warning(t("config.channels.keepOne"));
             return;
@@ -227,7 +233,12 @@ export function AppConfigPanel({ showDoneButton = false, initialTab = "channels"
                                     {config.channels.map((channel) => (
                                         <div key={channel.id} className="flex items-center justify-between gap-3 rounded-lg border border-stone-200 px-4 py-3 dark:border-stone-800">
                                             <div className="min-w-0">
-                                                <div className="truncate text-sm font-semibold">{channel.name || t("config.channels.unnamed")}</div>
+                                                <div className="flex items-center gap-2 truncate text-sm font-semibold">
+                                                    <span className="truncate">{channel.name || t("config.channels.unnamed")}</span>
+                                                    <span className="shrink-0 rounded-full border border-stone-300 px-2 py-0.5 text-[10px] font-normal text-stone-500 dark:border-stone-700">
+                                                        {isPlatformChannel(channel) ? "平台渠道" : "用户自带"}
+                                                    </span>
+                                                </div>
                                                 <div className="mt-1 truncate text-xs text-stone-500">
                                                     {apiFormatLabel(channel.apiFormat)} · {t("config.channels.modelCount", { count: channel.models.length })} · {channel.baseUrl || t("config.channels.missingUrl")}
                                                 </div>
@@ -236,7 +247,7 @@ export function AppConfigPanel({ showDoneButton = false, initialTab = "channels"
                                                 <Button size="small" icon={<Pencil className="size-3.5" />} onClick={() => setEditingChannelId(channel.id)}>
                                                     {t("common.edit")}
                                                 </Button>
-                                                <Button size="small" danger icon={<Trash2 className="size-3.5" />} onClick={() => deleteChannel(channel.id)} />
+                                                {!isPlatformChannel(channel) && <Button size="small" danger icon={<Trash2 className="size-3.5" />} onClick={() => deleteChannel(channel.id)} />}
                                             </div>
                                         </div>
                                     ))}

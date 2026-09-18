@@ -16,6 +16,8 @@ export type ChannelModel = {
     script?: string;
 };
 
+export type ChannelOwnership = "platform" | "byo";
+
 export type ModelChannel = {
     id: string;
     name: string;
@@ -23,6 +25,8 @@ export type ModelChannel = {
     apiKey: string;
     apiFormat: ApiCallFormat;
     models: ChannelModel[];
+    /** Platform channels are controlled by the site; BYO channels are user-managed locally. */
+    ownership?: ChannelOwnership;
     /**
      * 单次请求允许生成的图片张数上限。
      * 有些渠道（如 OpenLux）对 n 的处理不老实：不报错，但会少给（实测 n=3 只返回 2 张）。
@@ -133,6 +137,7 @@ export function createLocalAgnesChannel(): ModelChannel {
         apiKey: AGNES_API_KEY,
         apiFormat: "openai",
         models: [{ name: LOCAL_AGNES_MODEL, capability: "video" }],
+        ownership: "platform",
     };
 }
 
@@ -154,6 +159,7 @@ export function ensureLocalAgnesChannel(channels: ModelChannel[]): ModelChannel[
     const next = [...retargeted];
     next[index] = {
         ...existing,
+        ownership: "platform",
         apiKey: needsKey ? AGNES_API_KEY : existing.apiKey,
         models: hasModel ? existing.models : [...existing.models, { name: LOCAL_AGNES_MODEL, capability: "video" as const }],
     };
@@ -382,6 +388,7 @@ export function createModelChannel(channel?: Partial<ModelChannel>): ModelChanne
         apiKey: channel?.apiKey || "",
         apiFormat,
         models: normalizeChannelModels(channel?.models),
+        ownership: channel?.ownership || "byo",
         ...(channel?.imageBatchLimit ? { imageBatchLimit: channel.imageBatchLimit } : {}),
         ...(channel?.editViaGenerations ? { editViaGenerations: true } : {}),
     };
@@ -453,6 +460,7 @@ function normalizeChannels(config: AiConfig) {
     const channels = persistedChannels.map((channel, index) =>
         createModelChannel({
             ...channel,
+            ownership: channel.ownership || (channel.id === LOCAL_AGNES_CHANNEL_ID || channel.id === "ziyu" ? "platform" : "byo"),
             id: channel.id || (index === 0 ? "default" : `channel-${index + 1}`),
             name: channel.name || (index === 0 ? i18n.t("config.channels.defaultName") : i18n.t("config.channels.indexedName", { index: index + 1 })),
             models: normalizeChannelModels(channel.models),
