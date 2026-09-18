@@ -302,7 +302,7 @@ export const useConfigStore = create<ConfigStore>()(
                 set((state) => ({
                     config: {
                         ...state.config,
-                        [key]: value,
+                        [key]: key === "channels" && Array.isArray(value) ? value.map((channel) => sanitizeChannelForStorage(channel as ModelChannel)) : value,
                     },
                 })),
             updateWebdavConfig: (key, value) =>
@@ -455,12 +455,27 @@ export function resolveModelRequestConfig(config: AiConfig, value: string) {
     };
 }
 
+export function normalizeChannelOwnership(channel: Partial<ModelChannel>): ChannelOwnership {
+    if (channel.id === LOCAL_AGNES_CHANNEL_ID || channel.id === "ziyu") return "platform";
+    return channel.ownership === "platform" ? "platform" : "byo";
+}
+
+export function sanitizeChannelForStorage(channel: ModelChannel): ModelChannel {
+    const ownership = normalizeChannelOwnership(channel);
+    return {
+        ...channel,
+        ownership,
+        // Platform credentials are server-side; retain only non-secret runtime placeholders.
+        ...(ownership === "platform" ? { apiKey: channel.id === "ziyu" ? "ziyu-proxy" : channel.id === LOCAL_AGNES_CHANNEL_ID ? AGNES_API_KEY : "" } : {}),
+    };
+}
+
 function normalizeChannels(config: AiConfig) {
     const persistedChannels = Array.isArray(config.channels) ? config.channels : [];
     const channels = persistedChannels.map((channel, index) =>
         createModelChannel({
             ...channel,
-            ownership: channel.ownership || (channel.id === LOCAL_AGNES_CHANNEL_ID || channel.id === "ziyu" ? "platform" : "byo"),
+            ownership: normalizeChannelOwnership(channel),
             id: channel.id || (index === 0 ? "default" : `channel-${index + 1}`),
             name: channel.name || (index === 0 ? i18n.t("config.channels.defaultName") : i18n.t("config.channels.indexedName", { index: index + 1 })),
             models: normalizeChannelModels(channel.models),
