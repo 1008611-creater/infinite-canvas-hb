@@ -705,3 +705,83 @@ FAIL 内容：
 顺带修正已过期的"`canvas-api/` 只有 5 个源文件"（现状 11 个）。
 
 **修复后**：`7 PASS / 0 WARN / 0 FAIL`（已复跑确认）。
+
+---
+
+## D19 · 邮箱验证码注册**已上线**（执行 + 验证证据）—— 2026-09-18
+
+D18 设计 → 本次执行完毕并上线。**注册保持公开，但必须邮箱验证码**。
+
+### 19.1 执行了什么
+
+| # | 动作 | 结果 |
+|---|---|---|
+| 1 | 服务器 `/opt/infinite-canvas/api/api.env` 写入 5 个 SMTP 变量 | `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM`；**7 行 → 12 行** |
+| 2 | 发布：`bash scripts/deploy/publish.sh` | release `canvas-20260918-112928-79615f4`（commit `79615f4`），耗时 3m41s |
+| 3 | api 镜像重建 + 容器重建 | `canvas-api:latest` Built，容器 `Recreated` / `Started` |
+| 4 | 端到端验证 | 见 19.2 |
+
+**密钥纪律**：授权码（16 位）**只存在于服务器 `api.env`**，不进治理仓、不进源码仓、不进聊天记录之外的任何文件。
+服务器侧临时中转文件已 `rm`；写入前已备份 `api.env.bak-before-smtp-20260918-1130`（7 行）。
+
+**未受影响的既有配置（已逐项核对）**：
+- `LDXP_REDEEM_SECRET` 仍在（替换 = 已发卡密全废）—— `publish.sh` 不碰它
+- `ZIYU_API_KEY` 长度 48，**与线上原值一致 → 本次未改动**（H-5 保持原状）
+- `AUTH_COOKIE` 未变（`publish.sh` 的 `remote_env_set` 是按键 upsert，值相同则不写）
+
+### 19.2 验证证据（全部为本次实测）
+
+| 验证项 | 方法 | 结果 |
+|---|---|---|
+| SMTP 凭据有效 | 容器内 `verifySmtp()`（只握手不发信） | `{"ok":true}` ✓ |
+| `nodemailer` 已装 | 容器内读 `package.json` | `6.10.1` ✓ |
+| 新代码进镜像 | `docker exec canvas-api ls /app` | `email.js` / `email-verify.js` 均在 ✓ |
+| SMTP 变量进容器 | 容器内逐变量取长度（不打印值） | 5 个全有值（`PASS` len16 / `USER`、`FROM` len17）✓ |
+| 新表已建 | `select count(*) from email_verification_codes` | 表存在，0 行 ✓ |
+| **真实发信** | `POST /api/auth/register/code {"email":"1453637677@qq.com"}` | **HTTP 200** `{"ok":true,"ttlSeconds":600}`；表内新增 1 行 ✓ |
+| **端到端建号** | 签发码 → `POST /api/auth/register` 带正确码 | **HTTP 201**，`role=user`（未被误提权）✓ |
+| 错码被拒 | 同一路由带 `000000` | **400** `code_invalid` ✓ |
+| 空码格式校验 | 带空码 | **400** `invalid_code` ✓ |
+| **码不可重放** | `verifyCode` 连续两次 | 第一次 `ok=true`，第二次 `ok=false code_invalid` ✓ |
+| 前端新 UI 已上线 | 构建产物搜「验证码」 | 主 JS `index-DJ-TIgVj.js`，命中 2 处 ✓ |
+| 回归 | `/api/health` / `/api/credits/me` / `/api/ziyu/models` / `login.html` | `200` / `401` / `401` / `200` ✓ |
+| 门禁自锁检查 | `GET /` | `302 → /login.html`（门禁正常，登录页自包含可访问）✓ |
+
+**测试数据已清理**：`e2e-*@hb.cauai.fun` 账号与验证码行全部删除，`users` 总数回到 **7**（与执行前一致）。
+
+### 19.3 未验证 / 残留
+
+- ⚠️ **未由本人确认"邮件真的落进收件箱"**：发信返回 200 只证明 QQ SMTP **接受**了投递，
+  不证明没有进垃圾箱。**需老大打开 `1453637677@qq.com` 收件箱确认**（顺带看垃圾箱）。
+- 上述"端到端建号"用的是容器内直接 `issueCode()` 取码，**绕过了邮件环节**；
+  邮件环节由"真实发信 200 + 表内落行 + `verifySmtp` 握手"三点分别覆盖。两者合并才是完整闭环。
+- 未做：QQ SMTP 的**发信频率上限**（QQ 个人邮箱有日限额）未压测。
+
+### 19.4 回滚
+
+1. `cp -a /opt/infinite-canvas/api/api.env.bak-before-smtp-20260918-1130 /opt/infinite-canvas/api/api.env`
+2. `cd /opt/infinite-canvas && docker compose up -d --force-recreate api`
+3. 若需连前端一起回：`ln -sfn releases/<上一版本> current && docker compose exec -T web nginx -s reload`
+   （上一版本在 `releases/` 内，保留最近 5 个）
+
+---
+
+## D20 · 紫域 Key 不轮换，优先解决根本矛盾—— 2026-09-18
+
+老大明确裁决：**紫域渠道只有一把 Key，不换、不动 H-5**。
+
+### 20.1 口径
+
+- H-5 从“待老大提供新 Key”改为**不做**。
+- 当前线上 `ZIYU_API_KEY` 保持不变；不能复制、猜测或替换现有 Key。
+- 只有这把 Key 实际失效，或老大再次明确要求变更时，才重新评估。
+
+### 20.2 优先级重排
+
+不再把“Key 是否轮换”当成主矛盾。优先关注：
+
+1. **资金边界**：公开注册后的账号，在无余额/无兑换码时是否始终无法触发紫域扣费链。
+2. **暴露面**：是否存在绕过本站账号与额度校验、直接消耗服务器紫域额度的入口。
+3. **可审计性**：紫域实际消耗、本站扣点、失败/结算是否持续一致。
+
+本裁决的收益是避免对唯一凭据做错误替换；与继续追踪 H-5 的差异是：不再承担“误换 Key 导致全站紫域请求 401”的人为风险，把执行资源转到真实资金边界。
