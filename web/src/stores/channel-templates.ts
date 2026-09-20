@@ -552,6 +552,21 @@ export const channelTemplates: ChannelTemplate[] = [
         ],
         hint: "紫域视频 / 图片（服务端已注入 Key，无需填写）。提交后按积分扣额度；失败任务以紫域返回的 cost 字段对账，不假设「失败必退」。",
     },
+    {
+        id: "apic",
+        name: "CAUAI API",
+        baseUrl: "https://apic.cauai.fun",
+        apiFormat: "openai",
+        models: [
+            { name: "gpt-image-2.5", capability: "image" },
+            { name: "gpt-image-2.5-flare", capability: "image" },
+            { name: "gpt-image-2.5-sunburst", capability: "image" },
+        ],
+        // 实测（2026-09-20）：n=2 准确给 2 张，不需要像 OpenLux 那样拆成 1 张/次。
+        // ⚠️ 上游忽略 size 参数：传 "1:1" 与 "1024x1024" 实测都输出 1254x1254，
+        // 画布里选 16:9 / 4K 不生效。属上游限制，非配置问题。
+        hint: "生图（走 apic 网关，额度从 apic 账户扣）。填你在 apic.cauai.fun 的 API Key 即用。注意：上游忽略尺寸参数，实际固定输出 1254x1254。",
+    },
 ];
 
 export function createChannelFromTemplate(template: ChannelTemplate): ModelChannel {
