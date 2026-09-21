@@ -3,6 +3,7 @@ import i18n from "@/i18n";
 import { resolveImageUrl, uploadImage } from "@/services/image-storage";
 import { resolveMediaUrl } from "@/services/file-storage";
 import { imageMetadata, referenceUrl } from "@/lib/canvas/canvas-node-factory";
+import { markGenerationInterrupted } from "@/lib/canvas/canvas-generation-status";
 import type { NodeGenerationInput } from "@/components/canvas/canvas-node-generation";
 import type { CanvasNodeGenerationMode } from "@/components/canvas/canvas-node-prompt-panel";
 import type { CanvasImageAngleParams } from "@/components/canvas/canvas-node-angle-dialog";
@@ -115,20 +116,19 @@ export function buildGenerationConfig(config: AiConfig, node: CanvasNodeData | u
 }
 
 export function resetInterruptedGeneration(nodes: CanvasNodeData[]) {
-    return nodes.map((node) =>
-        node.metadata?.status === "loading"
-            ? {
-                  ...node,
-                  metadata: {
-                      ...node.metadata,
-                      status: "error" as const,
-                      errorDetails: i18n.t("canvas.generation.interrupted"),
-                      images: node.metadata.images?.map((image) => (image.status === "loading" ? { ...image, status: "error" as const, errorDetails: i18n.t("canvas.generation.interrupted") } : image)),
-                      texts: node.metadata.texts?.map((text) => (text.status === "loading" ? { ...text, status: "error" as const, errorDetails: i18n.t("canvas.generation.interrupted") } : text)),
-                  },
-              }
-            : node,
-    );
+    const message = i18n.t("canvas.generation.interrupted");
+    return nodes.map((node) => {
+        const metadata = markGenerationInterrupted(node.metadata, message);
+        if (metadata === node.metadata || !metadata) return node;
+        return {
+            ...node,
+            metadata: {
+                ...metadata,
+                images: metadata.images?.map((image) => (image.status === "loading" ? { ...image, status: "error" as const, errorDetails: message } : image)),
+                texts: metadata.texts?.map((text) => (text.status === "loading" ? { ...text, status: "error" as const, errorDetails: message } : text)),
+            },
+        };
+    });
 }
 
 export function isGenerationCanceled(error: unknown) {

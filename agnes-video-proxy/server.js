@@ -24,6 +24,8 @@ const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
 const { execFile } = require('child_process');
+const { createIdempotencyStore } = require('./idempotency-store');
+const { multipartFingerprint, requestFingerprint } = require('./request-fingerprint');
 
 // ---------------------------------------------------------------- 日志落盘
 // 代理通常由 start.bat 以后台窗口拉起，终端输出会随窗口消失，一旦出图床这类
@@ -91,6 +93,7 @@ const ASPECTS = ['21:9', '16:9', '4:3', '1:1', '3:4', '9:16'];
 
 // 进程内记录 video_id -> 真实 model（Agnes 轮询必须带 model_name）
 const taskModel = new Map();
+const idempotencyStore = createIdempotencyStore({ ttlMs: Number(process.env.IDEMPOTENCY_TTL_MS || 10 * 60 * 1000) });
 
 // ---------------------------------------------------------------- 工具
 function send(res, code, obj) {
@@ -109,14 +112,25 @@ function readJson(req) {
     req.on('error', reject);
   });
 }
+function requestIdempotencyKey(req) {
+  const value = String(req.headers['idempotency-key'] || '').trim();
+  if (value.length > 200) {
+    const error = new Error('idempotency_key_too_long');
+    error.status = 400;
+    throw error;
+  }
+  return value;
+}
 function agnesRequest(method, relPath, body) {
   return new Promise((resolve, reject) => {
     const url = new URL(CONFIG.AGNES_BASE + relPath);
     const payload = body ? JSON.stringify(body) : null;
-    const req = https.request(
+    const transport = url.protocol === 'http:' ? http : https;
+    const req = transport.request(
       {
         method,
         hostname: url.hostname,
+        ...(url.port ? { port: Number(url.port) } : {}),
         path: url.pathname + url.search,
         headers: {
           Authorization: 'Bearer ' + CONFIG.AGNES_API_KEY,
@@ -586,7 +600,7 @@ function handleAuth(req, res) {
 // ---------------------------------------------------------------- 路由
 const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, Idempotency-Key');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
   const u = new URL(req.url, 'http://localhost');
@@ -613,13 +627,24 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET' && u.pathname === '/v1/models') return send(res, 200, { object: 'list', data: modelsList() });
     if (req.method === 'POST' && u.pathname === '/v1/videos') {
       const ct = req.headers['content-type'] || req.headers['Content-Type'] || '';
+      const idempotencyKey = requestIdempotencyKey(req);
       if (ct.includes('multipart/form-data')) {
         const raw = await readRaw(req);
         const { fields, files } = parseMultipart(raw, ct);
-        return send(res, 200, await handleCreateForm(fields, files));
+        const fingerprint = requestFingerprint(ct, raw, multipartFingerprint(fields, files));
+        return send(res, 200, await idempotencyStore.run(idempotencyKey, fingerprint, () => handleCreateForm(fields, files)));
       }
-      const body = await readJson(req);
-      return send(res, 200, await handleCreate(body));
+      const raw = await readRaw(req);
+      let body;
+      try {
+        body = raw.length ? JSON.parse(raw.toString('utf8')) : {};
+      } catch {
+        const error = new Error('请求体不是合法 JSON');
+        error.status = 400;
+        throw error;
+      }
+      const fingerprint = requestFingerprint(ct, raw, body);
+      return send(res, 200, await idempotencyStore.run(idempotencyKey, fingerprint, () => handleCreate(body)));
     }
     if (req.method === 'GET' && u.pathname.startsWith('/v1/videos/')) {
       const id = u.pathname.split('/').pop();

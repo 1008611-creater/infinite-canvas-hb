@@ -56,6 +56,15 @@ FINGERPRINT_STAMP="${PROXY_ROOT}/PROXY_FINGERPRINT"
 PACKAGE_FINGERPRINT="$(cat "${TARGET}/proxy/PROXY_FINGERPRINT" 2>/dev/null | tr -d '\r\n' || true)"
 CURRENT_FINGERPRINT="$(cat "$FINGERPRINT_STAMP" 2>/dev/null | tr -d '\r\n' || true)"
 
+# 指纹文件可能因人工清理、旧版本迁移或恢复操作而与实际文件脱钩；
+# 运行时必需模块缺失时，即使指纹相同也必须重新复制并重建。
+for required_module in server.js webdav.js idempotency-store.js request-fingerprint.js package.json; do
+    if [[ ! -f "${PROXY_ROOT}/${required_module}" ]]; then
+        NEED_PROXY_UPDATE=1
+        echo "⚠ 服务器缺少代理运行时文件 ${required_module}，将强制同步"
+    fi
+done
+
 if [[ -n "$PACKAGE_FINGERPRINT" ]]; then
     if [[ "$PACKAGE_FINGERPRINT" != "$CURRENT_FINGERPRINT" ]]; then
         NEED_PROXY_UPDATE=1
@@ -72,6 +81,14 @@ if [[ "$NEED_PROXY_UPDATE" == "1" ]]; then
     install -d "$PROXY_ROOT"
     cp "${TARGET}/proxy/server.js" "${PROXY_ROOT}/server.js"
     cp "${TARGET}/proxy/package.json" "${PROXY_ROOT}/package.json" 2>/dev/null || true
+    for module in idempotency-store.js request-fingerprint.js; do
+        if [[ -f "${TARGET}/proxy/${module}" ]]; then
+            cp "${TARGET}/proxy/${module}" "${PROXY_ROOT}/${module}"
+        else
+            echo "✗ 包里缺少 ${module}，代理无法启动，发布中止"
+            exit 1
+        fi
+    done
     if [[ -f "${TARGET}/proxy/webdav.js" ]]; then
         cp "${TARGET}/proxy/webdav.js" "${PROXY_ROOT}/webdav.js"
     else

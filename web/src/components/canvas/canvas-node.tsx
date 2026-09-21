@@ -6,6 +6,7 @@ import { canvasThemes } from "@/lib/canvas-theme";
 import { formatBytes } from "@/lib/image-utils";
 import { getNodeDefinition } from "@/lib/canvas/node-registry";
 import { buildNodeContext } from "@/lib/canvas/plugin-node-context";
+import { generationStatusLabelKey } from "@/lib/canvas/canvas-status-labels";
 import { useThemeStore } from "@/stores/use-theme-store";
 import { CanvasResourceMentionTextarea } from "./canvas-resource-mention-textarea";
 import { CanvasNodeType, type CanvasNodeData, type CanvasNodeImage, type CanvasNodeText, type Position } from "@/types/canvas";
@@ -423,6 +424,8 @@ export const CanvasNode = React.memo(function CanvasNode({
                     />
                 </div>
 
+                {data.metadata?.generationStatus ? <GenerationStatusBadge status={data.metadata.generationStatus} theme={theme} /> : null}
+
                 {showImageInfo && hasImageContent ? <ImageInfoBar node={data} /> : null}
 
                 {!isGroup && !hasImageContent && !hasVideoContent && !hasAudioContent ? <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12" style={{ background: `linear-gradient(to top, ${theme.canvas.background}66, transparent)` }} /> : null}
@@ -451,7 +454,7 @@ function NodeContent(props: NodeContentRendererProps) {
     if (props.node.type === CanvasNodeType.Config && props.renderNodeContent) return props.renderNodeContent(props.node);
     if (props.isBatchRoot && props.node.type === CanvasNodeType.Image) return <ImageNodeContent {...props} />;
     if (props.node.type === CanvasNodeType.Text && props.node.metadata?.texts?.length && (props.node.metadata.status !== "error" || props.node.metadata.texts.some((text) => text.content))) return <TextContent {...props} />;
-    if (props.node.metadata?.status === "loading") return <LoadingContent theme={props.theme} />;
+    if (props.node.metadata?.status === "loading") return <LoadingContent node={props.node} theme={props.theme} />;
     if (props.node.metadata?.status === "error") return <ErrorContent node={props.node} theme={props.theme} onRetry={props.onRetry} />;
 
     const Renderer = nodeContentRenderers[props.node.type as CanvasNodeType];
@@ -490,12 +493,32 @@ function GroupNodeContent({ node, theme, groupChildCount }: NodeContentRendererP
     );
 }
 
-function LoadingContent({ theme }: Pick<NodeContentRendererProps, "theme">) {
+function LoadingContent({ node, theme }: Pick<NodeContentRendererProps, "node" | "theme">) {
     const { t } = useTranslation();
+    const status = node.metadata?.generationStatus;
     return (
         <div className="flex h-full w-full flex-col items-center justify-center gap-3" style={{ color: theme.node.activeStroke }}>
             <div className="size-10 animate-spin rounded-full border-2" style={{ borderColor: theme.node.stroke, borderTopColor: theme.node.activeStroke }} />
-            <span className="text-[10px] tracking-[0.2em]">{t("canvas.node.generating")}</span>
+            <span className="text-[10px] tracking-[0.2em]" role="status" aria-live="polite">
+                {t(`canvas.node.${generationStatusLabelKey(status)}`)}
+            </span>
+        </div>
+    );
+}
+
+function GenerationStatusBadge({
+    status,
+    theme,
+}: {
+    status: NonNullable<CanvasNodeData["metadata"]>["generationStatus"];
+    theme: (typeof canvasThemes)[keyof typeof canvasThemes];
+}) {
+    const { t } = useTranslation();
+    const label = t(`canvas.node.${generationStatusLabelKey(status)}`);
+    const color = status === "failed" ? "#f87171" : status === "completed" ? "#4ade80" : theme.node.activeStroke;
+    return (
+        <div className="pointer-events-none absolute right-3 top-3 z-[55] rounded-full border px-2 py-1 text-[10px] font-medium shadow-sm" role="status" aria-live="polite" aria-atomic="true" aria-label={label} style={{ background: `${theme.toolbar.panel}ee`, borderColor: `${color}88`, color }}>
+            {label}
         </div>
     );
 }

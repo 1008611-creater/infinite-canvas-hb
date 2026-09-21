@@ -3,6 +3,7 @@ import i18n from "@/i18n";
 import { getNodeDefinition } from "@/lib/canvas/node-registry";
 import { getDataUrlByteSize, readImageMeta } from "@/lib/image-utils";
 import { imageToDataUrl } from "@/services/image-storage";
+import { collectUpstreamNodeIds } from "@/lib/canvas/canvas-chain";
 import { CanvasNodeType, type CanvasConnection, type CanvasNodeData } from "@/types/canvas";
 
 export type CanvasResourceKind = "image" | "video" | "audio" | "text";
@@ -51,33 +52,27 @@ export async function resolveCanvasReferenceImages(references: CanvasResourceRef
 }
 
 export function getMentionResourceNodes(nodeId: string, nodes: CanvasNodeData[], connections: CanvasConnection[]) {
-    const configInputs = expandGroupResourceNodes(getConnectedConfigInputNodes(nodeId, nodes, connections), nodes);
-    if (configInputs.length) return configInputs;
-    const ownInputs = expandGroupResourceNodes(getContextInputNodes(nodeId, nodes, connections), nodes);
-    if (ownInputs.length) return ownInputs;
+    const upstreamResources = collectUpstreamResourceNodes(nodeId, nodes, connections);
+    if (upstreamResources.length) return expandGroupResourceNodes(upstreamResources, nodes);
     const node = nodes.find((item) => item.id === nodeId);
     return node && isResourceNode(node) ? [node] : [];
 }
 
 export function getGenerationResourceNodes(nodeId: string, nodes: CanvasNodeData[], connections: CanvasConnection[]) {
-    const configInputs = getConnectedConfigInputNodes(nodeId, nodes, connections);
-    if (configInputs.length) return configInputs;
-    const ownInputs = getContextInputNodes(nodeId, nodes, connections);
-    if (ownInputs.length) return ownInputs;
-    return [];
+    return expandGroupResourceNodes(collectUpstreamResourceNodes(nodeId, nodes, connections), nodes);
 }
 
-function getContextInputNodes(nodeId: string, nodes: CanvasNodeData[], connections: CanvasConnection[]) {
-    return connections
-        .filter((connection) => connection.toNodeId === nodeId)
-        .map((connection) => nodes.find((node) => node.id === connection.fromNodeId))
-        .filter((node): node is CanvasNodeData => Boolean(node && isCanvasReferenceNode(node, nodes)));
-}
-
-function getConnectedConfigInputNodes(nodeId: string, nodes: CanvasNodeData[], connections: CanvasConnection[]) {
-    const configConnection = connections.find((connection) => connection.fromNodeId === nodeId && nodes.find((node) => node.id === connection.toNodeId)?.type === CanvasNodeType.Config);
-    if (!configConnection) return [];
-    return getContextInputNodes(configConnection.toNodeId, nodes, connections).filter((node) => node.id !== nodeId);
+/**
+ * Walk incoming edges until resource nodes are found.
+ *
+ * A one-edge lookup silently dropped valid image -> config -> video chains.
+ * Traversal remains deterministic (connection order), deduplicated, and stops
+ * at resources so unrelated ancestors are not pulled into the prompt.
+ */
+function collectUpstreamResourceNodes(nodeId: string, nodes: CanvasNodeData[], connections: CanvasConnection[]) {
+    const nodesById = new Map(nodes.map((node) => [node.id, node]));
+    const resourceIds = collectUpstreamNodeIds(nodeId, nodes, connections, (node) => isCanvasReferenceNode(node, nodes));
+    return resourceIds.map((id) => nodesById.get(id)).filter((node): node is CanvasNodeData => Boolean(node && isCanvasReferenceNode(node, nodes)));
 }
 
 function hasGroupResources(node: CanvasNodeData, nodes: CanvasNodeData[]) {

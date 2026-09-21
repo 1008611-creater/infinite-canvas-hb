@@ -22,6 +22,7 @@ export enum CanvasNodeType {
 export type CanvasNodeTypeId = CanvasNodeType | (string & {});
 
 export type CanvasNodeStatus = "idle" | "success" | "loading" | "error";
+export type CanvasGenerationStatus = "queued" | "running" | "completed" | "failed";
 export type CanvasGenerationMode = "text" | "image" | "video" | "audio";
 export type VideoGenerationMode = "text" | "keyframe" | "reference";
 export type CanvasImageGenerationType = "generation" | "edit";
@@ -50,6 +51,11 @@ export type CanvasNodeMetadata = {
     composerContent?: string;
     prompt?: string;
     status?: CanvasNodeStatus;
+    generationStatus?: CanvasGenerationStatus;
+    generationRequestId?: string;
+    generationTaskId?: string;
+    generationStartedAt?: string;
+    generationCompletedAt?: string;
     errorDetails?: string;
     fontSize?: number;
     generationMode?: CanvasGenerationMode;

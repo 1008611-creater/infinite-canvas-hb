@@ -8,6 +8,8 @@ import { uploadMediaFile, type UploadedFile } from "@/services/file-storage";
 import { imageToDataUrl } from "@/services/image-storage";
 import { boolConfig, buildApiUrl, modelOptionName, resolveModelRequestConfig, resolveModelScript, type AiConfig } from "@/stores/use-config-store";
 import { runModelPlugin } from "./model-plugin";
+import { buildVideoRequestHeaders } from "./video-request-headers";
+import { isPlayableVideoContentType, isSuccessfulVideoResponse, looksLikeErrorPayload } from "./video-result-validation";
 import type { ReferenceImage } from "@/types/image";
 import type { VideoGenerationMode } from "@/types/canvas";
 
@@ -26,7 +28,8 @@ export function buildVideoInput(config: Pick<AiConfig, "videoMode">, references:
 type VideoResponse = { id: string; status?: string; error?: { message?: string }; url?: string; result_url?: string; video_url?: string; content?: { video_url?: string; url?: string } | null };
 type ApiVideoResponse = VideoResponse | { code?: number | string; data?: VideoResponse | null; msg?: string; message?: string; error?: { message?: string } };
 type ApiEnvelope<T> = T | { code?: number | string; data?: T | null; msg?: string; message?: string; error?: { message?: string } };
-type RequestOptions = { signal?: AbortSignal };
+type VideoGenerationStatus = "queued" | "running" | "completed" | "failed";
+type RequestOptions = { signal?: AbortSignal; idempotencyKey?: string; onTask?: (task: VideoGenerationTask) => void; onStatus?: (status: VideoGenerationStatus) => void };
 const apiText = (key: string, options?: Record<string, unknown>) => i18n.t(`apiErrors.${key}`, options);
 
 export type VideoGenerationResult = { blob?: Blob; url?: string; mimeType?: string };
@@ -40,24 +43,35 @@ function aiApiUrl(config: AiConfig, path: string) {
     return buildApiUrl(config.baseUrl, path);
 }
 
-function aiHeaders(config: AiConfig, contentType?: string) {
+function aiHeaders(config: AiConfig, contentType?: string, idempotencyKey?: string) {
     return {
-        Authorization: `Bearer ${config.apiKey}`,
+        ...buildVideoRequestHeaders(config.apiKey, idempotencyKey),
         ...(contentType ? { "Content-Type": contentType } : {}),
     };
 }
 
 export async function requestVideoGeneration(config: AiConfig, prompt: string, input: ReferenceImage[] | VideoInput = [], options?: RequestOptions): Promise<VideoGenerationResult> {
-    const task = await createVideoGenerationTask(config, prompt, input, options);
-    for (let attempt = 0; attempt < 120; attempt += 1) {
-        if (options?.signal?.aborted) throw new DOMException("Aborted", "AbortError");
-        const state = await pollVideoGenerationTask(config, task, options);
-        if (state.status === "completed") return state.result;
-        if (state.status === "failed") throw new Error(state.error);
-        if (attempt === 119) throw new Error(apiText("videoTimeout", { provider: "" }));
-        await delay(2500, options?.signal);
+    options?.onStatus?.("queued");
+    try {
+        const task = await createVideoGenerationTask(config, prompt, input, options);
+        options?.onTask?.(task);
+        options?.onStatus?.("running");
+        for (let attempt = 0; attempt < 120; attempt += 1) {
+            if (options?.signal?.aborted) throw new DOMException("Aborted", "AbortError");
+            const state = await pollVideoGenerationTask(config, task, options);
+            if (state.status === "completed") {
+                options?.onStatus?.("completed");
+                return state.result;
+            }
+            if (state.status === "failed") throw new Error(state.error);
+            if (attempt === 119) throw new Error(apiText("videoTimeout", { provider: "" }));
+            await delay(2500, options?.signal);
+        }
+        throw new Error(apiText("videoTimeout", { provider: "" }));
+    } catch (error) {
+        options?.onStatus?.("failed");
+        throw error;
     }
-    throw new Error(apiText("videoTimeout", { provider: "" }));
 }
 
 export async function createVideoGenerationTask(config: AiConfig, prompt: string, input: ReferenceImage[] | VideoInput = [], options?: RequestOptions): Promise<VideoGenerationTask> {
@@ -124,11 +138,19 @@ function videoPluginResult(result: unknown): VideoGenerationResult {
 export async function storeGeneratedVideo(result: VideoGenerationResult): Promise<UploadedFile> {
     if (result.blob) return uploadMediaFile(result.blob, "video");
     if (result.url) {
-        try {
-            return await uploadMediaFile(result.url, "video");
-        } catch {
-            return { url: result.url, storageKey: "", bytes: 0, mimeType: result.mimeType || "video/mp4" };
+        // A remote URL is temporary provider output, not a durable canvas
+        // result. If it cannot be copied into local media storage, fail the
+        // generation so the node does not show a false success that vanishes
+        // after refresh or provider URL expiry.
+        const response = await fetch(result.url);
+        if (!isSuccessfulVideoResponse(response.status)) throw new Error(apiText("videoDownloadFailed"));
+        const blob = await response.blob();
+        await assertVideoBlob(blob);
+        const contentType = response.headers.get("content-type") || blob.type;
+        if (!isPlayableVideoContentType(contentType)) {
+            throw new Error(apiText("videoDownloadFailed"));
         }
+        return uploadMediaFile(blob, "video");
     }
     throw new Error(apiText("noPlayableVideo"));
 }
@@ -152,7 +174,7 @@ async function createOpenAIVideoTask(config: AiConfig, model: string, prompt: st
         files.forEach((file) => body.append("images[]", file));
     }
     try {
-        const created = unwrapVideoResponse((await axios.post<ApiVideoResponse>(aiApiUrl(config, "/videos"), body, { headers: aiHeaders(config), signal: options?.signal })).data);
+        const created = unwrapVideoResponse((await axios.post<ApiVideoResponse>(aiApiUrl(config, "/videos"), body, { headers: aiHeaders(config, undefined, options?.idempotencyKey), signal: options?.signal })).data);
         if (!created.id) throw new Error(apiText("noVideoTaskId"));
         return { id: created.id, provider: "openai", model };
     } catch (error) {
@@ -279,15 +301,18 @@ function statusMessage(status: number | undefined, fallback: string) {
 }
 
 async function assertVideoBlob(blob: Blob) {
-    if (!blob.type.includes("json")) return;
+    const prefix = await blob.slice(0, 256).text();
+    if (!looksLikeErrorPayload(blob.type, prefix)) return;
+    if (!blob.type.includes("json") && !/^[\s]*[\[{]/.test(prefix)) throw new Error(apiText("videoDownloadFailed"));
     let payload: { code?: number; msg?: string; error?: { message?: string } };
     try {
         payload = JSON.parse(await blob.text()) as { code?: number; msg?: string; error?: { message?: string } };
     } catch {
-        return;
+        throw new Error(apiText("videoDownloadFailed"));
     }
     if (typeof payload.code === "number" && payload.code !== 0) throw new Error(readApiErrorMessage(payload) || apiText("videoDownloadFailed"));
     if (payload.error?.message) throw new Error(readApiErrorMessage(payload.error.message) || payload.error.message);
+    throw new Error(apiText("videoDownloadFailed"));
 }
 
 function isPublicMediaUrl(value: string) {

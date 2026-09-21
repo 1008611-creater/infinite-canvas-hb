@@ -7,6 +7,9 @@
         "dev": "vite --host 0.0.0.0 --port 3000",
         "build": "vite build",
         "typecheck": "tsc --noEmit",
+        "test:contracts": "node --experimental-strip-types --test src/lib/canvas/canvas-chain.test.ts src/lib/canvas/canvas-generation-status.test.ts src/lib/canvas/canvas-status-labels.test.ts src/services/api/video-request-headers.test.ts src/services/api/video-result-validation.test.ts ../agnes-video-proxy/idempotency-store.test.js ../agnes-video-proxy/request-fingerprint.test.js ../agnes-video-proxy/proxy-integration.test.js",
+        "format:check:slice": "prettier --check src/lib/canvas/canvas-chain.ts src/lib/canvas/canvas-chain.test.ts src/lib/canvas/canvas-generation-status.ts src/lib/canvas/canvas-generation-status.test.ts src/lib/canvas/canvas-status-labels.ts src/lib/canvas/canvas-status-labels.test.ts src/services/api/video-request-headers.ts src/services/api/video-request-headers.test.ts src/services/api/video-result-validation.ts src/services/api/video-result-validation.test.ts ../agnes-video-proxy/idempotency-store.js ../agnes-video-proxy/idempotency-store.test.js ../agnes-video-proxy/request-fingerprint.js ../agnes-video-proxy/request-fingerprint.test.js ../agnes-video-proxy/proxy-integration.test.js",
+        "verify": "npm run typecheck && npm run format:check:slice && npm run test:contracts && npm run build",
         "start": "vite preview --host 0.0.0.0 --port 3000",
         "format": "prettier --write .",
         "format:check": "prettier --check ."

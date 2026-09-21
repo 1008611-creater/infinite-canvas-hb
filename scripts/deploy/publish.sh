@@ -97,7 +97,7 @@ STAGE="$TMP_DIR/stage"
 rm -rf "$STAGE" 2>/dev/null || true
 mkdir -p "$STAGE/dist" "$STAGE/proxy" "$STAGE/api"
 cp -r web/dist/. "$STAGE/dist/"
-cp agnes-video-proxy/server.js agnes-video-proxy/package.json "$STAGE/proxy/"
+cp agnes-video-proxy/server.js agnes-video-proxy/idempotency-store.js agnes-video-proxy/request-fingerprint.js agnes-video-proxy/package.json "$STAGE/proxy/"
 # 云端同步服务（WebDAV）：源码在 canvas-webdav/，进容器后与代理同目录，名字固定为 webdav.js
 # （agnes-video-proxy/server.js 里就是按 ./webdav 去 require 的）。
 cp canvas-webdav/server.js "$STAGE/proxy/webdav.js"
@@ -113,14 +113,14 @@ proxy_fingerprint() {
     # 末尾的 `|| true` 是有意为之：文件缺失时这里不该直接中断整个发布，
     # 让调用方用一句人话报错（见下面的指纹为空检查）。
     if command -v openssl >/dev/null 2>&1; then
-        cat "$STAGE/proxy/server.js" "$STAGE/proxy/webdav.js" "$STAGE/proxy/package.json" 2>/dev/null | openssl dgst -sha256 -r | cut -d' ' -f1 || true
+        cat "$STAGE/proxy/server.js" "$STAGE/proxy/webdav.js" "$STAGE/proxy/idempotency-store.js" "$STAGE/proxy/request-fingerprint.js" "$STAGE/proxy/package.json" 2>/dev/null | openssl dgst -sha256 -r | cut -d' ' -f1 || true
     else
-        cat "$STAGE/proxy/server.js" "$STAGE/proxy/webdav.js" "$STAGE/proxy/package.json" 2>/dev/null | sha256sum | cut -d' ' -f1 || true
+        cat "$STAGE/proxy/server.js" "$STAGE/proxy/webdav.js" "$STAGE/proxy/idempotency-store.js" "$STAGE/proxy/request-fingerprint.js" "$STAGE/proxy/package.json" 2>/dev/null | sha256sum | cut -d' ' -f1 || true
     fi
 }
 PROXY_FINGERPRINT="$(proxy_fingerprint)"
 if [[ -z "$PROXY_FINGERPRINT" ]]; then
-    echo "✗ 算不出后端代码指纹（缺 server.js / webdav.js / package.json？），中止发布"
+    echo "✗ 算不出后端代码指纹（缺 server.js / webdav.js / idempotency-store.js / request-fingerprint.js / package.json？），中止发布"
     exit 1
 fi
 printf '%s\n' "$PROXY_FINGERPRINT" > "$STAGE/proxy/PROXY_FINGERPRINT"

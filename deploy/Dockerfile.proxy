@@ -10,7 +10,7 @@ FROM node:22-alpine
 RUN apk add --no-cache curl
 
 WORKDIR /app
-COPY server.js webdav.js package.json ./
+COPY server.js webdav.js idempotency-store.js request-fingerprint.js package.json ./
 
 EXPOSE 8787 8789
 CMD ["node", "server.js"]
