@@ -221,8 +221,19 @@ fi
 WEBDAV_USER_VALUE="${CANVAS_WEBDAV_USER:-canvas}"
 WEBDAV_PASSWORD_VALUE="${CANVAS_WEBDAV_PASSWORD:-$SITE_PASSWORD}"
 remote_env_set "$ENV_FILE" WEBDAV_USER "$WEBDAV_USER_VALUE" && ENV_CHANGED=1
-remote_env_set "$ENV_FILE" WEBDAV_PASSWORD "$WEBDAV_PASSWORD_VALUE" && ENV_CHANGED=1
-echo "==> 云端同步已配置：WebDAV 地址 https://hb.cauai.fun/dav ，用户名 ${WEBDAV_USER_VALUE}，密码同站点密码"
+if [[ -n "$WEBDAV_PASSWORD_VALUE" ]]; then
+    remote_env_set "$ENV_FILE" WEBDAV_PASSWORD "$WEBDAV_PASSWORD_VALUE" && ENV_CHANGED=1
+    echo "==> 云端同步已配置：WebDAV 地址 https://hb.cauai.fun/dav ，用户名 ${WEBDAV_USER_VALUE}，密码同站点密码"
+else
+    # 站点密码与 WebDAV 密码都没显式提供时，绝不能拿空值覆盖服务器上的现值：
+    # 那会把已经配好的云同步悄悄改成空密码，用户端表现为「同步突然连不上」，
+    # 而发布日志里只有一行成功。这里沿用现值，只在服务器确实没有时提醒一次。
+    if [[ -z "$(remote_env_get "$ENV_FILE" WEBDAV_PASSWORD)" ]]; then
+        echo "警告：服务器 ${ENV_FILE} 里没有 WEBDAV_PASSWORD，且本次未提供 CANVAS_SITE_PASSWORD / CANVAS_WEBDAV_PASSWORD，云同步暂不可用"
+    else
+        echo "==> 未提供站点密码：沿用服务器 ${ENV_FILE} 里现有的 WebDAV 密码，不改动"
+    fi
+fi
 
 # ---------------------------------------------------------------------------
 # 服务端 API 的密钥与数据库口令
