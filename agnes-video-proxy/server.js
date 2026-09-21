@@ -121,6 +121,28 @@ function requestIdempotencyKey(req) {
   }
   return value;
 }
+// 上游失败时给用户看的人话。以前只把 Agnes HTTP 503 原样透出去，页面和
+// proxy.log 里都只有这一句，既看不懂也查不出原因（2026-09-21 实测）。
+// 上游原文仍完整保留在响应体的 detail 字段，并落进 proxy.log，供事后排查。
+const UPSTREAM_STATUS_HINTS = {
+  429: '上游视频服务限流，请稍后重试',
+  500: '上游视频服务内部错误，请稍后重试',
+  502: '上游视频服务网关错误（502），请稍后重试',
+  503: '上游视频通道暂时不可用（503），请稍后重试',
+  504: '上游视频服务响应超时（504），请稍后重试',
+};
+
+// 上游（new-api 风格）把原因放在 message / error.message 里。
+// 末尾的 request id 对用户是噪音，去掉后再截断。
+function upstreamReason(detail) {
+  const raw =
+    detail && typeof detail === 'object'
+      ? detail.message || (detail.error && (detail.error.message || detail.error)) || detail.msg || detail.raw
+      : detail;
+  if (typeof raw !== 'string') return '';
+  return raw.replace(/\s*\(request id:[^)]*\)\s*$/i, '').trim().slice(0, 200);
+}
+
 function agnesRequest(method, relPath, body) {
   return new Promise((resolve, reject) => {
     const url = new URL(CONFIG.AGNES_BASE + relPath);
@@ -656,8 +678,17 @@ const server = http.createServer(async (req, res) => {
     return send(res, 404, { error: 'not found', path: u.pathname });
   } catch (e) {
     const detail = e && e.detail ? e.detail : String(e && e.message || e);
-    console.error('[错误]', String(e && e.message || e).slice(0, 200));
-    send(res, e && e.status ? e.status : 500, { error: String(e && e.message || e), detail });
+    const status = e && e.status ? e.status : 500;
+    const reason = upstreamReason(e && e.detail);
+    // 上游原文必须落日志：只记 Agnes HTTP 503 的话，分不清是通道耗尽、
+    // 限流还是参数被拒，运维只能靠猜。
+    if (e && e.detail) {
+      console.error('[错误]', String(e && e.message || e).slice(0, 200), '上游原文:', JSON.stringify(e.detail).slice(0, 500));
+    } else {
+      console.error('[错误]', String(e && e.message || e).slice(0, 200));
+    }
+    const message = UPSTREAM_STATUS_HINTS[status] || (reason ? String(e && e.message || e) + '：' + reason : String(e && e.message || e));
+    send(res, status, { error: message, detail });
   }
 });
 
