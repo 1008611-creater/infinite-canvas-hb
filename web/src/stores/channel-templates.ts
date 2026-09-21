@@ -561,11 +561,15 @@ export const channelTemplates: ChannelTemplate[] = [
             { name: "gpt-image-2.5", capability: "image" },
             { name: "gpt-image-2.5-flare", capability: "image" },
             { name: "gpt-image-2.5-sunburst", capability: "image" },
+            // 文本走 apic 的 DeepSeek 上游。实测（2026-09-21）：该渠道支持 /v1/responses，
+            // 与画布文本模板（model-plugin.ts L331）走的是同一个端点，所以无需插件脚本。
+            { name: "deepseek-v4-pro", capability: "text" },
+            { name: "deepseek-flash", capability: "text" },
         ],
         // 实测（2026-09-20）：n=2 准确给 2 张，不需要像 OpenLux 那样拆成 1 张/次。
         // ⚠️ 上游忽略 size 参数：传 "1:1" 与 "1024x1024" 实测都输出 1254x1254，
         // 画布里选 16:9 / 4K 不生效。属上游限制，非配置问题。
-        hint: "生图（走 apic 网关，额度从 apic 账户扣）。填你在 apic.cauai.fun 的 API Key 即用。注意：上游忽略尺寸参数，实际固定输出 1254x1254。",
+        hint: "图片（mcgrox 上游）+ 文本（DeepSeek 官方）。填你在 apic.cauai.fun 的 API Key 即用，额度从 apic 账户扣。注意：图片上游忽略尺寸参数，实际固定输出 1254x1254。",
     },
 ];
 
