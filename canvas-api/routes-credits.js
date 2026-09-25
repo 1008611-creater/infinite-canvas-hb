@@ -83,6 +83,7 @@ import {
     customerCost,
     REDEEM_DENOMINATIONS,
 } from './credits.js';
+import { readUnifiedQuota } from './unified-quota.js';
 import { redeemCode, listRedemptions, signPayload } from './ldxp-redeem.js';
 import * as ziyu from './ziyu.js';
 
@@ -131,10 +132,15 @@ function mountCreditRoutes(app, deps) {
     // GET /api/credits/me → { balance, pricing, ledger, freeTrial }
     app.get('/api/credits/me', requireAuth, async (req, res) => {
         try {
+            const unified = await readUnifiedQuota(req.user.email);
+            if (unified) return res.json({ ...unified, ledger: [], pricing: null, freeTrial: null });
             const summary = await getCreditSummary(req.user.id);
             const freeTrial = await getFreeTrialStatus(req.user.id, freeTrialLimit());
             res.json({ ...summary, freeTrial });
-        } catch (err) { fail(res, err); }
+        } catch (err) {
+            if (String(err?.message || '').startsWith('UNIFIED_QUOTA_')) return res.status(503).json({ error: err.message });
+            fail(res, err);
+        }
     });
 
     // POST /api/credits/redeem  body: { code }

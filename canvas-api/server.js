@@ -27,6 +27,7 @@ import * as auth from "./auth.js";
 import { mountCreditRoutes } from "./routes-credits.js";
 import { sendMail, smtpConfigured } from "./email.js";
 import { issueCode, verifyCode, revokeLatestCode, TTL_SECONDS } from "./email-verify.js";
+import { verifyUnifiedAssertion } from "./unified-auth.js";
 
 const app = express();
 const PORT = Number(process.env.PORT || 8790);
@@ -41,10 +42,12 @@ app.use(cookieParser());
 // 于是 raw 中间件再拿到时已经不是 Buffer，manifest 这类 JSON 文件就传不上来。
 // 所以这两条路径上的上传请求跳过 JSON 解析。
 const jsonParser = express.json({ limit: "200mb" });
+const formParser = express.urlencoded({ extended: false });
 const isBinaryUpload = (req) =>
     (req.method === "PUT" || req.method === "PATCH") &&
     (req.path.startsWith("/api/media/") || req.path.startsWith("/api/sync/"));
 app.use((req, res, next) => (isBinaryUpload(req) ? next() : jsonParser(req, res, next)));
+app.use((req, _res, next) => (req.is("application/x-www-form-urlencoded") ? formParser(req, _res, next) : next()));
 
 // 同源部署，但 MCP/agent 与本地调试会跨域调用，放行凭据
 app.use((req, res, next) => {
@@ -239,6 +242,25 @@ app.post("/api/auth/logout", async (req, res) => {
 });
 
 app.get("/api/auth/me", requireAuth, (req, res) => res.json({ user: req.user }));
+
+// New API bridge login. Disabled until UNIFIED_AUTH_SECRET is configured.
+async function unifiedLogin(req, res) {
+    try {
+        const identity = verifyUnifiedAssertion(req.body?.assertion || req.query?.assertion);
+        if (!identity) return res.status(401).json({ error: "invalid_unified_assertion" });
+        const user = await auth.findUserByEmail(identity.email);
+        if (!user) return res.status(409).json({ error: "account_link_required" });
+        const refresh = await auth.issueRefreshToken(user.id, req.headers["user-agent"]);
+        auth.setSessionCookies(res, user, refresh);
+        if (req.body?.redirect === "1" || req.query?.redirect === "1") return res.redirect("/");
+        res.json({ user, unifiedSubject: identity.subject || null });
+    } catch (error) {
+        console.error("[auth] 统一账号桥接失败:", error && error.message);
+        res.status(500).json({ error: "unified_auth_failed" });
+    }
+}
+app.post("/api/auth/unified", unifiedLogin);
+app.get("/api/auth/unified", unifiedLogin);
 
 // 额度 / 卡密 / 紫域目录 / 落盘 / 管理员对账（批次 1）
 mountCreditRoutes(app, { requireAuth, requireAdmin, registerMedia, query });
