@@ -95,6 +95,8 @@ function freeTrialLimit() {
 
 /** 统一的错误应答：不要把内部异常原文透给前端。 */
 function fail(res, err, status = 500) {
+    const message = String(err?.message || '');
+    if (message.startsWith('UNIFIED_QUOTA_')) return res.status(message.endsWith('_402') ? 402 : 503).json({ error: message });
     const code = (err && err.code) || 'INTERNAL_ERROR';
     if (status >= 500) console.error('[credits]', code, err && err.message);
     return res.status(status).json({ error: code });
@@ -184,7 +186,7 @@ function mountCreditRoutes(app, deps) {
             const { taskId, credits, metadata } = req.body || {};
             if (!taskId) return res.status(400).json({ error: 'TASK_ID_REQUIRED' });
             const result = await reserveTaskCredits({
-                userId: req.user.id, taskId, credits, metadata: metadata || {},
+                userId: req.user.id, taskId, credits, metadata: { ...(metadata || {}), email: req.user.email },
             });
             if (!result.ok) return res.status(402).json({ error: result.code, balance: result.balance });
             res.json(result);
@@ -203,7 +205,7 @@ function mountCreditRoutes(app, deps) {
             }
             const result = await settleTaskCredits({
                 userId: req.user.id, taskId, ziyuCost,
-                status: status || 'completed', metadata: metadata || {},
+                status: status || 'completed', metadata: { ...(metadata || {}), email: req.user.email },
             });
             res.json(result);
         } catch (err) { fail(res, err); }
@@ -215,7 +217,7 @@ function mountCreditRoutes(app, deps) {
         try {
             const { taskId, reason } = req.body || {};
             if (!taskId) return res.status(400).json({ error: 'TASK_ID_REQUIRED' });
-            const result = await refundTaskCredits({ userId: req.user.id, taskId, reason: reason || undefined });
+            const result = await refundTaskCredits({ userId: req.user.id, taskId, reason: reason || undefined, metadata: { email: req.user.email } });
             // 已结算过的任务不允许再退（结算本身已含"多退少补"），返回 409 让前端能区分
             // "退成功了" 与 "这笔不该退"。
             if (!result.ok) return res.status(409).json(result);

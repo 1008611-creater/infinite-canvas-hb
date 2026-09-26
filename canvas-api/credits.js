@@ -24,6 +24,14 @@
 // ============================================================================
 
 import { getPool, query } from './db.js';
+import { createUnifiedQuotaClient } from './unified-quota-client.mjs';
+
+function unifiedQuotaClient() {
+    const endpoint = process.env.NEW_API_QUOTA_WRITE_URL;
+    const token = process.env.NEW_API_QUOTA_TOKEN;
+    if (!endpoint && !token) return null;
+    return createUnifiedQuotaClient({ endpoint, token });
+}
 
 /** 紫域积分 → 用户点数的换算倍率。改这里 = 改定价，必须同步文档。 */
 const CHANNEL_CREDIT_MULTIPLIER = 1.5;
@@ -188,7 +196,29 @@ async function lockTask(client, taskId) {
  *
  * @returns {{ok:boolean, code?:string, balance?:number, charged?:number, duplicate?:boolean}}
  */
+async function applyUnifiedQuota({ userId, email, amount, reference, reason, metadata = {} }) {
+    const client = unifiedQuotaClient();
+    if (!client) return null;
+    if (!email) throw Object.assign(new Error('UNIFIED_QUOTA_EMAIL_REQUIRED'), { code: 'UNIFIED_QUOTA_EMAIL_REQUIRED' });
+    const result = await client.apply({ email, amount, reference, reason });
+    return withTransaction(async (db) => {
+        await lockTask(db, reference);
+        const wrote = await writeLedger(db, {
+            userId, amount, balanceAfter: result.balance, reason, taskId: reference, metadata: { ...metadata, authority: 'new-api', duplicate: Boolean(result.duplicate) },
+        });
+        return { ...result, recorded: wrote };
+    });
+}
+
 async function reserveTaskCredits({ userId, taskId, credits, metadata = {} }) {
+    const unified = unifiedQuotaClient();
+    if (unified) {
+        const cost = Math.max(0, Math.floor(Number(credits) || 0));
+        if (!taskId) throw new Error('reserveTaskCredits: taskId is required');
+        if (cost === 0) return { ok: true, charged: 0, balance: null, authority: 'new-api' };
+        const result = await applyUnifiedQuota({ userId, email: metadata.email, amount: -cost, reference: taskId + ':reserve', reason: REASONS.reservation, metadata });
+        return { ok: true, charged: cost, balance: result.balance, duplicate: result.duplicate, authority: 'new-api' };
+    }
     const cost = Math.max(0, Math.floor(Number(credits) || 0));
     if (cost === 0) {
         // 零预扣也要登记一行：否则这条任务永远不会出现在 channel_usage 里，
@@ -263,6 +293,17 @@ async function readBalanceInTx(client, userId) {
 async function settleTaskCredits({ userId, taskId, ziyuCost, status = 'completed', metadata = {} }) {
     if (!taskId) throw new Error('settleTaskCredits: taskId is required');
     const actualCost = customerCost(ziyuCost);
+    if (unifiedQuotaClient()) {
+        const reserved = await query(
+            `SELECT amount FROM credit_ledger
+              WHERE task_id = $1 AND reason = $2 AND user_id = $3`,
+            [taskId + ':reserve', REASONS.reservation, userId]
+        );
+        const reservedAmount = reserved.rowCount ? -reserved.rows[0].amount : 0;
+        const delta = actualCost - reservedAmount;
+        const result = delta === 0 ? { balance: null, duplicate: false } : await applyUnifiedQuota({ userId, email: metadata.email, amount: -delta, reference: taskId + ':settle', reason: REASONS.settle, metadata: { ...metadata, ziyuCost, actualCost, reservedAmount } });
+        return { ok: true, balance: result.balance, charged: actualCost, reserved: reservedAmount, delta, duplicate: result.duplicate, authority: 'new-api' };
+    }
 
     return withTransaction(async (client) => {
         await lockTask(client, taskId);
@@ -334,6 +375,23 @@ async function settleTaskCredits({ userId, taskId, ziyuCost, status = 'completed
  */
 async function refundTaskCredits({ userId, taskId, reason = REASONS.refund, metadata = {} }) {
     if (!taskId) throw new Error('refundTaskCredits: taskId is required');
+    if (unifiedQuotaClient()) {
+        const settled = await query(
+            `SELECT id FROM credit_ledger
+              WHERE task_id = $1 AND reason = $2 AND user_id = $3`,
+            [taskId + ':settle', REASONS.settle, userId]
+        );
+        if (settled.rowCount > 0) return { ok: false, code: 'ALREADY_SETTLED', authority: 'new-api' };
+        const reserved = await query(
+            `SELECT amount FROM credit_ledger
+              WHERE task_id = $1 AND reason = $2 AND user_id = $3`,
+            [taskId + ':reserve', REASONS.reservation, userId]
+        );
+        const amount = reserved.rowCount ? -reserved.rows[0].amount : 0;
+        if (amount <= 0) return { ok: true, refunded: false, authority: 'new-api' };
+        const result = await applyUnifiedQuota({ userId, email: metadata.email, amount, reference: taskId + ':refund', reason, metadata });
+        return { ok: true, refunded: !result.duplicate, duplicate: result.duplicate, balance: result.balance, authority: 'new-api' };
+    }
     return withTransaction(async (client) => {
         await lockTask(client, taskId);
         await ensureWallet(client, userId);

@@ -102,7 +102,7 @@ cp agnes-video-proxy/server.js agnes-video-proxy/idempotency-store.js agnes-vide
 # （agnes-video-proxy/server.js 里就是按 ./webdav 去 require 的）。
 cp canvas-webdav/server.js "$STAGE/proxy/webdav.js"
 # 服务端 API（账号 / 项目 / 素材 / 媒体）：源码在 canvas-api/，落到服务器 /opt/infinite-canvas/api
-cp canvas-api/server.js canvas-api/db.js canvas-api/auth.js canvas-api/schema.sql canvas-api/credits.js canvas-api/ldxp-redeem.js canvas-api/ziyu.js canvas-api/routes-credits.js canvas-api/email.js canvas-api/email-verify.js canvas-api/unified-auth.js canvas-api/unified-quota.js canvas-api/package.json "$STAGE/api/"
+cp canvas-api/server.js canvas-api/db.js canvas-api/auth.js canvas-api/schema.sql canvas-api/credits.js canvas-api/ldxp-redeem.js canvas-api/ziyu.js canvas-api/routes-credits.js canvas-api/email.js canvas-api/email-verify.js canvas-api/unified-auth.js canvas-api/unified-quota.js canvas-api/unified-quota-client.mjs canvas-api/package.json "$STAGE/api/"
 
 # 后端代码指纹：deploy.sh 靠它决定「要不要重建 agnes 镜像」。
 # 以前是拿 server.js 单文件做 cmp，结果新增 webdav.js 这种兄弟模块时不会触发重建，
@@ -129,9 +129,9 @@ echo "==> 后端代码指纹 ${PROXY_FINGERPRINT:0:12}"
 # API 代码指纹：同理，api/ 下所有源码一起算，避免改了 db.js 却不重建镜像。
 api_fingerprint() {
     if command -v openssl >/dev/null 2>&1; then
-        cat "$STAGE/api/server.js" "$STAGE/api/db.js" "$STAGE/api/auth.js" "$STAGE/api/schema.sql" "$STAGE/api/credits.js" "$STAGE/api/ldxp-redeem.js" "$STAGE/api/ziyu.js" "$STAGE/api/routes-credits.js" "$STAGE/api/email.js" "$STAGE/api/email-verify.js" "$STAGE/api/unified-auth.js" "$STAGE/api/unified-quota.js" "$STAGE/api/package.json" 2>/dev/null | openssl dgst -sha256 -r | cut -d ' ' -f1 || true
+        cat "$STAGE/api/server.js" "$STAGE/api/db.js" "$STAGE/api/auth.js" "$STAGE/api/schema.sql" "$STAGE/api/credits.js" "$STAGE/api/ldxp-redeem.js" "$STAGE/api/ziyu.js" "$STAGE/api/routes-credits.js" "$STAGE/api/email.js" "$STAGE/api/email-verify.js" "$STAGE/api/unified-auth.js" "$STAGE/api/unified-quota.js" "$STAGE/api/unified-quota-client.mjs" "$STAGE/api/package.json" 2>/dev/null | openssl dgst -sha256 -r | cut -d ' ' -f1 || true
     else
-        cat "$STAGE/api/server.js" "$STAGE/api/db.js" "$STAGE/api/auth.js" "$STAGE/api/schema.sql" "$STAGE/api/credits.js" "$STAGE/api/ldxp-redeem.js" "$STAGE/api/ziyu.js" "$STAGE/api/routes-credits.js" "$STAGE/api/email.js" "$STAGE/api/email-verify.js" "$STAGE/api/unified-auth.js" "$STAGE/api/unified-quota.js" "$STAGE/api/package.json" 2>/dev/null | sha256sum | cut -d ' ' -f1 || true
+        cat "$STAGE/api/server.js" "$STAGE/api/db.js" "$STAGE/api/auth.js" "$STAGE/api/schema.sql" "$STAGE/api/credits.js" "$STAGE/api/ldxp-redeem.js" "$STAGE/api/ziyu.js" "$STAGE/api/routes-credits.js" "$STAGE/api/email.js" "$STAGE/api/email-verify.js" "$STAGE/api/unified-auth.js" "$STAGE/api/unified-quota.js" "$STAGE/api/unified-quota-client.mjs" "$STAGE/api/package.json" 2>/dev/null | sha256sum | cut -d ' ' -f1 || true
     fi
 }
 API_FINGERPRINT="$(api_fingerprint)"
@@ -334,6 +334,7 @@ upload_lf canvas-api/email.js "${APP_ROOT}/api/email.js"
 upload_lf canvas-api/email-verify.js "${APP_ROOT}/api/email-verify.js"
 upload_lf canvas-api/unified-auth.js "${APP_ROOT}/api/unified-auth.js"
 upload_lf canvas-api/unified-quota.js "${APP_ROOT}/api/unified-quota.js"
+upload_lf canvas-api/unified-quota-client.mjs "${APP_ROOT}/api/unified-quota-client.mjs"
 echo "==> API 源码已就位"
 
 "${SSH[@]}" "$SSH_HOST" "CANVAS_RUNTIME=${CANVAS_RUNTIME:-docker} bash ${APP_ROOT}/scripts/deploy/deploy.sh ${APP_ROOT}/releases/${RELEASE}.tar.gz"
