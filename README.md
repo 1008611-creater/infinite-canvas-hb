@@ -64,12 +64,37 @@ node server.js         # 默认 http://localhost:8787
 一次拉起工作台所需的三个服务：
 
 ```bat
+scripts\windows\open-canvas.bat      :: 推荐入口：都在线则只开浏览器（秒开），否则先完整启动再打开
 scripts\windows\start.bat            :: 后端代理 8787 + Canvas Agent 17371 + 前端画布 3000，并打开浏览器
 scripts\windows\start.bat /headless  :: 不打开浏览器、结尾不暂停
 scripts\windows\stop.bat             :: 停止
 ```
 
+`open-canvas.bat` 会先探测前端（3000）与代理（8787）是否已在监听：都在就直接 `start http://localhost:3000`，不再走一遍启动等待（约 0.2 秒打开）；缺哪个就交给 `start.bat` 补齐，启动完自动开浏览器、不暂停等按键。日常进画布用这个，需要重开全部服务时才用 `start.bat`。
+
 脚本不写死绝对路径，根目录由脚本自身位置推导；`canvas-agent` 会自动在 npx 缓存目录中查找，找不到时回退 `npx -y @basketikun/canvas-agent`。桌面快捷方式只做转发到 `scripts/windows/`，不要两边各改一份。
+
+#### 桌面入口
+
+桌面上放两个入口即可，都是转发，不含实际逻辑：
+
+| 文件 | 类型 | 用途 |
+|---|---|---|
+| `天宫漫剧·画布.url` | URL 快捷方式 | 图标为浏览器，双击直接用默认浏览器打开 `localhost:3000`。**服务在跑时最快**，约 1 秒 |
+| `天宫漫剧·打开画布.bat` | 批处理 | 转发到 `open-canvas.bat`。不确定服务状态时用这个，会自动补齐再打开 |
+
+`.url` 是纯文本，内容如下（改端口或图标改这里）：
+
+```ini
+[InternetShortcut]
+URL=http://localhost:3000
+IconIndex=0
+IconFile=C:\Program Files\Google\Chrome\Application\chrome.exe
+```
+
+> 服务没启动时双击 `.url` 会看到浏览器报错页——这是预期行为，此时改用 `.bat`。
+>
+> 本项目**没有**用 `.lnk`：Windows 要求 `.lnk` 内包含 LinkTargetIDList 结构，手工构造的精简版会被判为无效文件（报"没有应用程序与此操作的指定文件有关联"），需借助 COM（`WScript.Shell`）生成。`.url` 无此限制且可指定图标。
 
 #### 开箱即用的 Agnes 渠道
 
