@@ -1,0 +1,9 @@
+const fs=require('fs');
+const p='E:/codex/niannianai/zhuanhuiyuangong/infinite-canvas/canvas-api/routes-credits.js';
+let s=fs.readFileSync(p,'utf8');
+s=s.replace('async function ownedProviderTask(channel, providerTask, userId) {','async function ownedProviderTask(channel, providerTask, userId, query) {').replace('async function localChannelTask(channel, taskId, userId) {','async function localChannelTask(channel, taskId, userId, query) {').replace("async function claimChannelTask({ channel, userId, taskId, modelId = null, mode = null, status = 'reserved' }) {","async function claimChannelTask({ channel, userId, taskId, modelId = null, mode = null, status = 'reserved', query }) {").replace('return { created: false, row: await localChannelTask(channel, taskId, userId) };','return { created: false, row: await localChannelTask(channel, taskId, userId, query) };').replace("localChannelTask('ziyu', taskId, req.user.id)","localChannelTask('ziyu', taskId, req.user.id, query)").replace("status: 'reserved' });","status: 'reserved', query });").replace("ownedProviderTask('ziyu', providerId, req.user.id)","ownedProviderTask('ziyu', providerId, req.user.id, query)").replace("ownedProviderTask('agnes', providerId, req.user.id)","ownedProviderTask('agnes', providerId, req.user.id, query);");
+const marker='            res.json({\r\n                tasks: rows.map((row) => ({';
+if(!s.includes(marker)) throw new Error('marker missing');
+const block=fs.readFileSync('E:/codex/huabu/block.txt','utf8');
+s=s.replace(marker,block+marker.replace('tasks: rows.map','tasks: refreshed.map'));
+fs.writeFileSync(p,s);

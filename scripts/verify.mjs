@@ -4,6 +4,7 @@
  *
  *   node scripts/verify.mjs            # 常规
  *   node scripts/verify.mjs --strict   # warning 也判失败
+ *   node scripts/verify.mjs --release  # 额外要求 G4/G5/G6 全部通过
  *   node scripts/verify.mjs --no-dry   # 跳过落地器干跑（快）
  *
  * 退出码：
@@ -13,6 +14,7 @@
  *
  * 覆盖 CONSTRAINTS.md 的：C1.1 密钥  C5.4 链接  C5.5 残留  C5.6 索引
  *                        C2.4 不造假完成（口径一致性）  C4.1 统一入口
+ *                        垂直切片机器状态文件完整性
  */
 
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
@@ -25,6 +27,7 @@ const SRC = process.env.CANVAS_SRC || 'E:/codex/niannianai/zhuanhuiyuangong/infi
 
 const argv = new Set(process.argv.slice(2));
 const STRICT = argv.has('--strict');
+const RELEASE = argv.has('--release');
 const NO_DRY = argv.has('--no-dry');
 
 const SKIP_DIRS = new Set(['.git', 'node_modules', '.workbuddy-ai', 'dist', 'logs']);
@@ -307,6 +310,65 @@ function checkIndex() {
     orphans.length ? [`未被任何文档提及（可能是孤儿）：`, ...orphans.map(rel)] : ['每份文档都至少被提及一次']);
 }
 
+/* ----------------------- 8. 切片机器状态完整性 ----------------------- */
+
+function checkSliceGateStatus() {
+  const file = join(ROOT, 'output/slice-001-gate-status.json');
+  if (!existsSync(file)) {
+    add('fail', '垂直切片机器状态完整性', ['output/slice-001-gate-status.json 不存在']);
+    return;
+  }
+  const requiredAcceptance = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7'];
+  const requiredGates = ['G4', 'G5', 'G6'];
+  try {
+    const payload = JSON.parse(readFileSync(file, 'utf8'));
+    const missingAcceptance = requiredAcceptance.filter((key) => !payload.acceptance || !payload.acceptance[key]?.status);
+    const missingGates = requiredGates.filter((key) => !payload.gates || typeof payload.gates[key] !== 'string');
+    const hasBoundary = typeof payload.prohibited_inference === 'string' && payload.prohibited_inference.length > 0;
+    const openGates = requiredGates.filter((key) => payload.gates?.[key] !== 'passed');
+    const releaseAcceptance = ['S3', 'S4', 'S5', 'S6'];
+    const unverifiedAcceptance = releaseAcceptance.filter((key) => !['pass', 'verified'].includes(payload.acceptance?.[key]?.status));
+    const details = [
+      `文件 ${rel(file)}`,
+      `验收项 ${requiredAcceptance.length - missingAcceptance.length}/${requiredAcceptance.length}`,
+      `闸门 ${requiredGates.length - missingGates.length}/${requiredGates.length}`,
+    ];
+    if (missingAcceptance.length) details.push(`缺少验收项：${missingAcceptance.join(', ')}`);
+    if (missingGates.length) details.push(`缺少闸门：${missingGates.join(', ')}`);
+    if (!hasBoundary) details.push('缺少禁止把本地证据升级为真实验收的边界声明');
+    if (RELEASE && openGates.length) details.push(`发布模式仍有未通过闸门：${openGates.join(', ')}`);
+    if (RELEASE && unverifiedAcceptance.length) details.push(`发布模式仍有未验证验收项：${unverifiedAcceptance.join(', ')}`);
+    add(missingAcceptance.length || missingGates.length || !hasBoundary || (RELEASE && (openGates.length || unverifiedAcceptance.length)) ? 'fail' : 'pass', '垂直切片机器状态完整性', details);
+  } catch (error) {
+    add('fail', '垂直切片机器状态完整性', [`JSON 无法解析：${error instanceof Error ? error.message : String(error)}`]);
+  }
+}
+
+/* ----------------------- 9. 发布模块覆盖 ----------------------- */
+
+function checkDeploymentModuleCoverage() {
+  const files = {
+    dockerfile: join(SRC, 'deploy/Dockerfile.proxy'),
+    publish: join(SRC, 'scripts/deploy/publish.sh'),
+    deploy: join(SRC, 'scripts/deploy/deploy.sh'),
+  };
+  const modules = ['idempotency-store.js', 'request-fingerprint.js'];
+  const missingFiles = Object.entries(files).filter(([, file]) => !existsSync(file)).map(([name]) => name);
+  const missingRefs = [];
+  for (const [name, file] of Object.entries(files)) {
+    if (!existsSync(file)) continue;
+    const text = readFileSync(file, 'utf8');
+    for (const module of modules) if (!text.includes(module)) missingRefs.push(`${name} 缺少 ${module}`);
+  }
+  const details = [
+    `检查文件：${Object.keys(files).join(', ')}`,
+    `新增代理模块：${modules.join(', ')}`,
+  ];
+  if (missingFiles.length) details.push(`文件不存在：${missingFiles.join(', ')}`);
+  if (missingRefs.length) details.push(...missingRefs);
+  add(missingFiles.length || missingRefs.length ? 'fail' : 'pass', '发布包覆盖新增代理模块', details);
+}
+
 /* ------------------------------ 7. 落地器干跑 --------------------------- */
 
 function checkDryRun() {
@@ -361,6 +423,8 @@ checkLinks();
 checkBak();
 checkConsistency();
 checkIndex();
+checkSliceGateStatus();
+checkDeploymentModuleCoverage();
 checkDryRun();
 
 process.exit(report());

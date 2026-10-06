@@ -338,7 +338,7 @@ function s5() {
 
         // ① 发布包打包列表
         const cpBefore = 'cp canvas-api/server.js canvas-api/db.js canvas-api/auth.js canvas-api/schema.sql canvas-api/package.json "$STAGE/api/"';
-        const cpAfter = 'cp canvas-api/server.js canvas-api/db.js canvas-api/auth.js canvas-api/schema.sql canvas-api/credits.js canvas-api/ldxp-redeem.js canvas-api/ziyu.js canvas-api/routes-credits.js canvas-api/package.json "$STAGE/api/"';
+        const cpAfter = 'cp canvas-api/server.js canvas-api/db.js canvas-api/auth.js canvas-api/schema.sql canvas-api/credits.js canvas-api/ldxp-redeem.js canvas-api/ziyu.js canvas-api/routes-credits.js canvas-api/email.js canvas-api/email-verify.js canvas-api/unified-auth.js canvas-api/unified-quota.js canvas-api/unified-quota-client.mjs canvas-api/package.json "$STAGE/api/"';
         if (t.indexOf(cpBefore) >= 0) {
             t = t.replace(cpBefore, cpAfter);
             done.push("发布包打包列表");
@@ -348,7 +348,7 @@ function s5() {
 
         // ② 后端指纹（openssl 与 sha256sum 两处同款 cat）
         const fpBefore = 'cat "$STAGE/api/server.js" "$STAGE/api/db.js" "$STAGE/api/auth.js" "$STAGE/api/schema.sql" "$STAGE/api/package.json"';
-        const fpAfter = 'cat "$STAGE/api/server.js" "$STAGE/api/db.js" "$STAGE/api/auth.js" "$STAGE/api/schema.sql" "$STAGE/api/credits.js" "$STAGE/api/ldxp-redeem.js" "$STAGE/api/ziyu.js" "$STAGE/api/routes-credits.js" "$STAGE/api/package.json"';
+        const fpAfter = 'cat "$STAGE/api/server.js" "$STAGE/api/db.js" "$STAGE/api/auth.js" "$STAGE/api/schema.sql" "$STAGE/api/credits.js" "$STAGE/api/ldxp-redeem.js" "$STAGE/api/ziyu.js" "$STAGE/api/routes-credits.js" "$STAGE/api/email.js" "$STAGE/api/email-verify.js" "$STAGE/api/unified-auth.js" "$STAGE/api/unified-quota.js" "$STAGE/api/unified-quota-client.mjs" "$STAGE/api/package.json"';
         if (t.indexOf(fpBefore) >= 0) {
             const n = t.split(fpBefore).length - 1;
             t = t.split(fpBefore).join(fpAfter);

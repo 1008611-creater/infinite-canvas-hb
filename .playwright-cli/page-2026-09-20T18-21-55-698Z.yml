@@ -1,0 +1,210 @@
+- generic [ref=e1]:
+  - generic [ref=e4]:
+    - main [ref=e104]:
+      - complementary [ref=e106]:
+        - generic [ref=e107]:
+          - button "画布" [ref=e108]
+          - button "资产" [ref=e110]
+          - button "提示词库" [ref=e111]
+        - generic [ref=e113]:
+          - generic [ref=e114]:
+            - generic [ref=e115]: 画布元素
+            - generic [ref=e277]: "1"
+            - button "选择" [ref=e116]
+            - generic [ref=e120] [cursor=pointer]:
+              - generic "全部" [ref=e121]:
+                - text: 全部
+                - combobox [ref=e122]
+              - img "down" [ref=e124]
+          - textbox "搜索节点" [ref=e133]
+          - button "视频 视频" [ref=e279]:
+            - generic [ref=e284]:
+              - generic [ref=e285]: 视频
+              - generic [ref=e286]: 视频
+        - button "调整左侧面板宽度" [ref=e137]
+      - generic [ref=e138]:
+        - generic:
+          - generic [ref=e139]:
+            - button "收起面板" [ref=e140]
+            - button "打开画布菜单" [ref=e144]
+            - button "无限画布 1" [ref=e147]
+            - button "Codex 未连接" [ref=e148]
+          - generic [ref=e151]:
+            - generic [ref=e152]:
+              - button "节点插件" [ref=e153] [cursor=pointer]
+              - link "文档" [ref=e156] [cursor=pointer]:
+                - /url: https://docs.canvas.best
+              - button "配置" [ref=e159] [cursor=pointer]
+              - button "切换到 English" [ref=e163] [cursor=pointer]: 中
+              - button "切换到浅色主题" [ref=e164] [cursor=pointer]
+              - button "v0.16.0" [ref=e172] [cursor=pointer]
+              - link "GitHub" [ref=e175] [cursor=pointer]:
+                - /url: https://github.com/basketikun/infinite-canvas
+                - img "github" [ref=e176]
+              - button "快捷键" [ref=e179] [cursor=pointer]
+            - button "Agent" [ref=e183] [cursor=pointer]
+        - generic [ref=e287]:
+          - button "视频" [ref=e289]
+          - generic [ref=e290]: 空视频节点
+          - generic [ref=e306]:
+            - generic [ref=e307]:
+              - generic [ref=e308]: 参考内容
+              - button "从画布选择参考节点" [ref=e310]
+            - textbox [ref=e313]
+            - generic [ref=e314]:
+              - generic [ref=e315]:
+                - button "放大编辑" [ref=e316] [cursor=pointer]
+                - button "提示词库" [ref=e323] [cursor=pointer]
+                - combobox "agnes-video-2.5-flash（Agnes 视频代理）" [ref=e327]
+                - button "文生视频 · 720p · 横屏 · 6s" [ref=e330] [cursor=pointer]
+              - button "生成" [ref=e336] [cursor=pointer]
+        - generic [ref=e337]:
+          - button "查看节点信息" [ref=e338]:
+            - generic [ref=e339]: 信息
+          - button "移除节点" [ref=e343]:
+            - generic [ref=e344]: 删除
+          - button "编辑" [ref=e349]
+          - button "上传视频" [ref=e354]
+        - generic [ref=e190]:
+          - button "移动" [ref=e191] [cursor=pointer]
+          - button "撤销" [ref=e198] [cursor=pointer]
+          - button "重做" [disabled] [ref=e199]
+          - button "文本" [ref=e201] [cursor=pointer]
+          - button "图片" [ref=e205] [cursor=pointer]
+          - button "视频" [ref=e211] [cursor=pointer]
+          - button "音频" [ref=e216] [cursor=pointer]
+          - button "生成配置" [ref=e221] [cursor=pointer]
+          - button "组" [ref=e226] [cursor=pointer]
+          - button "上传资产" [ref=e235] [cursor=pointer]
+          - button "画布外观" [ref=e241] [cursor=pointer]
+          - button "删除选中" [ref=e365] [cursor=pointer]
+          - button "清空画布" [ref=e250] [cursor=pointer]
+        - generic [ref=e256]:
+          - button "打开小地图" [ref=e257] [cursor=pointer]
+          - button "重置视图" [ref=e262] [cursor=pointer]
+          - slider "放大/缩小画布" [ref=e270]: "100"
+          - generic [ref=e271]: 100%
+          - button "快捷键" [ref=e272] [cursor=pointer]
+    - generic:
+      - complementary:
+        - button "调整右侧面板宽度"
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - button "连接设置，当前未连接"
+            - tablist "Agent 内容":
+              - tab "对话"
+              - tab "历史"
+              - tab "技能"
+              - tab "日志"
+            - generic:
+              - button "新对话" [disabled]
+              - button "收起 Agent 面板"
+        - generic:
+          - generic:
+            - generic:
+              - generic: 连接本地 Agent
+              - generic: 按使用场景选择一种连接方式。
+            - generic:
+              - generic:
+                - generic: 方式一：在 Codex 中使用插件
+                - generic: 在 Codex app 安装 Infinite Canvas 插件后，通过插件启动画布，插件会自动启动本地 Agent 并带上连接信息。
+              - generic:
+                - generic: Codex 插件提醒
+                - generic: 只有安装 Codex 插件或手动添加 MCP 后，工具列表才会进入 Codex 上下文并增加 token 消耗；仅运行 npx -y @basketikun/canvas-agent 启动本地 Agent 不会安装 MCP。
+                - generic:
+                  - generic:
+                    - generic: 移除插件
+                    - code: codex plugin remove infinite-canvas
+                    - button
+                  - generic:
+                    - generic: 移除手动 MCP
+                    - code: codex mcp remove infinite-canvas
+                    - button
+              - generic:
+                - generic: 方式二：直接运行 Agent
+                - generic: 不使用 Codex 插件时，在终端运行下面命令，再回到网页里连接或手动填入 Local URL 和 Connect token。
+                - generic:
+                  - code: npx -y @basketikun/canvas-agent
+                  - button
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic: 网页连接
+                    - generic: 未连接
+                  - generic: 默认自动读取 Local URL 和 Connect token，失败时再手动填写。
+                - button "连接"
+              - generic:
+                - generic:
+                  - generic:
+                    - text: 本地地址
+                    - generic: Local URL
+                  - generic:
+                    - textbox "本地地址 Local URL":
+                      - /placeholder: 例如 http://127.0.0.1:17371
+                      - text: http://127.0.0.1:17371
+                - generic:
+                  - generic:
+                    - text: 连接 Token
+                    - generic: Connect token
+                  - generic:
+                    - textbox "连接 Token Connect token 显示":
+                      - /placeholder: 自动发现，或手动填入 Connect token
+                    - generic:
+                      - button "显示":
+                        - img "eye-invisible"
+  - generic [ref=e373]:
+    - dialog "配置与用户偏好 渠道聚合、默认模型、同步与本地存储":
+      - generic [ref=e374]:
+        - button "Close" [active] [ref=e375] [cursor=pointer]:
+          - generic "关闭" [ref=e376]:
+            - img "close" [ref=e377]
+        - generic [ref=e382]:
+          - generic [ref=e383]: 配置与用户偏好
+          - generic [ref=e384]: 渠道聚合、默认模型、同步与本地存储
+        - generic [ref=e385]:
+          - generic [ref=e386]:
+            - generic [ref=e387]: JSON 文件包含 API Key 和 WebDAV 凭据，请妥善保管。
+            - generic [ref=e388]:
+              - button "导入配置" [ref=e389] [cursor=pointer]
+              - button "导出配置" [ref=e395] [cursor=pointer]
+          - generic [ref=e401]:
+            - tablist [ref=e402]:
+              - generic [ref=e404]:
+                - tab "渠道" [selected] [ref=e406] [cursor=pointer]
+                - tab "偏好设置" [ref=e408] [cursor=pointer]
+                - tab "提示词来源" [ref=e410] [cursor=pointer]
+                - tab "账号与云端" [ref=e412] [cursor=pointer]
+                - tab "WebDAV" [ref=e414] [cursor=pointer]
+                - tab "本地存储" [ref=e416] [cursor=pointer]
+            - tabpanel "渠道" [ref=e419]:
+              - generic [ref=e420]:
+                - generic [ref=e421]:
+                  - generic [ref=e422]: 每个渠道选择一个协议并拉取模型，为每个模型指定能力（生图/视频/文本/音频），并可自定义调用脚本。
+                  - generic [ref=e423]:
+                    - generic [ref=e425] [cursor=pointer]:
+                      - generic [ref=e426]:
+                        - generic: 从模板添加（预填接口地址与模型）
+                        - combobox [ref=e427]
+                      - img "down" [ref=e429]
+                    - button "新增渠道" [ref=e433] [cursor=pointer]
+                - generic [ref=e437]:
+                  - generic [ref=e438]:
+                    - generic [ref=e439]:
+                      - generic [ref=e440]:
+                        - generic [ref=e441]: 默认渠道
+                        - generic [ref=e442]: 用户自带
+                      - generic [ref=e443]: OpenAI · 4 个模型 · https://api.openai.com
+                    - generic [ref=e444]:
+                      - button "编辑" [ref=e445] [cursor=pointer]
+                      - button [ref=e451] [cursor=pointer]
+                  - generic [ref=e456]:
+                    - generic [ref=e457]:
+                      - generic [ref=e458]:
+                        - generic [ref=e459]: Agnes 视频代理
+                        - generic [ref=e460]: 平台渠道
+                      - generic [ref=e461]: OpenAI · 1 个模型 · http://localhost:8787
+                    - button "编辑" [ref=e463] [cursor=pointer]
+          - button "完 成" [ref=e470] [cursor=pointer]

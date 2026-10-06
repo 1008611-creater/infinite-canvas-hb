@@ -1,0 +1,93 @@
+- generic [ref=f2e2]:
+  - generic [ref=f2e3]:
+    - heading "命理排盘" [level=1] [ref=f2e4]
+    - generic [ref=f2e5]: 八字 · 真太阳时 · 大运流年 · 八宅命卦 · 姓名五格
+  - generic [ref=f2e7]:
+    - heading "命主信息" [level=2] [ref=f2e8]
+    - generic [ref=f2e9]:
+      - generic [ref=f2e10]:
+        - generic [ref=f2e11]: 姓名
+        - textbox "姓名" [ref=f2e12]:
+          - /placeholder: 请输入姓名
+      - generic [ref=f2e13]:
+        - generic [ref=f2e14]: 性别
+        - combobox "性别" [ref=f2e15]:
+          - option "男" [selected]
+          - option "女"
+      - generic [ref=f2e16]:
+        - generic [ref=f2e17]: 出生日期（公历）
+        - textbox "出生日期（公历）" [ref=f2e18]
+      - generic [ref=f2e19]:
+        - generic [ref=f2e20]: 出生时间
+        - textbox "出生时间" [ref=f2e21]
+      - generic [ref=f2e22]:
+        - generic [ref=f2e23]: 出生地
+        - combobox "出生地" [ref=f2e24]:
+          - option "河北 唐山（市区）" [selected]
+          - option "河北 唐山（丰南）"
+          - option "河北 石家庄"
+          - option "河北 保定"
+          - option "河北 邯郸"
+          - option "河北 廊坊"
+          - option "河北 沧州"
+          - option "北京"
+          - option "天津"
+          - option "上海"
+          - option "重庆"
+          - option "广东 广州"
+          - option "广东 深圳"
+          - option "广东 东莞"
+          - option "江苏 南京"
+          - option "江苏 苏州"
+          - option "江苏 无锡"
+          - option "浙江 杭州"
+          - option "浙江 宁波"
+          - option "浙江 温州"
+          - option "山东 济南"
+          - option "山东 青岛"
+          - option "山东 烟台"
+          - option "河南 郑州"
+          - option "湖北 武汉"
+          - option "湖南 长沙"
+          - option "四川 成都"
+          - option "陕西 西安"
+          - option "山西 太原"
+          - option "辽宁 沈阳"
+          - option "辽宁 大连"
+          - option "吉林 长春"
+          - option "黑龙江 哈尔滨"
+          - option "安徽 合肥"
+          - option "福建 福州"
+          - option "福建 厦门"
+          - option "江西 南昌"
+          - option "广西 南宁"
+          - option "云南 昆明"
+          - option "贵州 贵阳"
+          - option "甘肃 兰州"
+          - option "内蒙古 呼和浩特"
+          - option "新疆 乌鲁木齐"
+          - option "西藏 拉萨"
+          - option "青海 西宁"
+          - option "宁夏 银川"
+          - option "海南 海口"
+          - option "香港"
+          - option "澳门"
+          - option "台湾 台北"
+          - option "自定义（手动填经度）"
+      - generic [ref=f2e25]:
+        - generic [ref=f2e26]: 经度（可改）
+        - textbox "经度（可改）" [ref=f2e27]: "118.18"
+      - generic [ref=f2e28]:
+        - generic [ref=f2e29]: 时制
+        - combobox "时制" [ref=f2e30]:
+          - option "真太阳时（推荐）" [selected]
+          - option "钟表时间"
+      - generic [ref=f2e31]:
+        - button "开始排盘" [ref=f2e32] [cursor=pointer]
+        - button "合婚：填入对方" [ref=f2e33] [cursor=pointer]
+        - button "重置" [ref=f2e34] [cursor=pointer]
+    - generic [ref=f2e35]: 出生地只影响「真太阳时」的经度修正，一般差异在 10–30 分钟内，跨时辰时才会改变时柱。
+  - generic [ref=f2e36]:
+    - text: 本页为传统命理文化推演工具，结果仅供文化参考与自我反思 不构成医疗、法律、投资建议；健康问题请以执业医师意见为准
+    - link "排完盘 → 用已经发生的事自检一遍" [ref=f2e37] [cursor=pointer]:
+      - /url: check.html

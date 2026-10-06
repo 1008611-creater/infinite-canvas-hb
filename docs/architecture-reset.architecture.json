@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "无限画布 · 可执行交付架构",
+    "locale": "zh-CN",
+    "output": "docs/architecture-reset.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    { "id": "brief", "type": "external", "label": "Problem Brief", "sublabel": "目标 / 边界", "pos": [30, 260], "size": [125, 68] },
+    { "id": "spec", "type": "backend", "label": "Product Spec", "sublabel": "可测标准", "pos": [185, 260], "size": [125, 68] },
+    { "id": "constraints", "type": "security", "label": "Constraints", "sublabel": "安全 / 架构", "pos": [340, 260], "size": [125, 68] },
+    { "id": "plan", "type": "backend", "label": "Plan", "sublabel": "切片 / 风险", "pos": [495, 260], "size": [125, 68] },
+    { "id": "build", "type": "backend", "label": "Build", "sublabel": "代码 + 测试", "pos": [650, 260], "size": [125, 68] },
+    { "id": "verify", "type": "security", "label": "Verify", "sublabel": "流 / 证据", "pos": [805, 260], "size": [125, 68] },
+    { "id": "review", "type": "external", "label": "Review", "sublabel": "blocking = 0", "pos": [960, 260], "size": [125, 68] },
+    { "id": "ship", "type": "cloud", "label": "Ship + Retro", "sublabel": "发布 / 回滚", "pos": [1115, 260], "size": [135, 68] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "每次变更的可执行生命周期", "wraps": ["brief", "spec", "constraints", "plan", "build", "verify", "review", "ship"], "pad": 24 }
+  ],
+  "connections": [
+    { "from": "brief", "to": "spec", "label": "G1 owner 批准", "variant": "emphasis", "labelDy": 58 },
+    { "from": "spec", "to": "constraints", "label": "G2 标准可测", "variant": "emphasis", "labelDy": 58 },
+    { "from": "constraints", "to": "plan", "label": "范围 / 风险", "variant": "security", "labelDy": 58 },
+    { "from": "plan", "to": "build", "label": "G3 书面批准", "variant": "emphasis", "labelDy": 58 },
+    { "from": "build", "to": "verify", "label": "增量切片", "variant": "emphasis", "labelDy": 58 },
+    { "from": "verify", "to": "review", "label": "G4 证据落盘", "variant": "security", "labelDy": 58 },
+    { "from": "review", "to": "ship", "label": "G5 blocking=0", "variant": "emphasis", "labelDy": 58 }
+  ],
+  "cards": [
+    { "dot": "rose", "title": "本次重构的硬规则", "items": ["没有 Problem Brief 不进入实现", "没有可测验收标准不进入计划", "没有 G3 书面批准不改权威源码"] },
+    { "dot": "cyan", "title": "质量证据", "items": ["真实用户主流程与错误路径", "类型 / 单测 / 契约 / E2E / 安全扫描", "结果写入可追溯的验证记录"] },
+    { "dot": "emerald", "title": "完成定义", "items": ["Review blocking = 0", "发布可回滚且版本可辨认", "复盘把缺口转成下一轮输入"] }
+  ]
+}

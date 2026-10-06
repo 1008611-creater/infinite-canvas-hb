@@ -1,0 +1,13 @@
+[     352ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:4187/node_modules/.vite/deps/chunk-GDS2V3LT.js?v=570aecad:20102
+[     754ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://127.0.0.1:4187/canvas:0
+[   11872ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:4187/node_modules/.vite/deps/chunk-GDS2V3LT.js?v=570aecad:20102
+[   12320ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://127.0.0.1:4187/canvas:0
+[  104122ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:4187/node_modules/.vite/deps/chunk-GDS2V3LT.js?v=570aecad:20102
+[  104506ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://127.0.0.1:4187/canvas:0
+[  152310ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:4187/node_modules/.vite/deps/chunk-GDS2V3LT.js?v=570aecad:20102
+[  152711ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://127.0.0.1:4187/canvas:0
+[  158909ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:4187/node_modules/.vite/deps/chunk-GDS2V3LT.js?v=570aecad:20102
+[  159408ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://127.0.0.1:4187/canvas/mMsKJoh7KgqeJJjeQy1qj:0
+[  226226ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:4187/node_modules/.vite/deps/chunk-GDS2V3LT.js?v=570aecad:20102
+[  226657ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://127.0.0.1:4187/canvas:0
+[  325845ms] [LOG] [vite] server connection lost. Polling for restart... @ http://127.0.0.1:4187/@vite/client:864

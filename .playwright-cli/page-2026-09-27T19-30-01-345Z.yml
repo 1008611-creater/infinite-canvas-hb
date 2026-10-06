@@ -1,0 +1,307 @@
+- generic [ref=e95]:
+  - generic [ref=e97]:
+    - generic [ref=e98]:
+      - link [ref=e99] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e104]:
+        - generic [ref=e105] [cursor=pointer]: 网站首页
+        - generic [ref=e106] [cursor=pointer]: 开店教学
+        - generic [ref=e107] [cursor=pointer]: 开通微信支付
+    - generic [ref=e108]:
+      - generic [ref=e110] [cursor=pointer]:
+        - generic [ref=e111]: 消息通知
+        - generic [ref=e115]: "43"
+      - generic [ref=e118] [cursor=pointer]:
+        - img "avatar" [ref=e121]
+        - generic [ref=e122]: 商家0752
+  - generic [ref=e127]:
+    - generic [ref=e131]:
+      - generic [ref=e134] [cursor=pointer]:
+        - generic [ref=e135]: 首页
+        - generic [ref=e141]: 店铺
+        - generic [ref=e147]: 商品
+        - generic [ref=e152]: 订单
+        - generic [ref=e157]: 售后
+        - generic [ref=e162]: 营销
+        - generic [ref=e167]: 分销
+        - generic [ref=e172]: 货源
+        - generic [ref=e178]: 资金
+        - generic [ref=e186]: 我的
+      - generic [ref=e372]:
+        - generic [ref=e373]: 商品
+        - generic [ref=e374]:
+          - generic [ref=e375] [cursor=pointer]: 商品管理
+          - generic [ref=e377]:
+            - generic [ref=e378] [cursor=pointer]: 自营商品
+            - generic [ref=e380] [cursor=pointer]: 对接商品
+            - generic [ref=e382] [cursor=pointer]: 商品发布
+            - generic [ref=e384] [cursor=pointer]: 商品分类
+    - main [ref=e194]:
+      - generic [ref=e2149]:
+        - generic [ref=e2151]:
+          - generic [ref=e2152]: 返回
+          - generic [ref=e2158]: 商品编辑
+        - generic [ref=e2161]:
+          - generic [ref=e2164]:
+            - generic [ref=e2165]: 编辑卡密商品
+            - generic [ref=e2167]:
+              - generic [ref=e2169]:
+                - strong [ref=e2170]
+                - text: 商品标题
+              - textbox "最多只允许输入30个汉字（建议60个字以内）" [ref=e2177]: 矿泉水API日卡10刀
+            - generic [ref=e2179]:
+              - generic [ref=e2181]:
+                - strong [ref=e2182]
+                - text: 商品分类
+              - generic "矿泉水API订阅" [ref=e2188]:
+                - textbox "矿泉水API订阅"
+            - generic [ref=e2194]:
+              - generic [ref=e2196]:
+                - generic [ref=e2198]:
+                  - strong [ref=e2199]
+                  - text: 销售价格
+                - generic [ref=e2202]:
+                  - generic [ref=e2205]:
+                    - spinbutton "请输入商品价格" [ref=e2206]: "1.00"
+                    - generic [ref=e2208]:
+                      - button [ref=e2209] [cursor=pointer]
+                      - button [ref=e2212] [cursor=pointer]
+                  - generic [ref=e2215]: 单品定价范围在0-99999元之间，单位元，0元免费
+              - generic [ref=e2218]:
+                - generic [ref=e2219]: 参考价
+                - generic [ref=e2221]:
+                  - generic [ref=e2224]:
+                    - spinbutton "参考价，可不填" [ref=e2225]: "1.00"
+                    - generic [ref=e2227]:
+                      - button [ref=e2228] [cursor=pointer]
+                      - button [ref=e2231] [cursor=pointer]
+                  - generic [ref=e2234]: 参考价，可不填
+              - generic [ref=e2237]:
+                - generic [ref=e2238]: 成本价
+                - generic [ref=e2240]:
+                  - generic [ref=e2243]:
+                    - spinbutton "成本价，可不填" [ref=e2244]: "0.00"
+                    - generic [ref=e2246]:
+                      - button [ref=e2247] [cursor=pointer]
+                      - button [ref=e2250] [cursor=pointer]
+                  - generic [ref=e2253]: 成本价，可不填
+            - generic [ref=e2256]:
+              - generic [ref=e2257]: 封面图
+              - generic [ref=e2264] [cursor=pointer]
+            - generic [ref=e2269]:
+              - generic [ref=e2271]:
+                - strong [ref=e2272]
+                - text: 商品描述
+              - generic [ref=e2278]:
+                - generic [ref=e2280]:
+                  - button "正文" [ref=e2282]
+                  - button [ref=e2286]
+                  - button [ref=e2291]
+                  - button [ref=e2295]
+                  - button [ref=e2299]
+                  - button [ref=e2303]
+                  - button [ref=e2311]
+                  - button [ref=e2317]
+                  - button "默认字号" [ref=e2324]
+                  - button "默认字体" [ref=e2328]
+                  - button "默认行高" [ref=e2332]
+                  - button [ref=e2337]
+                  - button [ref=e2341]
+                  - button [ref=e2345]
+                  - button [ref=e2349]
+                  - button [ref=e2355]
+                  - button [ref=e2362]
+                  - button [ref=e2368]
+                  - button [ref=e2373]
+                  - button [ref=e2379]
+                  - button [ref=e2385]
+                  - button [ref=e2391]
+                  - button [ref=e2395]
+                  - button [ref=e2404]
+                  - button [ref=e2408]
+                  - button [ref=e2413] [cursor=pointer]
+                - paragraph [ref=e2420]:
+                  - generic [ref=e2421]: 购买后自动发放兑换码，到矿泉水API后台兑换。日卡有效期1天，每天额度10刀。
+            - generic [ref=e2423]:
+              - generic [ref=e2425]:
+                - strong [ref=e2426]
+                - text: 使用说明
+              - generic [ref=e2432]:
+                - generic [ref=e2434]:
+                  - button "正文" [ref=e2436]
+                  - button [ref=e2440]
+                  - button [ref=e2445]
+                  - button [ref=e2449]
+                  - button [ref=e2453]
+                  - button [ref=e2457]
+                  - button [ref=e2465]
+                  - button [ref=e2471]
+                  - button "默认字号" [ref=e2478]
+                  - button "默认字体" [ref=e2482]
+                  - button "默认行高" [ref=e2486]
+                  - button [ref=e2491]
+                  - button [ref=e2495]
+                  - button [ref=e2499]
+                  - button [ref=e2503]
+                  - button [ref=e2509]
+                  - button [ref=e2516]
+                  - button [ref=e2522]
+                  - button [ref=e2527]
+                  - button [ref=e2533]
+                  - button [ref=e2539]
+                  - button [ref=e2545]
+                  - button [ref=e2549]
+                  - button [ref=e2558]
+                  - button [ref=e2562]
+                  - button [ref=e2567] [cursor=pointer]
+                - generic [ref=e2573]:
+                  - paragraph [ref=e2574]:
+                    - generic [ref=e2575]: 购买后自动发放兑换码，到矿泉水API后台兑换。日卡有效期1天，每天额度10刀。
+                  - paragraph [ref=e2577]:
+                    - generic [ref=e2578]: 兑换入口：https://api.lsb0713.online/dashboard/redeem
+            - generic [ref=e2581]:
+              - generic [ref=e2582]: 库存预警
+              - generic [ref=e2584]:
+                - generic [ref=e2587]:
+                  - spinbutton [ref=e2588]: "0"
+                  - generic [ref=e2590]:
+                    - button [ref=e2591] [cursor=pointer]
+                    - button [disabled] [ref=e2594]
+                - generic [ref=e2597]: 低于当前库存预警阈值会发送提醒通知
+            - separator [ref=e2599]
+            - generic [ref=e2601]:
+              - button "展开更多设置" [expanded] [active] [ref=e2602] [cursor=pointer]
+              - region:
+                - generic [ref=e2612]:
+                  - generic [ref=e2613]:
+                    - generic [ref=e2614]: 手续费承担方
+                    - generic [ref=e2619]:
+                      - generic [ref=e2620] [cursor=pointer]:
+                        - radio "使用店铺设置" [checked]
+                        - generic [ref=e2623]: 使用店铺设置
+                      - generic [ref=e2624] [cursor=pointer]:
+                        - radio "商家承担"
+                        - generic [ref=e2627]: 商家承担
+                      - generic [ref=e2628] [cursor=pointer]:
+                        - radio "买家承担"
+                        - generic [ref=e2631]: 买家承担
+                  - generic [ref=e2632]:
+                    - generic [ref=e2633]: 是否显示在店铺
+                    - generic [ref=e2635]:
+                      - generic [ref=e2638]:
+                        - generic [ref=e2639] [cursor=pointer]:
+                          - radio "显示" [checked]
+                          - generic [ref=e2642]: 显示
+                        - generic [ref=e2643] [cursor=pointer]:
+                          - radio "隐藏"
+                          - generic [ref=e2646]: 隐藏
+                      - generic [ref=e2647]: 如果选择不显示在店铺，可使用商品链接访问
+                  - generic [ref=e2649]:
+                    - generic [ref=e2650]: 联系方式要求
+                    - generic [ref=e2652]:
+                      - generic [ref=e2655]:
+                        - generic [ref=e2656] [cursor=pointer]:
+                          - radio "不限制" [checked]
+                          - generic [ref=e2659]: 不限制
+                        - generic [ref=e2660] [cursor=pointer]:
+                          - radio "手机号"
+                          - generic [ref=e2663]: 手机号
+                        - generic [ref=e2664] [cursor=pointer]:
+                          - radio "QQ号"
+                          - generic [ref=e2667]: QQ号
+                        - generic [ref=e2668] [cursor=pointer]:
+                          - radio "微信号"
+                          - generic [ref=e2671]: 微信号
+                        - generic [ref=e2672] [cursor=pointer]:
+                          - radio "邮箱"
+                          - generic [ref=e2675]: 邮箱
+                      - generic [ref=e2676]: 限制买家输入的联系方式格式
+                  - generic [ref=e2677]:
+                    - generic [ref=e2678]: 库存显示方式
+                    - generic [ref=e2680]:
+                      - generic [ref=e2683]:
+                        - generic [ref=e2684] [cursor=pointer]:
+                          - radio "库存范围" [checked]
+                          - generic [ref=e2687]: 库存范围
+                        - generic [ref=e2688] [cursor=pointer]:
+                          - radio "实际库存"
+                          - generic [ref=e2691]: 实际库存
+                      - generic [ref=e2692]: N>=20：库存充足，5<N<20：库存一般，0<N<=5：库存少量，0：缺货
+                  - generic [ref=e2694]:
+                    - generic [ref=e2695]: 减库存方式
+                    - generic [ref=e2697]:
+                      - generic [ref=e2700]:
+                        - generic [ref=e2701] [cursor=pointer]:
+                          - radio "支付完成减库存" [checked]
+                          - generic [ref=e2704]: 支付完成减库存
+                        - generic [ref=e2705] [cursor=pointer]:
+                          - radio "拍下减库存"
+                          - generic [ref=e2708]: 拍下减库存
+                      - generic [ref=e2709]: 买家支付之后，才扣减库存数量，可能存在卡密超卖
+                  - generic [ref=e2711]:
+                    - generic [ref=e2712]: 发卡顺序
+                    - generic [ref=e2717]:
+                      - generic [ref=e2718] [cursor=pointer]:
+                        - radio "顺序发卡" [checked]
+                        - generic [ref=e2721]: 顺序发卡
+                      - generic [ref=e2726] [cursor=pointer]:
+                        - radio "随机发卡"
+                        - generic [ref=e2729]: 随机发卡
+                      - generic [ref=e2735] [cursor=pointer]:
+                        - radio "买家选号"
+                        - generic [ref=e2738]: 买家选号
+                  - generic [ref=e2744]:
+                    - generic [ref=e2745]: 可使用优惠券
+                    - generic [ref=e2747]:
+                      - generic [ref=e2750]:
+                        - generic [ref=e2751] [cursor=pointer]:
+                          - radio "是" [checked]
+                          - generic [ref=e2754]: 是
+                        - generic [ref=e2755] [cursor=pointer]:
+                          - radio "否"
+                          - generic [ref=e2758]: 否
+                      - generic [ref=e2759]: 如果选择不可使用优惠券，下单页将不会显示优惠券表单
+                  - generic [ref=e2762]:
+                    - generic [ref=e2763]: 起购数量
+                    - generic [ref=e2768]:
+                      - spinbutton [ref=e2769]: "1"
+                      - generic [ref=e2771]:
+                        - button [ref=e2772] [cursor=pointer]
+                        - button [disabled] [ref=e2775]
+                  - generic [ref=e2779]:
+                    - generic [ref=e2780]: 每人最多限购
+                    - generic [ref=e2782]:
+                      - generic [ref=e2785]:
+                        - spinbutton [ref=e2786]: "0"
+                        - generic [ref=e2788]:
+                          - button [ref=e2789] [cursor=pointer]
+                          - button [disabled] [ref=e2792]
+                      - generic [ref=e2795]: 0代表不限制，系统将根据IP进行限购
+                  - generic [ref=e2798]:
+                    - generic [ref=e2799]: 显示顺序
+                    - generic [ref=e2801]:
+                      - generic [ref=e2804]:
+                        - spinbutton [ref=e2805]: "0"
+                        - generic [ref=e2807]:
+                          - button [ref=e2808] [cursor=pointer]
+                          - button [disabled] [ref=e2811]
+                      - generic [ref=e2814]: 权重数字越大越靠前。
+                  - generic [ref=e2817]:
+                    - generic [ref=e2818]: 代理分销
+                    - generic [ref=e2826]:
+                      - generic [ref=e2827] [cursor=pointer]:
+                        - radio "关闭" [checked]
+                        - generic [ref=e2830]: 关闭
+                      - generic [ref=e2831] [cursor=pointer]:
+                        - radio "开启"
+                        - generic [ref=e2834]: 开启
+                  - generic [ref=e2836]:
+                    - generic [ref=e2837]: 强制查单密码
+                    - generic [ref=e2842]:
+                      - generic [ref=e2843] [cursor=pointer]:
+                        - radio "关闭" [checked]
+                        - generic [ref=e2846]: 关闭
+                      - generic [ref=e2847] [cursor=pointer]:
+                        - radio "开启"
+                        - generic [ref=e2850]: 开启
+          - button "保存修改" [ref=e2611] [cursor=pointer]

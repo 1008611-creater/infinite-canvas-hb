@@ -8,6 +8,15 @@
 
 ## 0. 三条使用规则（先看这个）
 
+### 0.1 架构重置入口（2026-09-21）
+
+本项目现按可执行生命周期推进，先读 [`ARCHITECTURE-RESET.md`](ARCHITECTURE-RESET.md)，再读 [`IMPLEMENTATION-PLAN.md`](IMPLEMENTATION-PLAN.md)。架构图规格与交付物为 [`architecture-reset.architecture.json`](architecture-reset.architecture.json) / [`architecture-reset.html`](architecture-reset.html)。验收统一入口为 [`ACCEPTANCE.md`](ACCEPTANCE.md)，具体验收状态仍以 `implementation/deploy/ACCEPTANCE.md` 为准。
+垂直切片 001 的最新本地浏览器证据见 [`STATUS_20260921_SLICE001_BROWSER.md`](STATUS_20260921_SLICE001_BROWSER.md)。
+
+当前第一条垂直切片：[`SLICE-001-PROBLEM-BRIEF.md`](SLICE-001-PROBLEM-BRIEF.md) → [`SLICE-001-SPEC.md`](SLICE-001-SPEC.md) → [`SLICE-001-PLAN.md`](SLICE-001-PLAN.md)。
+
+第二条垂直切片（三站聚合，**只有规格，未进入实现**）：[`SLICE-002-PROBLEM-BRIEF.md`](SLICE-002-PROBLEM-BRIEF.md) → [`SLICE-002-SPEC.md`](SLICE-002-SPEC.md) → [`SLICE-002-PLAN.md`](SLICE-002-PLAN.md)。决策记录见 `DECISIONS.md` D43。
+
 ### 规则一：每类事实只有一个【SSOT】
 
 标记 **【SSOT】** 的文件是该类事实的**唯一可改处**。其他文件引用它，**不得复制其内容**。
@@ -57,7 +66,10 @@
 | **`docs/BACKLOG.md`** | 派生（读 ROADMAP） | 待办清单；**与 ROADMAP 重叠部分以 ROADMAP 为准** |
 | **`docs/LIFECYCLE.md`** | **【SSOT】流程** | 九阶段生命周期 + 闸门 G1–G6 + 退出条件 |
 | **`docs/CHANGE-RISK.md`** | **【SSOT】风险分级** | L0–L3 变更分级与对应流程轻重 |
+| `assistant/CURRENT.md` / `assistant/THREADS.md` | 【续接导航】 | 仅指向权威状态与续接线程，不承载或复制项目状态 |
 | `GOVERNANCE-HANDBOOK.md` | **瘦身后**：只留安全纪律 | 历史状态快照已移除，指向 ROADMAP / DECISIONS |
+| `docs/SLICE-001-PROBLEM-BRIEF.md` / `docs/SLICE-001-SPEC.md` / `docs/SLICE-001-PLAN.md` | 【切片】 | 第一条垂直切片：节点链真实执行 |
+| `docs/SLICE-002-PROBLEM-BRIEF.md` / `docs/SLICE-002-SPEC.md` / `docs/SLICE-002-PLAN.md` | 【切片】 | 第二条垂直切片：三站聚合；D45 已选定方案并批准进入实现，当前进度以 ROADMAP 为准 |
 
 ### 1.4 证据与验证（只追加，不改结论）
 
@@ -69,6 +81,11 @@
 | `docs/STATUS_20260913_LIVE_GATE.md` | 【证据】 | **B-6：注册可自助获得门禁 cookie**，门禁不是资金防线 |
 | `docs/VERIFICATION_20260913_APPLY_DRYRUN.md` | 【证据】 | 三批次落地器零写入干跑报告 |
 | `docs/VERIFICATION_20260913_BILLING.md` | 【证据】 | 计费模块验证：卡密对撞、攻击用例、密钥扫描 |
+| `docs/STATUS_20260926_T2T3_READONLY.md` | 【证据】 | T2/T3 只读核查与 New API 运行状态（截至 2026-09-26） |
+| `docs/STATUS_20260927_AUTH_CONTRACT.md` | 【证据】 | New API 统一认证登录、会话刷新/撤销契约与本地中转差异（只读；未发布） |
+| `docs/SLICE-001-REVIEW.md` | 【审查前置】 | 垂直切片 001 的 G5 未关闭项与当前审查边界 |
+| `docs/SLICE-001-GATE-HANDOFF.md` | 【交接清单】 | 垂直切片 001 的 G4–G6 外部闸门、证据要求与停止条件 |
+| `output/slice-001-gate-status.json` | 【机器状态】 | 垂直切片 001 的 S1–S7 与 G4–G6 当前门禁口径 |
 
 ### 1.5 交付件（`implementation/`，**未进权威树**）
 
@@ -81,6 +98,8 @@
 | `implementation/deploy/ROLLBACK.md` | 【手册】 | R-00~R-03 回滚 |
 | `implementation/deploy/batch2-*.md` | 【手册】 | 批次 2 验收/回滚/nginx 片段 |
 | `implementation/deploy/batch3-*.md` | 【手册】 | 批次 3 操作手册/验收/回滚 |
+| `implementation/NEW-API-APIC-READINESS-20260918.md` | 【方案·证据】 | New API / `apic.cauai.fun` 只读盘点、部署方案、批准闸门与回滚边界 |
+| `implementation/entry/README.md` | 【手册】 | T1 统一入口（`one.cauai.fun`）部署、验收命令与**已实测回滚**；同目录 `index.html` / `nginx.conf` / `docker-compose.yml` / `cloudflared-entry.service` / `cloudflared-entry.yml.example` 为落地件 |
 | `implementation/canvas-api/*.js` | 【代码·未落地】 | 额度/卡密/紫域四模块 |
 | `implementation/scripts/*.mjs` | 【工具】 | 落地器与干跑器 |
 

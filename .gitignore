@@ -3,3 +3,11 @@
 node_modules/
 *.bak-*
 
+
+# ---- 2026-10-06 入库前密钥闸门：以下路径含真实凭据，排除 ----
+# scratch/ 下的 html 含硬编码 Google API Key
+scratch/
+# output/ 下是候选构建产物，其 source/docker-compose.yml 含硬编码数据库口令
+output/
+# 部署文档里含带口令的数据库连接串
+implementation/deploy/ROLLBACK.md

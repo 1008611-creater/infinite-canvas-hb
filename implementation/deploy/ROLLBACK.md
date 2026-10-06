@@ -120,7 +120,7 @@ docker compose -f /opt/infinite-canvas/docker-compose.yml --project-directory /o
 
 > ⚠️ 上面这条命令**未在真实环境执行过**（本会话无 shell）。容器名 `postgres` 与用户名
 > `canvas` 来自 `deploy/docker-compose.yml` 与 `canvas-api/db.js` L15 的默认
-> `postgres://canvas:canvas@localhost:5432/canvas`，**上线前请先用
+> `postgres://canvas:<PASSWORD>@localhost:5432/canvas`，**上线前请先用
 > `docker compose ps` 核对容器名**。
 
 ---

@@ -1,0 +1,164 @@
+- generic [ref=f1e4]:
+  - main [ref=f1e104]:
+    - complementary [ref=f1e106]:
+      - generic [ref=f1e107]:
+        - button "画布" [ref=f1e108]
+        - button "资产" [ref=f1e110]
+        - button "提示词库" [ref=f1e111]
+      - generic [ref=f1e113]:
+        - generic [ref=f1e114]:
+          - generic [ref=f1e115]: 画布元素
+          - generic [ref=f1e507]: "2"
+          - button "选择" [ref=f1e116]
+          - generic [ref=f1e120] [cursor=pointer]:
+            - generic "全部" [ref=f1e121]:
+              - text: 全部
+              - combobox [ref=f1e122]
+            - img "down" [ref=f1e124]
+        - textbox "搜索节点" [ref=f1e133]
+        - generic [ref=f1e136]:
+          - generic [ref=f1e508]:
+            - button "metaso.jpg metaso.jpg 图片" [ref=f1e704]:
+              - img "metaso.jpg" [ref=f1e705]
+              - generic [ref=f1e515]:
+                - generic [ref=f1e516]: metaso.jpg
+                - generic [ref=f1e517]: 图片
+            - button "放大预览" [ref=f1e708]
+          - button "视频 视频" [ref=f1e582]:
+            - generic [ref=f1e587]:
+              - generic [ref=f1e588]: 视频
+              - generic [ref=f1e589]: 视频
+      - button "调整左侧面板宽度" [ref=f1e137]
+    - generic [ref=f1e138]:
+      - generic:
+        - generic [ref=f1e139]:
+          - button "收起面板" [ref=f1e140]
+          - button "打开画布菜单" [ref=f1e144]
+          - button "无限画布 1" [ref=f1e147]
+          - button "Codex 未连接" [ref=f1e148]
+        - generic [ref=f1e151]:
+          - generic [ref=f1e152]:
+            - button "节点插件" [ref=f1e153] [cursor=pointer]
+            - link "文档" [ref=f1e156] [cursor=pointer]:
+              - /url: https://docs.canvas.best
+            - button "配置" [ref=f1e159] [cursor=pointer]
+            - button "切换到 English" [ref=f1e163] [cursor=pointer]: 中
+            - button "切换到浅色主题" [ref=f1e164] [cursor=pointer]
+            - button "v0.16.0" [ref=f1e172] [cursor=pointer]
+            - link "GitHub" [ref=f1e175] [cursor=pointer]:
+              - /url: https://github.com/basketikun/infinite-canvas
+              - img "github" [ref=f1e176]
+            - button "快捷键" [ref=f1e179] [cursor=pointer]
+          - button "Agent" [ref=f1e183] [cursor=pointer]
+      - generic [ref=f1e189]:
+        - generic:
+          - generic [ref=f1e519]:
+            - generic [ref=f1e714]:
+              - img "metaso.jpg"
+            - generic: 正在添加参考
+          - generic [ref=f1e590]: 空视频节点
+          - button "从画布选择参考 · ESC 返回输入框" [ref=f1e774]
+      - generic [ref=f1e689]:
+        - button "查看节点信息" [ref=f1e690]
+        - button "移除节点" [ref=f1e694]
+        - button "加入我的资产" [ref=f1e715]
+        - button "下载图片" [ref=f1e719]
+        - button "复制生成该图片的提示词" [ref=f1e724]
+        - button "创建反推提示词的文本和配置节点" [ref=f1e729]
+        - button "替换图片" [ref=f1e734]
+        - button "添加蒙版遮罩后局部修改" [ref=f1e739]
+        - button "裁剪并生成新节点" [ref=f1e744]
+        - button "按行列切分图片" [ref=f1e752]
+        - button "放大图片分辨率" [ref=f1e756]
+        - button "查看图片详情" [ref=f1e761]
+        - button "配置快捷工具" [ref=f1e768]
+      - generic [ref=f1e190]:
+        - button "移动" [ref=f1e191] [cursor=pointer]
+        - button "撤销" [ref=f1e198] [cursor=pointer]
+        - button "重做" [disabled] [ref=f1e199]
+        - button "文本" [ref=f1e201] [cursor=pointer]
+        - button "图片" [ref=f1e205] [cursor=pointer]
+        - button "视频" [ref=f1e211] [cursor=pointer]
+        - button "音频" [ref=f1e216] [cursor=pointer]
+        - button "生成配置" [ref=f1e221] [cursor=pointer]
+        - button "组" [ref=f1e226] [cursor=pointer]
+        - button "上传资产" [ref=f1e235] [cursor=pointer]
+        - button "画布外观" [ref=f1e241] [cursor=pointer]
+        - button "删除选中" [ref=f1e576] [cursor=pointer]
+        - button "清空画布" [ref=f1e250] [cursor=pointer]
+      - generic [ref=f1e256]:
+        - button "打开小地图" [ref=f1e257] [cursor=pointer]
+        - button "重置视图" [ref=f1e262] [cursor=pointer]
+        - slider "放大/缩小画布" [ref=f1e270]: "100"
+        - generic [ref=f1e271]: 100%
+        - button "快捷键" [ref=f1e272] [cursor=pointer]
+  - generic:
+    - complementary:
+      - button "调整右侧面板宽度"
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - button "连接设置，当前未连接"
+          - tablist "Agent 内容":
+            - tab "对话"
+            - tab "历史"
+            - tab "技能"
+            - tab "日志"
+          - generic:
+            - button "新对话" [disabled]
+            - button "收起 Agent 面板"
+      - generic:
+        - generic:
+          - generic:
+            - generic: 连接本地 Agent
+            - generic: 按使用场景选择一种连接方式。
+          - generic:
+            - generic:
+              - generic: 方式一：在 Codex 中使用插件
+              - generic: 在 Codex app 安装 Infinite Canvas 插件后，通过插件启动画布，插件会自动启动本地 Agent 并带上连接信息。
+            - generic:
+              - generic: Codex 插件提醒
+              - generic: 只有安装 Codex 插件或手动添加 MCP 后，工具列表才会进入 Codex 上下文并增加 token 消耗；仅运行 npx -y @basketikun/canvas-agent 启动本地 Agent 不会安装 MCP。
+              - generic:
+                - generic:
+                  - generic: 移除插件
+                  - code: codex plugin remove infinite-canvas
+                  - button
+                - generic:
+                  - generic: 移除手动 MCP
+                  - code: codex mcp remove infinite-canvas
+                  - button
+            - generic:
+              - generic: 方式二：直接运行 Agent
+              - generic: 不使用 Codex 插件时，在终端运行下面命令，再回到网页里连接或手动填入 Local URL 和 Connect token。
+              - generic:
+                - code: npx -y @basketikun/canvas-agent
+                - button
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: 网页连接
+                  - generic: 未连接
+                - generic: 默认自动读取 Local URL 和 Connect token，失败时再手动填写。
+              - button "连接"
+            - generic:
+              - generic:
+                - generic:
+                  - text: 本地地址
+                  - generic: Local URL
+                - generic:
+                  - textbox "本地地址 Local URL":
+                    - /placeholder: 例如 http://127.0.0.1:17371
+                    - text: http://127.0.0.1:17371
+              - generic:
+                - generic:
+                  - text: 连接 Token
+                  - generic: Connect token
+                - generic:
+                  - textbox "连接 Token Connect token 显示":
+                    - /placeholder: 自动发现，或手动填入 Connect token
+                  - generic:
+                    - button "显示":
+                      - img "eye-invisible"

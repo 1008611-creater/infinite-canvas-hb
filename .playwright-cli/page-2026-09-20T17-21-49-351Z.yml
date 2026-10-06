@@ -1,0 +1,129 @@
+- generic [ref=f1e4]:
+  - main [ref=f1e775]:
+    - complementary [ref=f1e777]:
+      - generic [ref=f1e778]:
+        - button "画布" [ref=f1e779]
+        - button "资产" [ref=f1e781]
+        - button "提示词库" [ref=f1e782]
+      - generic [ref=f1e784]:
+        - generic [ref=f1e785]:
+          - generic [ref=f1e786]: 画布元素
+          - button "选择" [ref=f1e788]
+          - generic [ref=f1e792] [cursor=pointer]:
+            - generic "全部" [ref=f1e793]:
+              - text: 全部
+              - combobox [ref=f1e794]
+            - img "down" [ref=f1e796]
+        - textbox "搜索节点" [ref=f1e805]
+        - generic [ref=f1e807]: 画布暂无节点
+      - button "调整左侧面板宽度" [ref=f1e831]
+    - generic [ref=f1e832]:
+      - generic:
+        - generic [ref=f1e833]:
+          - button "收起面板" [ref=f1e834]
+          - button "打开画布菜单" [ref=f1e838]
+          - button "无限画布 1" [ref=f1e841]
+          - button "Codex 未连接" [ref=f1e842]
+        - generic [ref=f1e845]:
+          - generic [ref=f1e846]:
+            - button "节点插件" [ref=f1e847] [cursor=pointer]
+            - link "文档" [ref=f1e850] [cursor=pointer]:
+              - /url: https://docs.canvas.best
+            - button "配置" [ref=f1e853] [cursor=pointer]
+            - button "切换到 English" [ref=f1e857] [cursor=pointer]: 中
+            - button "切换到浅色主题" [ref=f1e858] [cursor=pointer]
+            - button "v0.16.0" [ref=f1e866] [cursor=pointer]
+            - link "GitHub" [ref=f1e869] [cursor=pointer]:
+              - /url: https://github.com/basketikun/infinite-canvas
+              - img "github" [ref=f1e870]
+            - button "快捷键" [ref=f1e873] [cursor=pointer]
+          - button "Agent" [ref=f1e877] [cursor=pointer]
+      - generic [ref=f1e1012]:
+        - button "移动" [ref=f1e1013] [cursor=pointer]
+        - button "撤销" [ref=f1e1020] [cursor=pointer]
+        - button "重做" [disabled] [ref=f1e1021]
+        - button "文本" [ref=f1e1023] [cursor=pointer]
+        - button "图片" [ref=f1e1027] [cursor=pointer]
+        - button "视频" [ref=f1e1033] [cursor=pointer]
+        - button "音频" [ref=f1e1038] [cursor=pointer]
+        - button "生成配置" [ref=f1e1043] [cursor=pointer]
+        - button "组" [ref=f1e1048] [cursor=pointer]
+        - button "上传资产" [ref=f1e1057] [cursor=pointer]
+        - button "画布外观" [ref=f1e1063] [cursor=pointer]
+        - button "清空画布" [active] [ref=f1e1078] [cursor=pointer]
+      - generic [ref=f1e1084]:
+        - button "打开小地图" [ref=f1e1085] [cursor=pointer]
+        - button "重置视图" [ref=f1e1090] [cursor=pointer]
+        - slider "放大/缩小画布" [ref=f1e1098]: "100"
+        - generic [ref=f1e1099]: 100%
+        - button "快捷键" [ref=f1e1100] [cursor=pointer]
+  - generic:
+    - complementary:
+      - button "调整右侧面板宽度"
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - button "连接设置，当前未连接"
+          - tablist "Agent 内容":
+            - tab "对话"
+            - tab "历史"
+            - tab "技能"
+            - tab "日志"
+          - generic:
+            - button "新对话" [disabled]
+            - button "收起 Agent 面板"
+      - generic:
+        - generic:
+          - generic:
+            - generic: 连接本地 Agent
+            - generic: 按使用场景选择一种连接方式。
+          - generic:
+            - generic:
+              - generic: 方式一：在 Codex 中使用插件
+              - generic: 在 Codex app 安装 Infinite Canvas 插件后，通过插件启动画布，插件会自动启动本地 Agent 并带上连接信息。
+            - generic:
+              - generic: Codex 插件提醒
+              - generic: 只有安装 Codex 插件或手动添加 MCP 后，工具列表才会进入 Codex 上下文并增加 token 消耗；仅运行 npx -y @basketikun/canvas-agent 启动本地 Agent 不会安装 MCP。
+              - generic:
+                - generic:
+                  - generic: 移除插件
+                  - code: codex plugin remove infinite-canvas
+                  - button
+                - generic:
+                  - generic: 移除手动 MCP
+                  - code: codex mcp remove infinite-canvas
+                  - button
+            - generic:
+              - generic: 方式二：直接运行 Agent
+              - generic: 不使用 Codex 插件时，在终端运行下面命令，再回到网页里连接或手动填入 Local URL 和 Connect token。
+              - generic:
+                - code: npx -y @basketikun/canvas-agent
+                - button
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: 网页连接
+                  - generic: 未连接
+                - generic: 默认自动读取 Local URL 和 Connect token，失败时再手动填写。
+              - button "连接"
+            - generic:
+              - generic:
+                - generic:
+                  - text: 本地地址
+                  - generic: Local URL
+                - generic:
+                  - textbox "本地地址 Local URL":
+                    - /placeholder: 例如 http://127.0.0.1:17371
+                    - text: http://127.0.0.1:17371
+              - generic:
+                - generic:
+                  - text: 连接 Token
+                  - generic: Connect token
+                - generic:
+                  - textbox "连接 Token Connect token 显示":
+                    - /placeholder: 自动发现，或手动填入 Connect token
+                  - generic:
+                    - button "显示":
+                      - img "eye-invisible"

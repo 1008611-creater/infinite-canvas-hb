@@ -1,0 +1,144 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e24]
+  - main [ref=e25]:
+    - generic [ref=e27]:
+      - link "念念AI视频工作台首页" [ref=e28] [cursor=pointer]:
+        - /url: /home
+        - generic "念念 AI" [ref=e29]
+      - navigation "主导航" [ref=e32]:
+        - link "积分" [ref=e33] [cursor=pointer]:
+          - /url: /credits
+        - link "素材库" [ref=e34] [cursor=pointer]:
+          - /url: /assets
+        - link "模板" [ref=e35] [cursor=pointer]:
+          - /url: /templates
+        - link "真实作品" [ref=e36] [cursor=pointer]:
+          - /url: /showcase
+      - generic [ref=e37]:
+        - generic "smoke-owner-20260927@example.com" [ref=e38]
+        - button "退出" [ref=e39] [cursor=pointer]
+    - generic [ref=e41]:
+      - generic [ref=e42]:
+        - generic [ref=e43]:
+          - generic "念念 AI 视频生成" [ref=e44]:
+            - generic [ref=e45]: NIANNIAN AI STUDIO
+            - heading "AI 视频生成" [level=2] [ref=e46]
+          - generic [ref=e47]:
+            - button "积分 170" [ref=e48] [cursor=pointer]
+            - button "全屏制作区" [ref=e49] [cursor=pointer]
+        - generic [ref=e52]:
+          - generic [ref=e53]:
+            - generic [ref=e54]:
+              - generic [ref=e55]:
+                - text: 视频描述
+                - emphasis [ref=e56]: "*"
+              - generic [ref=e57]: 0 / 2000
+            - textbox "视频描述 *" [ref=e59]:
+              - /placeholder: 描述主体、服装或商品、场景、镜头运动和动作节奏。
+            - button "从素材库添加素材" [ref=e61] [cursor=pointer]
+          - generic [ref=e64]:
+            - generic "产品" [ref=e65]:
+              - generic [ref=e66]:
+                - generic [ref=e67]: 产品
+                - button "产品" [ref=e69] [cursor=pointer]:
+                  - generic [ref=e70]: Mock Video
+              - generic "渠道规格" [ref=e73]:
+                - generic [ref=e74]: 模式：图生视频、文生视频、文生图
+                - generic [ref=e75]: 费用：90 积分 / 次
+                - generic [ref=e76]: 参考：图片 0/3个
+            - generic [ref=e77]:
+              - generic [ref=e78]:
+                - generic [ref=e79]: 模式
+                - combobox "模式" [ref=e80]:
+                  - option "图生视频" [selected]
+                  - option "文生视频"
+                  - option "文生图"
+              - generic [ref=e81]:
+                - generic [ref=e82]: 分辨率
+                - generic [ref=e83]: 720p
+              - generic [ref=e84]:
+                - generic [ref=e85]: 时长
+                - combobox "时长" [ref=e86]:
+                  - option "5 秒"
+                  - option "10 秒"
+                  - option "15 秒" [selected]
+              - generic [ref=e87]:
+                - generic [ref=e88]: 比例
+                - combobox "比例" [ref=e89]:
+                  - option "9:16" [selected]
+                  - option "16:9"
+            - generic "任务计费" [ref=e90]: 90 积分
+            - generic [ref=e92]:
+              - generic [ref=e93]: 请先填写视频描述
+              - button "创建视频任务" [disabled] [ref=e95]
+      - generic [ref=e98]:
+        - generic [ref=e99]:
+          - heading "预览" [level=2] [ref=e101]
+          - link "下载视频" [ref=e103] [cursor=pointer]:
+            - /url: /api/ziyu/media?jobId=mock-job-2
+        - generic [ref=e107]:
+          - generic [ref=e108]: 图生视频
+          - generic [ref=e109]: 720p
+          - generic [ref=e110]: 15 秒
+      - generic [ref=e111]:
+        - generic [ref=e112]:
+          - heading "历史记录" [level=2] [ref=e114]
+          - link "查看全部" [ref=e115] [cursor=pointer]:
+            - /url: /projects
+        - generic [ref=e116]:
+          - button "复用智能渠道任务" [ref=e117] [cursor=pointer]:
+            - generic [ref=e118]:
+              - generic [ref=e119]:
+                - generic [ref=e120]: 智能渠道任务
+                - emphasis [ref=e121]: 已完成
+              - generic [ref=e122]: mode persistence smoke
+              - generic [ref=e123]: mock-video · mock-job-2
+          - button "复用智能渠道任务" [ref=e124]:
+            - generic [ref=e125]:
+              - generic [ref=e126]:
+                - generic [ref=e127]: 智能渠道任务
+                - emphasis [ref=e128]: 失败
+              - generic [ref=e129]: force-failure
+              - generic [ref=e130]: mock-video · CZvBr6kInnTNwYAK5jckq2Fw
+          - button "复用智能渠道任务" [ref=e131]:
+            - generic [ref=e132]:
+              - generic [ref=e133]:
+                - generic [ref=e134]: 智能渠道任务
+                - emphasis [ref=e135]: 失败
+              - generic [ref=e136]: force-failure
+              - generic [ref=e137]: mock-video · 6FPEwrKlasu5Ai8PPQTBt_Cj
+          - button "复用智能渠道任务" [ref=e138] [cursor=pointer]:
+            - generic [ref=e139]:
+              - generic [ref=e140]:
+                - generic [ref=e141]: 智能渠道任务
+                - emphasis [ref=e142]: 已完成
+              - generic [ref=e143]: smoke success
+              - generic [ref=e144]: mock-video · mock-job-1
+          - button "复用历史任务" [ref=e145]:
+            - generic [ref=e146]:
+              - generic [ref=e147]:
+                - generic [ref=e148]: 制作任务
+                - emphasis [ref=e149]: 正在排队处理
+              - generic [ref=e150]: mode persistence smoke
+              - generic [ref=e151]: 2026/9/27 15:19:15 · 5 秒 · 30 积分
+          - button "复用历史任务" [ref=e152]:
+            - generic [ref=e153]:
+              - generic [ref=e154]:
+                - generic [ref=e155]: 制作任务
+                - emphasis [ref=e156]: 正在排队处理
+              - generic [ref=e157]: force-failure
+              - generic [ref=e158]: 2026/9/27 15:15:22 · 10 秒 · 0 积分
+          - button "复用历史任务" [ref=e159]:
+            - generic [ref=e160]:
+              - generic [ref=e161]:
+                - generic [ref=e162]: 制作任务
+                - emphasis [ref=e163]: 正在排队处理
+              - generic [ref=e164]: force-failure
+              - generic [ref=e165]: 2026/9/27 15:14:21 · 10 秒 · 0 积分
+          - button "复用历史任务" [ref=e166]:
+            - generic [ref=e167]:
+              - generic [ref=e168]:
+                - generic [ref=e169]: 制作任务
+                - emphasis [ref=e170]: 正在排队处理
+              - generic [ref=e171]: smoke success
+              - generic [ref=e172]: 2026/9/27 15:14:19 · 10 秒 · 60 积分

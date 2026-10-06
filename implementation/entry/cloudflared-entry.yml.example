@@ -1,0 +1,11 @@
+# /etc/cloudflared-entry/config.yml
+# 本文件只承载一个 hostname，只指向本机 127.0.0.1:18090（入口静态站容器）。
+# 不经过 deeptutor-public-caddy，不引用 hb / sd2 / apic 的任何后端。
+tunnel: cauai-entry
+credentials-file: /etc/cloudflared-entry/creds.json
+ingress:
+  - hostname: one.cauai.fun
+    service: http://127.0.0.1:18090
+    originRequest:
+      httpHostHeader: one.cauai.fun
+  - service: http_status:404

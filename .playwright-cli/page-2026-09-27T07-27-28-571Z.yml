@@ -1,0 +1,87 @@
+- generic [active] [ref=f1e1]:
+  - main [ref=f1e2]:
+    - generic [ref=f1e4]:
+      - link "念念AI视频工作台首页" [ref=f1e5] [cursor=pointer]:
+        - /url: /
+        - generic "念念 AI" [ref=f1e6]
+      - navigation "主导航" [ref=f1e9]:
+        - link "积分" [ref=f1e10] [cursor=pointer]:
+          - /url: /credits
+        - link "素材库" [ref=f1e11] [cursor=pointer]:
+          - /url: /assets
+        - link "模板" [ref=f1e12] [cursor=pointer]:
+          - /url: /templates
+        - link "真实作品" [ref=f1e13] [cursor=pointer]:
+          - /url: /showcase
+      - generic [ref=f1e14]: 正在验证
+    - generic [ref=f1e17]:
+      - generic [ref=f1e18]:
+        - generic [ref=f1e19]:
+          - generic "念念 AI 视频生成" [ref=f1e20]:
+            - generic [ref=f1e21]: NIANNIAN AI STUDIO
+            - heading "AI 视频生成" [level=2] [ref=f1e22]
+          - generic [ref=f1e23]:
+            - button "积分 ..." [ref=f1e24] [cursor=pointer]
+            - button "全屏制作区" [ref=f1e25] [cursor=pointer]
+        - generic [ref=f1e28]:
+          - generic [ref=f1e29]:
+            - generic [ref=f1e30]:
+              - generic [ref=f1e31]:
+                - text: 视频描述
+                - emphasis [ref=f1e32]: "*"
+              - generic [ref=f1e33]: 0 / 10000
+            - textbox "视频描述 *" [ref=f1e35]:
+              - /placeholder: 描述主体、服装或商品、场景、镜头运动和动作节奏。
+            - button "从素材库添加素材" [disabled] [ref=f1e37] [cursor=pointer]
+          - generic [ref=f1e40]:
+            - generic "产品" [ref=f1e41]:
+              - generic [ref=f1e42]:
+                - generic [ref=f1e43]: 产品
+                - button "产品" [ref=f1e45] [cursor=pointer]:
+                  - generic [ref=f1e46]: mock-video
+            - generic [ref=f1e49]:
+              - generic [ref=f1e50]:
+                - generic [ref=f1e51]: 模式
+                - generic [ref=f1e52]: 标准
+              - generic [ref=f1e53]:
+                - generic [ref=f1e54]: 分辨率
+                - generic [ref=f1e55]: 720p
+              - generic [ref=f1e56]:
+                - generic [ref=f1e57]: 时长
+                - combobox "时长" [ref=f1e58]:
+                  - option "4 秒"
+                  - option "5 秒"
+                  - option "6 秒"
+                  - option "7 秒"
+                  - option "8 秒"
+                  - option "9 秒"
+                  - option "10 秒"
+                  - option "11 秒"
+                  - option "12 秒"
+                  - option "13 秒"
+                  - option "14 秒"
+                  - option "15 秒" [selected]
+              - generic [ref=f1e59]:
+                - generic [ref=f1e60]: 比例
+                - combobox "比例" [ref=f1e61]:
+                  - option "9:16" [selected]
+                  - option "16:9"
+                  - option "1:1"
+            - generic "任务计费" [ref=f1e62]: "-- 积分"
+            - generic [ref=f1e64]:
+              - generic [ref=f1e65]: 正在读取可用渠道
+              - button "创建视频任务" [disabled] [ref=f1e67]
+      - generic [ref=f1e70]:
+        - heading "预览" [level=2] [ref=f1e73]
+        - generic [ref=f1e74]: 暂无预览
+        - generic [ref=f1e79]:
+          - generic [ref=f1e80]: 图生视频
+          - generic [ref=f1e81]: 720p
+          - generic [ref=f1e82]: 15 秒
+      - generic [ref=f1e83]:
+        - generic [ref=f1e84]:
+          - heading "历史记录" [level=2] [ref=f1e86]
+          - link "查看全部" [ref=f1e87] [cursor=pointer]:
+            - /url: /projects
+        - generic [ref=f1e88]: 还没有生成任务
+  - alert [ref=f1e93]

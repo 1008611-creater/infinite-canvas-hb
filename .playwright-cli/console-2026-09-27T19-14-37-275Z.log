@@ -1,0 +1,15 @@
+[     556ms] [LOG] Mon Sep 28 2026 03:14:37 GMT+0800 (中国标准时间) @ https://o.alicdn.com/frontend-lib/common-lib/jquery.min.js:0
+[     697ms] [LOG] 
+ %c Design with by 鲸商城PRO【全新版】  %c https://www.jingsoft.com 
+
+
+ color: #fadfa3; background: #030307; padding:5px 0; background: #fadfa3; padding:5px 0; @ https://www.ldxp.cn/package/merchant/assets/index.f24a51f9.js:2
+[    1033ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://www.ldxp.cn/merchant/login:0
+[  899584ms] [WARNING] 编辑区域高度 < 300px 这可能会导致 modal hoverbar 定位异常
+Textarea height < 300px . This may be cause modal and hoverbar position error [div.w-e-scroll] @ https://www.ldxp.cn/package/merchant/assets/index.6f40f589.js:75
+[  899585ms] [WARNING] 编辑区域高度 < 300px 这可能会导致 modal hoverbar 定位异常
+Textarea height < 300px . This may be cause modal and hoverbar position error [div.w-e-scroll] @ https://www.ldxp.cn/package/merchant/assets/index.6f40f589.js:75
+[ 1014574ms] [WARNING] 编辑区域高度 < 300px 这可能会导致 modal hoverbar 定位异常
+Textarea height < 300px . This may be cause modal and hoverbar position error [div.w-e-scroll] @ https://www.ldxp.cn/package/merchant/assets/index.6f40f589.js:75
+[ 1014574ms] [WARNING] 编辑区域高度 < 300px 这可能会导致 modal hoverbar 定位异常
+Textarea height < 300px . This may be cause modal and hoverbar position error [div.w-e-scroll] @ https://www.ldxp.cn/package/merchant/assets/index.6f40f589.js:75

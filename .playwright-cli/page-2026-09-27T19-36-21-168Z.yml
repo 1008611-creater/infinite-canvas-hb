@@ -1,0 +1,40 @@
+- main [ref=e4]:
+  - generic [ref=e5]:
+    - link [ref=e6] [cursor=pointer]:
+      - /url: /home
+      - img "矿泉水API" [ref=e9]
+      - strong [ref=e11]: 矿泉水API
+    - generic [ref=e13]:
+      - heading "欢迎回来" [level=2] [ref=e15]
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]: 邮箱
+          - textbox "邮箱" [active] [ref=e20]:
+            - /placeholder: 请输入邮箱
+        - generic [ref=e21]:
+          - generic [ref=e22]: 密码
+          - generic [ref=e23]:
+            - textbox "密码" [ref=e24]:
+              - /placeholder: 请输入密码
+            - button [ref=e25] [cursor=pointer]
+        - button "登录" [disabled] [ref=e28]
+        - generic [ref=e32]:
+          - checkbox "我已阅读并同意" [ref=e33]
+          - paragraph [ref=e35]:
+            - text: 我已阅读并同意
+            - link "服务条款" [ref=e36] [cursor=pointer]:
+              - /url: /legal/terms
+            - text: 、
+            - link "隐私说明" [ref=e37] [cursor=pointer]:
+              - /url: /legal/privacy
+            - text: 、
+            - link "退款与卡密规则" [ref=e38] [cursor=pointer]:
+              - /url: /legal/refund
+            - text: 、
+            - link "可接受使用政策" [ref=e39] [cursor=pointer]:
+              - /url: /legal/usage-policy
+    - paragraph [ref=e41]:
+      - text: 还没有账户？
+      - link "注册" [ref=e42] [cursor=pointer]:
+        - /url: /register
+    - generic [ref=e43]: © 2026 矿泉水API. All rights reserved.

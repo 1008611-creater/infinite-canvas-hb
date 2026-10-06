@@ -1,0 +1,56 @@
+- generic [ref=f1e2]:
+  - banner [ref=f1e3]:
+    - link "CAUAI ONE ONE ACCOUNT · THREE WORKSPACES" [ref=f1e4] [cursor=pointer]:
+      - /url: https://one.cauai.fun/
+      - generic [aria-hidden] [ref=f1e5]: C
+      - generic [ref=f1e6]:
+        - text: CAUAI ONE
+        - generic [ref=f1e7]: ONE ACCOUNT · THREE WORKSPACES
+    - link "产品总览 ↗" [ref=f1e8] [cursor=pointer]:
+      - /url: https://one.cauai.fun/
+  - main [ref=f1e9]:
+    - generic [ref=f1e10]:
+      - generic [ref=f1e11]:
+        - generic [ref=f1e12]: 01 / 创作工作台
+        - heading "把创作 从这里开始。" [level=1] [ref=f1e13]: 把创作从这里开始。
+        - paragraph [ref=f1e14]: 一个账号，进入 CAUAI 的创作工作台。登录后可在产品之间切换。
+        - generic [ref=f1e15]:
+          - generic [ref=f1e16]: "01"
+          - generic [ref=f1e17]:
+            - strong [ref=f1e18]: 正在进入 · 无限画布
+            - text: 把灵感、素材与视频节点编排成可复用的创作流程。
+      - region [ref=f1e19]:
+        - generic [ref=f1e20]:
+          - generic [ref=f1e21]:
+            - generic [ref=f1e22]: CAUAI ONE / SIGN IN
+            - heading "欢迎回来" [level=2] [ref=f1e23]
+          - generic [ref=f1e24]: 安全连接
+        - generic [ref=f1e25]:
+          - generic [ref=f1e26]:
+            - text: 邮箱
+            - textbox "邮箱" [ref=f1e27]
+          - generic [ref=f1e28]:
+            - text: 密码
+            - textbox "密码" [ref=f1e29]
+          - generic [ref=f1e30]:
+            - generic [ref=f1e31]: 账号与登录状态由 CAUAI One 统一管理。
+            - button "登录并继续" [ref=f1e32] [cursor=pointer]: 登录并继续 →
+        - generic [ref=f1e33]:
+          - generic [ref=f1e34]: 还没有 One 账号？
+          - link "创建账号" [ref=f1e35] [cursor=pointer]:
+            - /url: /auth/register.html?target=hb
+        - generic [ref=f1e36]:
+          - generic [ref=f1e37]: 切换工作台
+          - generic [ref=f1e38]:
+            - link "AI 视频" [ref=f1e39] [cursor=pointer]:
+              - /url: /auth/sd2.html
+            - text: ·
+            - link "New API" [ref=f1e40] [cursor=pointer]:
+              - /url: /auth/apic.html
+  - contentinfo [ref=f1e41]:
+    - generic [ref=f1e42]: CAUAI ONE · UNIFIED WORKSPACE
+    - generic [ref=f1e43]:
+      - link "帮助与产品总览" [ref=f1e44] [cursor=pointer]:
+        - /url: https://one.cauai.fun/
+      - link "退出登录" [ref=f1e45] [cursor=pointer]:
+        - /url: /auth/logout

@@ -1,0 +1,50 @@
+﻿# CAUAI 统一域名 · 源站路由
+# 只新增 one.cauai.fun 下的四个地址，不替换 hb / sd2 / apic 旧地址。
+{
+	auto_https off
+	servers {
+		protocols h1 h2c
+	}
+}
+
+http://one.cauai.fun {
+	encode zstd gzip
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options SAMEORIGIN
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+	@auth path /auth /auth/*
+	handle @auth {
+		reverse_proxy cauai-auth-broker:8080
+	}
+	handle {
+		reverse_proxy cauai-entry:80
+	}
+}
+
+http://hb.one.cauai.fun {
+	encode zstd gzip
+	reverse_proxy canvas-web:80 {
+		header_up Host hb.cauai.fun
+	}
+}
+
+http://sd2.one.cauai.fun {
+	encode zstd gzip
+	reverse_proxy niannian-sd2-app:3026 {
+		header_up Host sd2.cauai.fun
+		header_up X-Forwarded-Host sd2.cauai.fun
+		header_up X-Forwarded-Proto https
+	}
+}
+
+http://apic.one.cauai.fun {
+	encode zstd gzip
+	reverse_proxy new-api:3000 {
+		header_up Host apic.cauai.fun
+		header_up X-Forwarded-Host apic.cauai.fun
+		header_up X-Forwarded-Proto https
+	}
+}

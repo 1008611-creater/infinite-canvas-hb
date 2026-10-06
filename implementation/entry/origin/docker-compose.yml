@@ -1,0 +1,45 @@
+services:
+  auth:
+    build:
+      context: ./auth-broker
+    image: cauai-auth-broker:latest
+    container_name: cauai-auth-broker
+    restart: unless-stopped
+    env_file:
+      - path: ./auth.env
+        required: false
+    environment:
+      PORT: "8080"
+      ENTRY_ORIGIN: https://one.cauai.fun
+      NEW_API_BASE_URL: http://new-api:3000
+    networks:
+      - default
+      - canvas
+
+  origin:
+    image: caddy:2.10-alpine
+    container_name: cauai-one-origin
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:18091:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      - default
+      - canvas
+      - sd2
+      - apic
+
+networks:
+  default:
+    name: cauai-entry_default
+    external: true
+  canvas:
+    name: infinite-canvas_default
+    external: true
+  sd2:
+    name: app_default
+    external: true
+  apic:
+    name: new-api-network
+    external: true

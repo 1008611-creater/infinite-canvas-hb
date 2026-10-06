@@ -1,0 +1,71 @@
+- main [ref=e2]:
+  - generic [ref=e3]:
+    - link "CAUAI One 统一入口" [ref=e4] [cursor=pointer]:
+      - /url: /
+      - generic [aria-hidden] [ref=e5]: C
+      - generic [ref=e6]:
+        - text: CAUAI ONE
+        - generic [ref=e7]: CREATIVE WORKSPACE
+    - navigation "主导航" [ref=e8]:
+      - link "作品与产品" [ref=e9] [cursor=pointer]:
+        - /url: https://cauai.fun
+      - link "统一登录 · 进入工作台 ↗" [ref=e10] [cursor=pointer]:
+        - /url: /auth/hb.html
+  - generic [ref=e11]:
+    - generic [ref=e12]:
+      - generic [ref=e13]: CAUAI ONE / 一个入口 · 三个工作台
+      - heading "创作， 从这里开始。" [level=1] [ref=e14]: 创作，从这里开始。
+      - paragraph [ref=e15]: 一个账号，进入 CAUAI 的三个专业工作台。先选择你要用的工作流，再用同一登录继续创作。
+    - complementary [ref=e16]:
+      - strong [ref=e17]: "03"
+      - generic [ref=e18]: WORKSPACESONE ACCOUNT ENTRY
+  - region [ref=e19]:
+    - generic [ref=e20]:
+      - heading "选择你的工作台" [level=2] [ref=e21]
+      - paragraph [ref=e22]: 三个产品各自保留专属数据与工作流。
+    - generic [ref=e23]:
+      - link "01 / CANVAS 无限画布 把灵感、图像和视频组织成可复用的创作流程。 节点编排 图生视频 素材组织 打开工作台 → hb.one.cauai.fun" [ref=e24] [cursor=pointer]:
+        - /url: /auth/hb.html
+        - generic [ref=e25]:
+          - generic [ref=e26]: 01 / CANVAS
+          - generic [aria-hidden] [ref=e27]: □
+        - heading "无限画布" [level=3] [ref=e28]
+        - paragraph [ref=e29]: 把灵感、图像和视频组织成可复用的创作流程。
+        - list [ref=e30]:
+          - listitem [ref=e31]: 节点编排
+          - listitem [ref=e32]: 图生视频
+          - listitem [ref=e33]: 素材组织
+        - generic [ref=e34]:
+          - generic [ref=e35]: 打开工作台 →
+          - generic [ref=e36]: hb.one.cauai.fun
+      - link "02 / VIDEO 念念 AI 视频工作台 从脚本到成片，集中管理创作任务、进度与输出。 视频生成 任务管理 成片输出 打开工作台 → sd2.one.cauai.fun" [ref=e37] [cursor=pointer]:
+        - /url: /auth/sd2.html
+        - generic [ref=e38]:
+          - generic [ref=e39]: 02 / VIDEO
+          - generic [aria-hidden] [ref=e40]: ▶
+        - heading "念念 AI 视频工作台" [level=3] [ref=e41]
+        - paragraph [ref=e42]: 从脚本到成片，集中管理创作任务、进度与输出。
+        - list [ref=e43]:
+          - listitem [ref=e44]: 视频生成
+          - listitem [ref=e45]: 任务管理
+          - listitem [ref=e46]: 成片输出
+        - generic [ref=e47]:
+          - generic [ref=e48]: 打开工作台 →
+          - generic [ref=e49]: sd2.one.cauai.fun
+      - link "03 / API New API 模型网关 统一的模型服务入口，集中管理 API 密钥、模型路由与用量。 密钥管理 模型路由 用量查看 前往服务 → apic.one.cauai.fun" [ref=e50] [cursor=pointer]:
+        - /url: /auth/apic.html
+        - generic [ref=e51]:
+          - generic [ref=e52]: 03 / API
+          - generic [aria-hidden] [ref=e53]: ↗
+        - heading "New API 模型网关" [level=3] [ref=e54]
+        - paragraph [ref=e55]: 统一的模型服务入口，集中管理 API 密钥、模型路由与用量。
+        - list [ref=e56]:
+          - listitem [ref=e57]: 密钥管理
+          - listitem [ref=e58]: 模型路由
+          - listitem [ref=e59]: 用量查看
+        - generic [ref=e60]:
+          - generic [ref=e61]: 前往服务 →
+          - generic [ref=e62]: apic.one.cauai.fun
+  - generic [ref=e63]:
+    - paragraph [ref=e64]: 一个入口，三个工作台。产品功能、数据和计费状态以各自工作台的实际界面为准。
+    - paragraph [ref=e65]: CAUAI ONE · 2026

@@ -1,0 +1,28 @@
+- main [ref=f3e2]:
+  - generic [ref=f3e3]:
+    - generic [ref=f3e4]: CAUAI ONE / NEW ACCOUNT
+    - heading "开启你的 创作工作台。" [level=1] [ref=f3e5]: 开启你的创作工作台。
+    - paragraph [ref=f3e6]: 使用一个账号进入 CAUAI 的产品。当前将从「无限画布」开始。
+  - region [ref=f3e7]:
+    - generic [ref=f3e8]: ONE ACCOUNT · PRIVATE BY DESIGN
+    - heading "创建 CAUAI One 账号" [level=2] [ref=f3e9]
+    - generic [ref=f3e10]:
+      - generic [ref=f3e11]:
+        - text: 邮箱
+        - textbox "邮箱" [ref=f3e12]
+      - generic [ref=f3e13]:
+        - text: 用户名
+        - textbox "用户名" [ref=f3e14]
+      - generic [ref=f3e15]:
+        - text: 密码
+        - textbox "密码" [ref=f3e16]
+      - generic [ref=f3e17]:
+        - text: 邮箱验证码（如需）
+        - textbox "邮箱验证码（如需）" [ref=f3e18]
+      - button "创建账号并返回登录" [ref=f3e19] [cursor=pointer]
+    - paragraph [ref=f3e20]: 账号注册与验证由 New API 账号服务处理。请使用你能接收邮件的邮箱。
+    - generic [ref=f3e21]:
+      - link "已有账号？登录" [ref=f3e22] [cursor=pointer]:
+        - /url: /auth/hb.html
+      - link "返回产品总览" [ref=f3e23] [cursor=pointer]:
+        - /url: https://one.cauai.fun/

@@ -1,0 +1,44 @@
+            const refreshed = await Promise.all(rows.map(async (row) => {
+                const rowStatus = String(row.status || '').toLowerCase();
+                const failed = ['failed', 'error', 'cancelled', 'canceled', 'timeout', 'timed out'].includes(rowStatus);
+                const persisted = Boolean(row.local_media_key && row.result_url);
+                if (!row.provider_task_id || failed || (terminalStatus(row.status) && persisted) || !ziyu.isConfigured()) return row;
+                try {
+                    const payload = await ziyu.callZiyu('/api/v1/jobs/' + encodeURIComponent(row.provider_task_id), { timeoutMs: 30000 });
+                    const status = statusFromJob(payload);
+                    const job = jobObject(payload);
+                    const rawCost = Number(job?.cost);
+                    let resultUrl = row.result_url;
+                    let localMediaKey = row.local_media_key;
+                    if (['failed', 'error', 'cancelled', 'canceled', 'timeout', 'timed out'].includes(status)) {
+                        await refundTaskCredits({ userId: req.user.id, taskId: row.task_id, reason: 'provider_task_failed', metadata: { channel: 'ziyu', providerTaskId: row.provider_task_id, email: req.user.email } });
+                        await query(`UPDATE channel_usage SET status = $4, updated_at = NOW() WHERE channel = $1 AND task_id = $2 AND user_id = $3`, ['ziyu', row.task_id, req.user.id, status]);
+                        return { ...row, status };
+                    }
+                    if (terminalStatus(status) && (!resultUrl || !localMediaKey)) {
+                        const kind = row.mode === 't2i' ? 'image' : 'video';
+                        const resolved = resultUrl ? { ok: true, urls: [{ url: resultUrl, kind }] } : ziyu.resolveResultUrls(payload, kind);
+                        if (!resolved.ok) return row;
+                        for (const item of resolved.urls) {
+                            if (!localMediaKey) {
+                                const saved = await ziyu.persistRemoteMedia({ userId: req.user.id, taskId: row.task_id, url: item.url, registerMedia, kind: item.kind || kind });
+                                if (!saved.ok) return row;
+                                localMediaKey = saved.storageKey;
+                            }
+                            resultUrl = item.url;
+                            break;
+                        }
+                        await query(`UPDATE channel_usage SET result_url = $3, local_media_key = $4, updated_at = NOW() WHERE channel = $1 AND task_id = $2 AND user_id = $5`, ['ziyu', row.task_id, resultUrl, localMediaKey, req.user.id]);
+                    }
+                    if (terminalStatus(status)) {
+                        if (!Number.isFinite(rawCost) || !localMediaKey) return row;
+                        await settleTaskCredits({ userId: req.user.id, taskId: row.task_id, ziyuCost: rawCost, status, metadata: { channel: 'ziyu', providerTaskId: row.provider_task_id, email: req.user.email } });
+                        await query(`UPDATE channel_usage SET status = $4, ziyu_cost = $5, updated_at = NOW() WHERE channel = $1 AND task_id = $2 AND user_id = $3`, ['ziyu', row.task_id, req.user.id, status, rawCost]);
+                        return { ...row, status, ziyu_cost: rawCost, result_url: resultUrl, local_media_key: localMediaKey };
+                    }
+                    await query(`UPDATE channel_usage SET status = $4, updated_at = NOW() WHERE channel = $1 AND task_id = $2 AND user_id = $3`, ['ziyu', row.task_id, req.user.id, status]);
+                    return { ...row, status };
+                } catch {
+                    return row;
+                }
+            }));

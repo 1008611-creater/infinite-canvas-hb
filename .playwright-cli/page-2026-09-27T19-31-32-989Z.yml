@@ -1,0 +1,173 @@
+- generic [ref=e95]:
+  - generic [ref=e97]:
+    - generic [ref=e98]:
+      - link [ref=e99] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e104]:
+        - generic [ref=e105] [cursor=pointer]: 网站首页
+        - generic [ref=e106] [cursor=pointer]: 开店教学
+        - generic [ref=e107] [cursor=pointer]: 开通微信支付
+    - generic [ref=e108]:
+      - generic [ref=e110] [cursor=pointer]:
+        - generic [ref=e111]: 消息通知
+        - generic [ref=e115]: "43"
+      - generic [ref=e118] [cursor=pointer]:
+        - img "avatar" [ref=e121]
+        - generic [ref=e122]: 商家0752
+  - generic [ref=e127]:
+    - generic [ref=e131]:
+      - generic [ref=e134] [cursor=pointer]:
+        - generic [ref=e135]: 首页
+        - generic [ref=e141]: 店铺
+        - generic [ref=e147]: 商品
+        - generic [ref=e152]: 订单
+        - generic [ref=e157]: 售后
+        - generic [ref=e162]: 营销
+        - generic [ref=e167]: 分销
+        - generic [ref=e172]: 货源
+        - generic [ref=e178]: 资金
+        - generic [ref=e186]: 我的
+      - generic [ref=e372]:
+        - generic [ref=e373]: 商品
+        - generic [ref=e374]:
+          - generic [ref=e375] [cursor=pointer]: 商品管理
+          - generic [ref=e377]:
+            - generic [ref=e378] [cursor=pointer]: 自营商品
+            - generic [ref=e380] [cursor=pointer]: 对接商品
+            - generic [ref=e382] [cursor=pointer]: 商品发布
+            - generic [ref=e384] [cursor=pointer]: 商品分类
+    - main [ref=e194]:
+      - generic [ref=e3126]:
+        - generic [ref=e3128]:
+          - generic [ref=e3129]: 返回
+          - generic [ref=e3135]: 商品编辑
+        - generic [ref=e3138]:
+          - generic [ref=e3141]:
+            - generic [ref=e3142]: 编辑卡密商品
+            - generic [ref=e3144]:
+              - generic [ref=e3146]:
+                - strong [ref=e3147]
+                - text: 商品标题
+              - textbox "最多只允许输入30个汉字（建议60个字以内）" [ref=e3154]: 矿泉水API周卡45刀每天
+            - generic [ref=e3156]:
+              - generic [ref=e3158]:
+                - strong [ref=e3159]
+                - text: 商品分类
+              - generic "矿泉水API订阅" [ref=e3165]:
+                - textbox "矿泉水API订阅"
+            - generic [ref=e3171]:
+              - generic [ref=e3173]:
+                - generic [ref=e3175]:
+                  - strong [ref=e3176]
+                  - text: 销售价格
+                - generic [ref=e3179]:
+                  - generic [ref=e3182]:
+                    - spinbutton "请输入商品价格" [ref=e3183]: "25.00"
+                    - generic [ref=e3185]:
+                      - button [ref=e3186] [cursor=pointer]
+                      - button [ref=e3189] [cursor=pointer]
+                  - generic [ref=e3192]: 单品定价范围在0-99999元之间，单位元，0元免费
+              - generic [ref=e3195]:
+                - generic [ref=e3196]: 参考价
+                - generic [ref=e3198]:
+                  - generic [ref=e3201]:
+                    - spinbutton "参考价，可不填" [ref=e3202]: "25.00"
+                    - generic [ref=e3204]:
+                      - button [ref=e3205] [cursor=pointer]
+                      - button [ref=e3208] [cursor=pointer]
+                  - generic [ref=e3211]: 参考价，可不填
+              - generic [ref=e3214]:
+                - generic [ref=e3215]: 成本价
+                - generic [ref=e3217]:
+                  - generic [ref=e3220]:
+                    - spinbutton "成本价，可不填" [ref=e3221]: "0.00"
+                    - generic [ref=e3223]:
+                      - button [ref=e3224] [cursor=pointer]
+                      - button [ref=e3227] [cursor=pointer]
+                  - generic [ref=e3230]: 成本价，可不填
+            - generic [ref=e3233]:
+              - generic [ref=e3234]: 封面图
+              - generic [ref=e3241] [cursor=pointer]
+            - generic [ref=e3246]:
+              - generic [ref=e3248]:
+                - strong [ref=e3249]
+                - text: 商品描述
+              - generic [ref=e3255]:
+                - generic [ref=e3257]:
+                  - button "正文" [ref=e3259]
+                  - button [ref=e3263]
+                  - button [ref=e3268]
+                  - button [ref=e3272]
+                  - button [ref=e3276]
+                  - button [ref=e3280]
+                  - button [ref=e3288]
+                  - button [ref=e3294]
+                  - button "默认字号" [ref=e3301]
+                  - button "默认字体" [ref=e3305]
+                  - button "默认行高" [ref=e3309]
+                  - button [ref=e3314]
+                  - button [ref=e3318]
+                  - button [ref=e3322]
+                  - button [ref=e3326]
+                  - button [ref=e3332]
+                  - button [ref=e3339]
+                  - button [ref=e3345]
+                  - button [ref=e3350]
+                  - button [ref=e3356]
+                  - button [ref=e3362]
+                  - button [ref=e3368]
+                  - button [ref=e3372]
+                  - button [ref=e3381]
+                  - button [ref=e3385]
+                  - button [ref=e3390] [cursor=pointer]
+                - paragraph [ref=e3397]:
+                  - generic [ref=e3398]: 购买后自动发放兑换码，到矿泉水API后台兑换。周卡有效期7天，每天刷新45刀额度，不是一次性总额。
+            - generic [ref=e3400]:
+              - generic [ref=e3402]:
+                - strong [ref=e3403]
+                - text: 使用说明
+              - generic [ref=e3409]:
+                - generic [ref=e3411]:
+                  - button "正文" [ref=e3413]
+                  - button [ref=e3417]
+                  - button [ref=e3422]
+                  - button [ref=e3426]
+                  - button [ref=e3430]
+                  - button [ref=e3434]
+                  - button [ref=e3442]
+                  - button [ref=e3448]
+                  - button "默认字号" [ref=e3455]
+                  - button "默认字体" [ref=e3459]
+                  - button "默认行高" [ref=e3463]
+                  - button [ref=e3468]
+                  - button [ref=e3472]
+                  - button [ref=e3476]
+                  - button [ref=e3480]
+                  - button [ref=e3486]
+                  - button [ref=e3493]
+                  - button [ref=e3499]
+                  - button [ref=e3504]
+                  - button [ref=e3510]
+                  - button [ref=e3516]
+                  - button [ref=e3522]
+                  - button [ref=e3526]
+                  - button [ref=e3535]
+                  - button [ref=e3539]
+                  - button [ref=e3544] [cursor=pointer]
+                - generic [ref=e3550]:
+                  - paragraph [ref=e3551]:
+                    - generic [ref=e3552]: 购买后自动发放兑换码，到矿泉水API后台兑换。周卡有效期7天，每天刷新45刀额度，不是一次性总额。
+                  - paragraph [ref=e3554]:
+                    - generic [ref=e3555]: 兑换入口：https://api.lsb0713.online/dashboard/redeem
+            - generic [ref=e3558]:
+              - generic [ref=e3559]: 库存预警
+              - generic [ref=e3561]:
+                - generic [ref=e3564]:
+                  - spinbutton [ref=e3565]: "0"
+                  - generic [ref=e3567]:
+                    - button [ref=e3568] [cursor=pointer]
+                    - button [disabled] [ref=e3571]
+                - generic [ref=e3574]: 低于当前库存预警阈值会发送提醒通知
+            - separator [ref=e3576]
+            - button "展开更多设置" [ref=e3579] [cursor=pointer]
+          - button "保存修改" [ref=e3588] [cursor=pointer]

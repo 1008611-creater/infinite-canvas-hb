@@ -1,0 +1,222 @@
+- generic [ref=f3e2]:
+  - generic [ref=f3e3]:
+    - heading "盘面自检" [level=1] [ref=f3e4]
+    - generic [ref=f3e5]: 先验证已经发生的事，再讨论未来的选择
+  - generic [ref=f3e7]:
+    - heading "这一页做什么" [level=2] [ref=f3e8]
+    - generic [ref=f3e9]: 同一组出生信息，换一套取值口径就会得出不同的盘。这一页不替你判断吉凶，只把盘面结构摊开， 让你拿已经发生过的真实经历去核对。 最常见的坑是出生时辰记错——下面的时辰对照就是为这件事准备的。 所有计算都在你自己的浏览器里完成，不保存、不上传。
+  - generic [ref=f3e10]:
+    - heading "出生信息" [level=2] [ref=f3e11]
+    - generic [ref=f3e12]:
+      - generic [ref=f3e13]:
+        - generic [ref=f3e14]: 性别
+        - combobox "性别" [ref=f3e15]:
+          - option "男" [selected]
+          - option "女"
+      - generic [ref=f3e16]:
+        - generic [ref=f3e17]: 出生日期（公历）
+        - textbox "出生日期（公历）" [ref=f3e18]: 1990-01-01
+      - generic [ref=f3e19]:
+        - generic [ref=f3e20]: 出生时间（钟表）
+        - textbox "出生时间（钟表）" [ref=f3e21]: 12:00
+      - generic [ref=f3e22]:
+        - generic [ref=f3e23]: 出生地经度
+        - textbox "出生地经度" [ref=f3e24]: "118.18"
+      - generic [ref=f3e25]:
+        - generic [ref=f3e26]: 时制
+        - combobox "时制" [ref=f3e27]:
+          - option "真太阳时（推荐）" [selected]
+          - option "钟表时间"
+      - generic [ref=f3e28]:
+        - button "开始自检" [active] [ref=f3e29] [cursor=pointer]
+        - button "返回排盘" [ref=f3e30] [cursor=pointer]
+    - generic [ref=f3e31]: 经度按出生城市填，中国境内约 73–135。记不清就填出生地所在市，误差一般不影响时辰判断。
+  - generic [ref=f3e33]:
+    - generic [ref=f3e34]:
+      - heading "盘面摘要" [level=2] [ref=f3e35]
+      - generic [ref=f3e36]:
+        - generic [ref=f3e37]:
+          - generic [ref=f3e38]:
+            - generic [ref=f3e39]: 公历
+            - generic [ref=f3e40]: 1990-01-01 12:00
+          - generic [ref=f3e41]:
+            - generic [ref=f3e42]: 真太阳时
+            - generic [ref=f3e43]: 11:49
+        - generic [ref=f3e44]:
+          - generic [ref=f3e45]:
+            - generic [ref=f3e46]: 四柱
+            - generic [ref=f3e47]: 己巳 丙子 丙寅 甲午
+          - generic [ref=f3e48]:
+            - generic [ref=f3e49]: 紫微命宫 / 五行局
+            - generic [ref=f3e50]: 未宫 / 土五局
+    - generic [ref=f3e51]:
+      - heading "逐条自检" [level=2] [ref=f3e52]
+      - generic [ref=f3e53]:
+        - generic [ref=f3e54]:
+          - generic [ref=f3e55]: 你大约在几岁开始明显脱离原生家庭的节奏（升学、离家、独立谋生）？
+          - generic [ref=f3e56]: 本盘起运 8.34 岁，约在 1998 年前后交入第一步大运 乙亥（正印）。传统上「交运」前后一两年常有环境变动。若你的实际转折点与之相距很远，值得回头核一下出生时辰。
+        - generic [ref=f3e57]:
+          - generic [ref=f3e58]: 最近十年，你的主要精力更偏向哪一类事？
+          - generic [ref=f3e59]: 你现在处于 癸酉 大运（正官，2018–2027）。主职位、名分、规则与被认可。对照这几年的实际重心，看方向是否吻合。
+        - generic [ref=f3e60]:
+          - generic [ref=f3e61]: 命宫描述的是「先天的底色」，身宫偏向「后天着力处」。
+          - generic [ref=f3e62]: 命宫在 未宫（辛未），身宫在 未宫（命身同宫）。五行局 土五局，命主 武曲、身主 天机。
+        - generic [ref=f3e63]:
+          - generic [ref=f3e64]: 你的性格与体质，更像哪一边？
+          - generic [ref=f3e65]: 日主 丙（火），五行缺 金，最旺 火、最弱 金，判为 身强。偏旺者通常主见强、行动先于顾虑；偏弱者更依赖外部条件与配合。以你自己的实际感受为准。
+    - generic [ref=f3e66]:
+      - heading "流年回看（自己打标）" [level=2] [ref=f3e67]
+      - generic [ref=f3e68]: 下面几年是已经发生的。按你的实际感受点一下，页面会把该年的结构与你的标记并排显示——判断权在你手里，页面不替你下结论。
+      - table [ref=f3e70]:
+        - rowgroup [ref=f3e71]:
+          - row [ref=f3e72]:
+            - columnheader "年份" [ref=f3e73]
+            - columnheader "干支" [ref=f3e74]
+            - columnheader "十神" [ref=f3e75]
+            - columnheader "所处大运" [ref=f3e76]
+            - columnheader "虚岁" [ref=f3e77]
+            - columnheader "你的感受" [ref=f3e78]
+          - row [ref=f3e79]:
+            - cell "2020" [ref=f3e80]
+            - cell "庚子" [ref=f3e81]
+            - cell "偏财" [ref=f3e82]
+            - cell "癸酉（正官）" [ref=f3e83]
+            - cell "31" [ref=f3e84]
+            - cell [ref=f3e85]:
+              - button "顺" [ref=f3e86] [cursor=pointer]
+              - button "平" [ref=f3e87] [cursor=pointer]
+              - button "不顺" [ref=f3e88] [cursor=pointer]
+              - button "重大变化" [ref=f3e89] [cursor=pointer]
+          - row [ref=f3e90]:
+            - cell "2021" [ref=f3e91]
+            - cell "辛丑" [ref=f3e92]
+            - cell "正财" [ref=f3e93]
+            - cell "癸酉（正官）" [ref=f3e94]
+            - cell "32" [ref=f3e95]
+            - cell [ref=f3e96]:
+              - button "顺" [ref=f3e97] [cursor=pointer]
+              - button "平" [ref=f3e98] [cursor=pointer]
+              - button "不顺" [ref=f3e99] [cursor=pointer]
+              - button "重大变化" [ref=f3e100] [cursor=pointer]
+          - row [ref=f3e101]:
+            - cell "2022" [ref=f3e102]
+            - cell "壬寅" [ref=f3e103]
+            - cell "七杀" [ref=f3e104]
+            - cell "癸酉（正官）" [ref=f3e105]
+            - cell "33" [ref=f3e106]
+            - cell [ref=f3e107]:
+              - button "顺" [ref=f3e108] [cursor=pointer]
+              - button "平" [ref=f3e109] [cursor=pointer]
+              - button "不顺" [ref=f3e110] [cursor=pointer]
+              - button "重大变化" [ref=f3e111] [cursor=pointer]
+          - row [ref=f3e112]:
+            - cell "2023" [ref=f3e113]
+            - cell "癸卯" [ref=f3e114]
+            - cell "正官" [ref=f3e115]
+            - cell "癸酉（正官）" [ref=f3e116]
+            - cell "34" [ref=f3e117]
+            - cell [ref=f3e118]:
+              - button "顺" [ref=f3e119] [cursor=pointer]
+              - button "平" [ref=f3e120] [cursor=pointer]
+              - button "不顺" [ref=f3e121] [cursor=pointer]
+              - button "重大变化" [ref=f3e122] [cursor=pointer]
+          - row [ref=f3e123]:
+            - cell "2024" [ref=f3e124]
+            - cell "甲辰" [ref=f3e125]
+            - cell "偏印" [ref=f3e126]
+            - cell "癸酉（正官）" [ref=f3e127]
+            - cell "35" [ref=f3e128]
+            - cell [ref=f3e129]:
+              - button "顺" [ref=f3e130] [cursor=pointer]
+              - button "平" [ref=f3e131] [cursor=pointer]
+              - button "不顺" [ref=f3e132] [cursor=pointer]
+              - button "重大变化" [ref=f3e133] [cursor=pointer]
+          - row [ref=f3e134]:
+            - cell "2025" [ref=f3e135]
+            - cell "乙巳" [ref=f3e136]
+            - cell "正印" [ref=f3e137]
+            - cell "癸酉（正官）" [ref=f3e138]
+            - cell "36" [ref=f3e139]
+            - cell [ref=f3e140]:
+              - button "顺" [ref=f3e141] [cursor=pointer]
+              - button "平" [ref=f3e142] [cursor=pointer]
+              - button "不顺" [ref=f3e143] [cursor=pointer]
+              - button "重大变化" [ref=f3e144] [cursor=pointer]
+    - generic [ref=f3e145]:
+      - heading "时辰对照（怀疑记错时间就看这里）" [level=2] [ref=f3e146]
+      - generic [ref=f3e147]: 下面是按你填的时间前后各推一个时辰的结果。它只列出每个时辰对应的盘面差异，用来配合上面的自检条目反推：哪一个时辰描述的你更像你。
+      - generic [ref=f3e148]:
+        - generic [ref=f3e149]:
+          - generic [ref=f3e150]: 提前 2 个时辰
+          - generic [ref=f3e151]: 辰时
+          - generic [ref=f3e152]: 钟表 08:00时柱 壬辰紫微命宫 酉宫 · 金四局命宫主星 太阳、天梁命主 文曲
+        - generic [ref=f3e153]:
+          - generic [ref=f3e154]: 提前 1 个时辰
+          - generic [ref=f3e155]: 巳时
+          - generic [ref=f3e156]: 钟表 10:00时柱 癸巳紫微命宫 申宫 · 金四局命宫主星 武曲、天相命主 廉贞
+        - generic [ref=f3e157]:
+          - generic [ref=f3e158]: 你填的时间
+          - generic [ref=f3e159]: 午时
+          - generic [ref=f3e160]: 钟表 12:00时柱 甲午紫微命宫 未宫 · 土五局命宫主星 天梁命主 武曲
+        - generic [ref=f3e161]:
+          - generic [ref=f3e162]: 推后 1 个时辰
+          - generic [ref=f3e163]: 未时
+          - generic [ref=f3e164]: 钟表 14:00时柱 乙未紫微命宫 午宫 · 土五局命宫主星 廉贞、天相命主 破军
+        - generic [ref=f3e165]:
+          - generic [ref=f3e166]: 推后 2 个时辰
+          - generic [ref=f3e167]: 申时
+          - generic [ref=f3e168]: 钟表 16:00时柱 丙申紫微命宫 巳宫 · 木三局命宫主星 巨门命主 武曲
+      - generic [ref=f3e169]: 时柱变、命宫变、五行局变，牵动的整盘结构都会跟着变。如果相邻时辰的盘差异很大，说明这个出生时间值得你认真回忆或向家人确认。
+    - generic [ref=f3e170]:
+      - heading "紫微命宫三方四正" [level=2] [ref=f3e171]
+      - table [ref=f3e172]:
+        - rowgroup [ref=f3e173]:
+          - row [ref=f3e174]:
+            - columnheader "宫位" [ref=f3e175]
+            - columnheader "关系" [ref=f3e176]
+            - columnheader "主星" [ref=f3e177]
+            - columnheader "辅星与杂曜" [ref=f3e178]
+            - columnheader "生年四化" [ref=f3e179]
+          - row [ref=f3e180]:
+            - cell "命宫" [ref=f3e181]
+            - cell "命宫（本宫）" [ref=f3e182]
+            - cell "天梁" [ref=f3e183]
+            - cell "擎羊、三台、八座、恩光、蜚廉" [ref=f3e184]
+            - cell "天梁科" [ref=f3e185]
+          - row [ref=f3e186]:
+            - cell "官禄" [ref=f3e187]
+            - cell "三合" [ref=f3e188]
+            - cell "太阳" [ref=f3e189]
+            - cell "右弼、天马、天巫、旬空、天虚" [ref=f3e190]
+            - cell "—" [ref=f3e191]
+          - row [ref=f3e192]:
+            - cell "财帛" [ref=f3e193]
+            - cell "三合" [ref=f3e194]
+            - cell "太阴" [ref=f3e195]
+            - cell "左辅" [ref=f3e196]
+            - cell "—" [ref=f3e197]
+          - row [ref=f3e198]:
+            - cell "迁移" [ref=f3e199]
+            - cell "对宫（迁移）" [ref=f3e200]
+            - cell "天机" [ref=f3e201]
+            - cell "天贵、华盖、天哭" [ref=f3e202]
+            - cell "—" [ref=f3e203]
+      - generic [ref=f3e204]: 三方四正指本宫、对宫与两个三合宫，是紫微判断一个宫位强弱时的基本结构。这里只列出结构，星曜组合同样需要你结合实际经历体会。
+    - generic [ref=f3e205]:
+      - generic [ref=f3e206]:
+        - generic [ref=f3e207]:
+          - generic [ref=f3e208]:
+            - generic [ref=f3e209]: 引擎版本
+            - generic [ref=f3e210]: 0.5.2
+          - generic [ref=f3e211]:
+            - generic [ref=f3e212]: 四柱规则集
+            - generic [ref=f3e213]: bazi-core-0.1.0
+        - generic [ref=f3e214]:
+          - generic [ref=f3e215]:
+            - generic [ref=f3e216]: 星历模型
+            - generic [ref=f3e217]: VSOP87D+IAU1980+Meeus49
+          - generic [ref=f3e218]:
+            - generic [ref=f3e219]: 紫微规则集
+            - generic [ref=f3e220]: ziwei-core-0.2.0
+      - generic [ref=f3e221]: 内容指纹 df4bcf80acfc899b。本页与排盘页使用同一份引擎产物，同输入必得同一结果。
+  - generic [ref=f3e32]: 本页只呈现盘面结构，不做吉凶断语，也不预测未来 命理适合作为传统文化与自我观察的参考，不替代医疗、法律、投资等专业意见

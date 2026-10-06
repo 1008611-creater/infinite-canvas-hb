@@ -1,0 +1,72 @@
+- generic [ref=f2e4]:
+  - main [ref=f2e7]
+  - generic:
+    - complementary:
+      - button "调整右侧面板宽度"
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - button "连接设置，当前未连接"
+          - tablist "Agent 内容":
+            - tab "对话"
+            - tab "历史"
+            - tab "技能"
+            - tab "日志"
+          - generic:
+            - button "新对话" [disabled]
+            - button "收起 Agent 面板"
+      - generic:
+        - generic:
+          - generic:
+            - generic: 连接本地 Agent
+            - generic: 按使用场景选择一种连接方式。
+          - generic:
+            - generic:
+              - generic: 方式一：在 Codex 中使用插件
+              - generic: 在 Codex app 安装 Infinite Canvas 插件后，通过插件启动画布，插件会自动启动本地 Agent 并带上连接信息。
+            - generic:
+              - generic: Codex 插件提醒
+              - generic: 只有安装 Codex 插件或手动添加 MCP 后，工具列表才会进入 Codex 上下文并增加 token 消耗；仅运行 npx -y @basketikun/canvas-agent 启动本地 Agent 不会安装 MCP。
+              - generic:
+                - generic:
+                  - generic: 移除插件
+                  - code: codex plugin remove infinite-canvas
+                  - button
+                - generic:
+                  - generic: 移除手动 MCP
+                  - code: codex mcp remove infinite-canvas
+                  - button
+            - generic:
+              - generic: 方式二：直接运行 Agent
+              - generic: 不使用 Codex 插件时，在终端运行下面命令，再回到网页里连接或手动填入 Local URL 和 Connect token。
+              - generic:
+                - code: npx -y @basketikun/canvas-agent
+                - button
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: 网页连接
+                  - generic: 未连接
+                - generic: 默认自动读取 Local URL 和 Connect token，失败时再手动填写。
+              - button "连接"
+            - generic:
+              - generic:
+                - generic:
+                  - text: 本地地址
+                  - generic: Local URL
+                - generic:
+                  - textbox "本地地址 Local URL":
+                    - /placeholder: 例如 http://127.0.0.1:17371
+                    - text: http://127.0.0.1:17371
+              - generic:
+                - generic:
+                  - text: 连接 Token
+                  - generic: Connect token
+                - generic:
+                  - textbox "连接 Token Connect token 显示":
+                    - /placeholder: 自动发现，或手动填入 Connect token
+                  - generic:
+                    - button "显示":
+                      - img "eye-invisible"

@@ -1,0 +1,628 @@
+- generic [ref=e95]:
+  - generic [ref=e97]:
+    - generic [ref=e98]:
+      - link [ref=e99] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e104]:
+        - generic [ref=e105] [cursor=pointer]: 网站首页
+        - generic [ref=e106] [cursor=pointer]: 开店教学
+        - generic [ref=e107] [cursor=pointer]: 开通微信支付
+    - generic [ref=e108]:
+      - generic [ref=e110] [cursor=pointer]:
+        - generic [ref=e111]: 消息通知
+        - generic [ref=e115]: "43"
+      - generic [ref=e118] [cursor=pointer]:
+        - img "avatar" [ref=e121]
+        - generic [ref=e122]: 商家0752
+  - generic [ref=e127]:
+    - generic [ref=e131]:
+      - generic [ref=e134] [cursor=pointer]:
+        - generic [ref=e135]: 首页
+        - generic [ref=e141]: 店铺
+        - generic [ref=e147]: 商品
+        - generic [ref=e152]: 订单
+        - generic [ref=e157]: 售后
+        - generic [ref=e162]: 营销
+        - generic [ref=e167]: 分销
+        - generic [ref=e172]: 货源
+        - generic [ref=e178]: 资金
+        - generic [ref=e186]: 我的
+      - generic [ref=e372]:
+        - generic [ref=e373]: 商品
+        - generic [ref=e374]:
+          - generic [ref=e375] [cursor=pointer]: 商品管理
+          - generic [ref=e377]:
+            - generic [ref=e378] [cursor=pointer]: 自营商品
+            - generic [ref=e380] [cursor=pointer]: 对接商品
+            - generic [ref=e382] [cursor=pointer]: 商品发布
+            - generic [ref=e384] [cursor=pointer]: 商品分类
+    - main [ref=e194]:
+      - generic [ref=e386]:
+        - generic [ref=e389]:
+          - generic [ref=e391]:
+            - generic [ref=e393] [cursor=pointer]:
+              - text: 卡密
+              - generic [ref=e394]: (31)
+            - generic [ref=e395] [cursor=pointer]: 知识
+            - generic [ref=e397] [cursor=pointer]: 资源
+            - generic [ref=e399] [cursor=pointer]: 权益
+          - generic [ref=e402]:
+            - button [ref=e404] [cursor=pointer]
+            - button "回收站" [ref=e409] [cursor=pointer]
+        - generic [ref=e422]:
+          - generic [ref=e426]:
+            - generic [ref=e427] [cursor=pointer]: 全部
+            - generic [ref=e429] [cursor=pointer]: 售卖中
+            - generic [ref=e431] [cursor=pointer]: 仓库中
+          - generic [ref=e434]:
+            - generic [ref=e436]:
+              - generic [ref=e438]:
+                - generic [ref=e439]: 商品名称
+                - textbox "请输入商品名称" [ref=e445]
+              - generic [ref=e447]:
+                - generic [ref=e448]: 商品分类
+                - textbox "搜索商品分类" [ref=e454]
+              - button [ref=e464] [cursor=pointer]
+              - button "批量删除" [disabled] [ref=e473]
+              - button [ref=e479] [cursor=pointer]
+              - button [ref=e488] [cursor=pointer]
+            - generic [ref=e493]:
+              - table [ref=e497]:
+                - rowgroup [ref=e507]:
+                  - row "商品信息 售价(元) 状态 销量 库存 创建时间 操作" [ref=e508]:
+                    - columnheader [ref=e509]:
+                      - generic [ref=e511] [cursor=pointer]:
+                        - checkbox
+                    - columnheader "商品信息" [ref=e514]
+                    - columnheader "售价(元)" [ref=e517]
+                    - columnheader "状态" [ref=e520]
+                    - columnheader "销量" [ref=e523]
+                    - columnheader "库存" [ref=e526]
+                    - columnheader "创建时间" [ref=e529]
+                    - columnheader "操作" [ref=e532]
+                - rowgroup [ref=e535]:
+                  - row "卡密 念念AI月卡 2000积分 30天权益 149 销售中 下架 0 10张 加卡 库存 2026-08-19 15:34:59 链接 编辑 复制 删除" [ref=e536]:
+                    - cell [ref=e537]:
+                      - generic [ref=e539] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 念念AI月卡 2000积分 30天权益" [ref=e542]:
+                      - generic [ref=e547]:
+                        - generic [ref=e548]: 卡密
+                        - link "念念AI月卡 2000积分 30天权益" [ref=e553] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/xqcrk1
+                    - cell "149" [ref=e556]
+                    - cell "销售中 下架" [ref=e560]:
+                      - generic [ref=e563]:
+                        - generic [ref=e566]: 销售中
+                        - generic [ref=e568]: 下架
+                    - cell "0" [ref=e570]
+                    - cell "10张 加卡 库存" [ref=e574]:
+                      - generic [ref=e577]:
+                        - generic [ref=e578]: 10张
+                        - generic [ref=e580]: 加卡
+                        - generic [ref=e582]: 库存
+                    - cell "2026-08-19 15:34:59" [ref=e584]
+                    - cell "链接 编辑 复制 删除" [ref=e588]:
+                      - generic [ref=e591]:
+                        - generic [ref=e592]: 链接
+                        - generic [ref=e594]: 编辑
+                        - generic [ref=e596]: 复制
+                        - generic [ref=e598]: 删除
+                  - row "卡密 念念AI周卡 600积分 7天权益 49 销售中 下架 0 10张 加卡 库存 2026-08-19 15:34:57 链接 编辑 复制 删除" [ref=e600]:
+                    - cell [ref=e601]:
+                      - generic [ref=e603] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 念念AI周卡 600积分 7天权益" [ref=e606]:
+                      - generic [ref=e611]:
+                        - generic [ref=e612]: 卡密
+                        - link "念念AI周卡 600积分 7天权益" [ref=e617] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/l4lgby
+                    - cell "49" [ref=e620]
+                    - cell "销售中 下架" [ref=e624]:
+                      - generic [ref=e627]:
+                        - generic [ref=e630]: 销售中
+                        - generic [ref=e632]: 下架
+                    - cell "0" [ref=e634]
+                    - cell "10张 加卡 库存" [ref=e638]:
+                      - generic [ref=e641]:
+                        - generic [ref=e642]: 10张
+                        - generic [ref=e644]: 加卡
+                        - generic [ref=e646]: 库存
+                    - cell "2026-08-19 15:34:57" [ref=e648]
+                    - cell "链接 编辑 复制 删除" [ref=e652]:
+                      - generic [ref=e655]:
+                        - generic [ref=e656]: 链接
+                        - generic [ref=e658]: 编辑
+                        - generic [ref=e660]: 复制
+                        - generic [ref=e662]: 删除
+                  - row "卡密 念念AI积分 1000积分 100 销售中 下架 0 10张 加卡 库存 2026-08-19 15:34:55 链接 编辑 复制 删除" [ref=e664]:
+                    - cell [ref=e665]:
+                      - generic [ref=e667] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 念念AI积分 1000积分" [ref=e670]:
+                      - generic [ref=e675]:
+                        - generic [ref=e676]: 卡密
+                        - link "念念AI积分 1000积分" [ref=e681] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/2czuiw
+                    - cell "100" [ref=e684]
+                    - cell "销售中 下架" [ref=e688]:
+                      - generic [ref=e691]:
+                        - generic [ref=e694]: 销售中
+                        - generic [ref=e696]: 下架
+                    - cell "0" [ref=e698]
+                    - cell "10张 加卡 库存" [ref=e702]:
+                      - generic [ref=e705]:
+                        - generic [ref=e706]: 10张
+                        - generic [ref=e708]: 加卡
+                        - generic [ref=e710]: 库存
+                    - cell "2026-08-19 15:34:55" [ref=e712]
+                    - cell "链接 编辑 复制 删除" [ref=e716]:
+                      - generic [ref=e719]:
+                        - generic [ref=e720]: 链接
+                        - generic [ref=e722]: 编辑
+                        - generic [ref=e724]: 复制
+                        - generic [ref=e726]: 删除
+                  - row "卡密 念念AI积分 500积分 50 销售中 下架 0 10张 加卡 库存 2026-08-19 15:34:53 链接 编辑 复制 删除" [ref=e728]:
+                    - cell [ref=e729]:
+                      - generic [ref=e731] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 念念AI积分 500积分" [ref=e734]:
+                      - generic [ref=e739]:
+                        - generic [ref=e740]: 卡密
+                        - link "念念AI积分 500积分" [ref=e745] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/7k277h
+                    - cell "50" [ref=e748]
+                    - cell "销售中 下架" [ref=e752]:
+                      - generic [ref=e755]:
+                        - generic [ref=e758]: 销售中
+                        - generic [ref=e760]: 下架
+                    - cell "0" [ref=e762]
+                    - cell "10张 加卡 库存" [ref=e766]:
+                      - generic [ref=e769]:
+                        - generic [ref=e770]: 10张
+                        - generic [ref=e772]: 加卡
+                        - generic [ref=e774]: 库存
+                    - cell "2026-08-19 15:34:53" [ref=e776]
+                    - cell "链接 编辑 复制 删除" [ref=e780]:
+                      - generic [ref=e783]:
+                        - generic [ref=e784]: 链接
+                        - generic [ref=e786]: 编辑
+                        - generic [ref=e788]: 复制
+                        - generic [ref=e790]: 删除
+                  - row "卡密 念念AI积分 300积分 30 销售中 下架 0 10张 加卡 库存 2026-08-19 15:34:51 链接 编辑 复制 删除" [ref=e792]:
+                    - cell [ref=e793]:
+                      - generic [ref=e795] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 念念AI积分 300积分" [ref=e798]:
+                      - generic [ref=e803]:
+                        - generic [ref=e804]: 卡密
+                        - link "念念AI积分 300积分" [ref=e809] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/tb8gpd
+                    - cell "30" [ref=e812]
+                    - cell "销售中 下架" [ref=e816]:
+                      - generic [ref=e819]:
+                        - generic [ref=e822]: 销售中
+                        - generic [ref=e824]: 下架
+                    - cell "0" [ref=e826]
+                    - cell "10张 加卡 库存" [ref=e830]:
+                      - generic [ref=e833]:
+                        - generic [ref=e834]: 10张
+                        - generic [ref=e836]: 加卡
+                        - generic [ref=e838]: 库存
+                    - cell "2026-08-19 15:34:51" [ref=e840]
+                    - cell "链接 编辑 复制 删除" [ref=e844]:
+                      - generic [ref=e847]:
+                        - generic [ref=e848]: 链接
+                        - generic [ref=e850]: 编辑
+                        - generic [ref=e852]: 复制
+                        - generic [ref=e854]: 删除
+                  - row "卡密 念念AI积分 100积分 10 销售中 下架 0 10张 加卡 库存 2026-08-19 15:29:54 链接 编辑 复制 删除" [ref=e856]:
+                    - cell [ref=e857]:
+                      - generic [ref=e859] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 念念AI积分 100积分" [ref=e862]:
+                      - generic [ref=e867]:
+                        - generic [ref=e868]: 卡密
+                        - link "念念AI积分 100积分" [ref=e873] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/ymu908
+                    - cell "10" [ref=e876]
+                    - cell "销售中 下架" [ref=e880]:
+                      - generic [ref=e883]:
+                        - generic [ref=e886]: 销售中
+                        - generic [ref=e888]: 下架
+                    - cell "0" [ref=e890]
+                    - cell "10张 加卡 库存" [ref=e894]:
+                      - generic [ref=e897]:
+                        - generic [ref=e898]: 10张
+                        - generic [ref=e900]: 加卡
+                        - generic [ref=e902]: 库存
+                    - cell "2026-08-19 15:29:54" [ref=e904]
+                    - cell "链接 编辑 复制 删除" [ref=e908]:
+                      - generic [ref=e911]:
+                        - generic [ref=e912]: 链接
+                        - generic [ref=e914]: 编辑
+                        - generic [ref=e916]: 复制
+                        - generic [ref=e918]: 删除
+                  - row "卡密 DeepTutor初高中提分永久会员 699 销售中 下架 0 10张 加卡 库存 2026-08-04 03:25:45 链接 编辑 复制 删除" [ref=e920]:
+                    - cell [ref=e921]:
+                      - generic [ref=e923] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 DeepTutor初高中提分永久会员" [ref=e926]:
+                      - generic [ref=e931]:
+                        - generic [ref=e932]: 卡密
+                        - link "DeepTutor初高中提分永久会员" [ref=e937] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/i7gl94
+                    - cell "699" [ref=e940]
+                    - cell "销售中 下架" [ref=e944]:
+                      - generic [ref=e947]:
+                        - generic [ref=e950]: 销售中
+                        - generic [ref=e952]: 下架
+                    - cell "0" [ref=e954]
+                    - cell "10张 加卡 库存" [ref=e958]:
+                      - generic [ref=e961]:
+                        - generic [ref=e962]: 10张
+                        - generic [ref=e964]: 加卡
+                        - generic [ref=e966]: 库存
+                    - cell "2026-08-04 03:25:45" [ref=e968]
+                    - cell "链接 编辑 复制 删除" [ref=e972]:
+                      - generic [ref=e975]:
+                        - generic [ref=e976]: 链接
+                        - generic [ref=e978]: 编辑
+                        - generic [ref=e980]: 复制
+                        - generic [ref=e982]: 删除
+                  - row "卡密 DeepTutor初高中提分年卡（365天） 299 销售中 下架 0 10张 加卡 库存 2026-08-04 03:23:33 链接 编辑 复制 删除" [ref=e984]:
+                    - cell [ref=e985]:
+                      - generic [ref=e987] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 DeepTutor初高中提分年卡（365天）" [ref=e990]:
+                      - generic [ref=e995]:
+                        - generic [ref=e996]: 卡密
+                        - link "DeepTutor初高中提分年卡（365天）" [ref=e1001] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/6jvubo
+                    - cell "299" [ref=e1004]
+                    - cell "销售中 下架" [ref=e1008]:
+                      - generic [ref=e1011]:
+                        - generic [ref=e1014]: 销售中
+                        - generic [ref=e1016]: 下架
+                    - cell "0" [ref=e1018]
+                    - cell "10张 加卡 库存" [ref=e1022]:
+                      - generic [ref=e1025]:
+                        - generic [ref=e1026]: 10张
+                        - generic [ref=e1028]: 加卡
+                        - generic [ref=e1030]: 库存
+                    - cell "2026-08-04 03:23:33" [ref=e1032]
+                    - cell "链接 编辑 复制 删除" [ref=e1036]:
+                      - generic [ref=e1039]:
+                        - generic [ref=e1040]: 链接
+                        - generic [ref=e1042]: 编辑
+                        - generic [ref=e1044]: 复制
+                        - generic [ref=e1046]: 删除
+                  - row "卡密 DeepTutor初高中提分月卡（30天） 39.9 销售中 下架 0 10张 加卡 库存 2026-08-04 03:12:24 链接 编辑 复制 删除" [ref=e1048]:
+                    - cell [ref=e1049]:
+                      - generic [ref=e1051] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 DeepTutor初高中提分月卡（30天）" [ref=e1054]:
+                      - generic [ref=e1059]:
+                        - generic [ref=e1060]: 卡密
+                        - link "DeepTutor初高中提分月卡（30天）" [ref=e1065] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/gqr84l
+                    - cell "39.9" [ref=e1068]
+                    - cell "销售中 下架" [ref=e1072]:
+                      - generic [ref=e1075]:
+                        - generic [ref=e1078]: 销售中
+                        - generic [ref=e1080]: 下架
+                    - cell "0" [ref=e1082]
+                    - cell "10张 加卡 库存" [ref=e1086]:
+                      - generic [ref=e1089]:
+                        - generic [ref=e1090]: 10张
+                        - generic [ref=e1092]: 加卡
+                        - generic [ref=e1094]: 库存
+                    - cell "2026-08-04 03:12:24" [ref=e1096]
+                    - cell "链接 编辑 复制 删除" [ref=e1100]:
+                      - generic [ref=e1103]:
+                        - generic [ref=e1104]: 链接
+                        - generic [ref=e1106]: 编辑
+                        - generic [ref=e1108]: 复制
+                        - generic [ref=e1110]: 删除
+                  - row "卡密 念念AI视频工作台 1000积分 10 销售中 下架 0 50张 加卡 库存 2026-07-12 18:38:55 链接 编辑 复制 删除" [ref=e1112]:
+                    - cell [ref=e1113]:
+                      - generic [ref=e1115] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 念念AI视频工作台 1000积分" [ref=e1118]:
+                      - generic [ref=e1123]:
+                        - generic [ref=e1124]: 卡密
+                        - link "念念AI视频工作台 1000积分" [ref=e1129] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/6jt6a2
+                    - cell "10" [ref=e1132]
+                    - cell "销售中 下架" [ref=e1136]:
+                      - generic [ref=e1139]:
+                        - generic [ref=e1142]: 销售中
+                        - generic [ref=e1144]: 下架
+                    - cell "0" [ref=e1146]
+                    - cell "50张 加卡 库存" [ref=e1150]:
+                      - generic [ref=e1153]:
+                        - generic [ref=e1154]: 50张
+                        - generic [ref=e1156]: 加卡
+                        - generic [ref=e1158]: 库存
+                    - cell "2026-07-12 18:38:55" [ref=e1160]
+                    - cell "链接 编辑 复制 删除" [ref=e1164]:
+                      - generic [ref=e1167]:
+                        - generic [ref=e1168]: 链接
+                        - generic [ref=e1170]: 编辑
+                        - generic [ref=e1172]: 复制
+                        - generic [ref=e1174]: 删除
+                  - row "卡密 念念AI视频工作台 500积分 5 销售中 下架 0 50张 加卡 库存 2026-07-12 18:38:39 链接 编辑 复制 删除" [ref=e1176]:
+                    - cell [ref=e1177]:
+                      - generic [ref=e1179] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 念念AI视频工作台 500积分" [ref=e1182]:
+                      - generic [ref=e1187]:
+                        - generic [ref=e1188]: 卡密
+                        - link "念念AI视频工作台 500积分" [ref=e1193] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/oixq4k
+                    - cell "5" [ref=e1196]
+                    - cell "销售中 下架" [ref=e1200]:
+                      - generic [ref=e1203]:
+                        - generic [ref=e1206]: 销售中
+                        - generic [ref=e1208]: 下架
+                    - cell "0" [ref=e1210]
+                    - cell "50张 加卡 库存" [ref=e1214]:
+                      - generic [ref=e1217]:
+                        - generic [ref=e1218]: 50张
+                        - generic [ref=e1220]: 加卡
+                        - generic [ref=e1222]: 库存
+                    - cell "2026-07-12 18:38:39" [ref=e1224]
+                    - cell "链接 编辑 复制 删除" [ref=e1228]:
+                      - generic [ref=e1231]:
+                        - generic [ref=e1232]: 链接
+                        - generic [ref=e1234]: 编辑
+                        - generic [ref=e1236]: 复制
+                        - generic [ref=e1238]: 删除
+                  - row "卡密 念念AI视频工作台 300积分 3 销售中 下架 0 50张 加卡 库存 2026-07-12 18:38:20 链接 编辑 复制 删除" [ref=e1240]:
+                    - cell [ref=e1241]:
+                      - generic [ref=e1243] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 念念AI视频工作台 300积分" [ref=e1246]:
+                      - generic [ref=e1251]:
+                        - generic [ref=e1252]: 卡密
+                        - link "念念AI视频工作台 300积分" [ref=e1257] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/jzmhxg
+                    - cell "3" [ref=e1260]
+                    - cell "销售中 下架" [ref=e1264]:
+                      - generic [ref=e1267]:
+                        - generic [ref=e1270]: 销售中
+                        - generic [ref=e1272]: 下架
+                    - cell "0" [ref=e1274]
+                    - cell "50张 加卡 库存" [ref=e1278]:
+                      - generic [ref=e1281]:
+                        - generic [ref=e1282]: 50张
+                        - generic [ref=e1284]: 加卡
+                        - generic [ref=e1286]: 库存
+                    - cell "2026-07-12 18:38:20" [ref=e1288]
+                    - cell "链接 编辑 复制 删除" [ref=e1292]:
+                      - generic [ref=e1295]:
+                        - generic [ref=e1296]: 链接
+                        - generic [ref=e1298]: 编辑
+                        - generic [ref=e1300]: 复制
+                        - generic [ref=e1302]: 删除
+                  - row "卡密 念念AI视频工作台 100积分 1 销售中 下架 2 48张 加卡 库存 2026-07-12 18:33:34 链接 编辑 复制 删除" [ref=e1304]:
+                    - cell [ref=e1305]:
+                      - generic [ref=e1307] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 念念AI视频工作台 100积分" [ref=e1310]:
+                      - generic [ref=e1315]:
+                        - generic [ref=e1316]: 卡密
+                        - link "念念AI视频工作台 100积分" [ref=e1321] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/dk8n6w
+                    - cell "1" [ref=e1324]
+                    - cell "销售中 下架" [ref=e1328]:
+                      - generic [ref=e1331]:
+                        - generic [ref=e1334]: 销售中
+                        - generic [ref=e1336]: 下架
+                    - cell "2" [ref=e1338]
+                    - cell "48张 加卡 库存" [ref=e1342]:
+                      - generic [ref=e1345]:
+                        - generic [ref=e1346]: 48张
+                        - generic [ref=e1348]: 加卡
+                        - generic [ref=e1350]: 库存
+                    - cell "2026-07-12 18:33:34" [ref=e1352]
+                    - cell "链接 编辑 复制 删除" [ref=e1356]:
+                      - generic [ref=e1359]:
+                        - generic [ref=e1360]: 链接
+                        - generic [ref=e1362]: 编辑
+                        - generic [ref=e1364]: 复制
+                        - generic [ref=e1366]: 删除
+                  - row "卡密 矿泉水API余额8888美金 648 销售中 下架 0 50张 加卡 库存 2026-06-15 04:27:06 链接 编辑 复制 删除" [ref=e1368]:
+                    - cell [ref=e1369]:
+                      - generic [ref=e1371] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 矿泉水API余额8888美金" [ref=e1374]:
+                      - generic [ref=e1379]:
+                        - generic [ref=e1380]: 卡密
+                        - link "矿泉水API余额8888美金" [ref=e1385] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/rn4qec
+                    - cell "648" [ref=e1388]
+                    - cell "销售中 下架" [ref=e1392]:
+                      - generic [ref=e1395]:
+                        - generic [ref=e1398]: 销售中
+                        - generic [ref=e1400]: 下架
+                    - cell "0" [ref=e1402]
+                    - cell "50张 加卡 库存" [ref=e1406]:
+                      - generic [ref=e1409]:
+                        - generic [ref=e1410]: 50张
+                        - generic [ref=e1412]: 加卡
+                        - generic [ref=e1414]: 库存
+                    - cell "2026-06-15 04:27:06" [ref=e1416]
+                    - cell "链接 编辑 复制 删除" [ref=e1420]:
+                      - generic [ref=e1423]:
+                        - generic [ref=e1424]: 链接
+                        - generic [ref=e1426]: 编辑
+                        - generic [ref=e1428]: 复制
+                        - generic [ref=e1430]: 删除
+                  - row "卡密 矿泉水API余额1088.8美金 88 销售中 下架 7 43张 加卡 库存 2026-06-15 04:27:02 链接 编辑 复制 删除" [ref=e1432]:
+                    - cell [ref=e1433]:
+                      - generic [ref=e1435] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 矿泉水API余额1088.8美金" [ref=e1438]:
+                      - generic [ref=e1443]:
+                        - generic [ref=e1444]: 卡密
+                        - link "矿泉水API余额1088.8美金" [ref=e1449] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/1c6mkr
+                    - cell "88" [ref=e1452]
+                    - cell "销售中 下架" [ref=e1456]:
+                      - generic [ref=e1459]:
+                        - generic [ref=e1462]: 销售中
+                        - generic [ref=e1464]: 下架
+                    - cell "7" [ref=e1466]
+                    - cell "43张 加卡 库存" [ref=e1470]:
+                      - generic [ref=e1473]:
+                        - generic [ref=e1474]: 43张
+                        - generic [ref=e1476]: 加卡
+                        - generic [ref=e1478]: 库存
+                    - cell "2026-06-15 04:27:02" [ref=e1480]
+                    - cell "链接 编辑 复制 删除" [ref=e1484]:
+                      - generic [ref=e1487]:
+                        - generic [ref=e1488]: 链接
+                        - generic [ref=e1490]: 编辑
+                        - generic [ref=e1492]: 复制
+                        - generic [ref=e1494]: 删除
+                  - row "卡密 矿泉水API余额188.8美金 15 销售中 下架 12 38张 加卡 库存 2026-06-15 04:26:58 链接 编辑 复制 删除" [ref=e1496]:
+                    - cell [ref=e1497]:
+                      - generic [ref=e1499] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 矿泉水API余额188.8美金" [ref=e1502]:
+                      - generic [ref=e1507]:
+                        - generic [ref=e1508]: 卡密
+                        - link "矿泉水API余额188.8美金" [ref=e1513] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/6uagf9
+                    - cell "15" [ref=e1516]
+                    - cell "销售中 下架" [ref=e1520]:
+                      - generic [ref=e1523]:
+                        - generic [ref=e1526]: 销售中
+                        - generic [ref=e1528]: 下架
+                    - cell "12" [ref=e1530]
+                    - cell "38张 加卡 库存" [ref=e1534]:
+                      - generic [ref=e1537]:
+                        - generic [ref=e1538]: 38张
+                        - generic [ref=e1540]: 加卡
+                        - generic [ref=e1542]: 库存
+                    - cell "2026-06-15 04:26:58" [ref=e1544]
+                    - cell "链接 编辑 复制 删除" [ref=e1548]:
+                      - generic [ref=e1551]:
+                        - generic [ref=e1552]: 链接
+                        - generic [ref=e1554]: 编辑
+                        - generic [ref=e1556]: 复制
+                        - generic [ref=e1558]: 删除
+                  - row "卡密 手写照片生成器20次额度 6.8 已下架 上架 0 20张 加卡 库存 2026-06-03 21:45:28 链接 编辑 复制 删除" [ref=e1560]:
+                    - cell [ref=e1561]:
+                      - generic [ref=e1563] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 手写照片生成器20次额度" [ref=e1566]:
+                      - generic [ref=e1571]:
+                        - generic [ref=e1572]: 卡密
+                        - link "手写照片生成器20次额度" [ref=e1577] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/8rhe9e
+                    - cell "6.8" [ref=e1580]
+                    - cell "已下架 上架" [ref=e1584]:
+                      - generic [ref=e1587]:
+                        - generic [ref=e1590]: 已下架
+                        - generic [ref=e1592]: 上架
+                    - cell "0" [ref=e1594]
+                    - cell "20张 加卡 库存" [ref=e1598]:
+                      - generic [ref=e1601]:
+                        - generic [ref=e1602]: 20张
+                        - generic [ref=e1604]: 加卡
+                        - generic [ref=e1606]: 库存
+                    - cell "2026-06-03 21:45:28" [ref=e1608]
+                    - cell "链接 编辑 复制 删除" [ref=e1612]:
+                      - generic [ref=e1615]:
+                        - generic [ref=e1616]: 链接
+                        - generic [ref=e1618]: 编辑
+                        - generic [ref=e1620]: 复制
+                        - generic [ref=e1622]: 删除
+                  - row "卡密 手写照片生成器10次额度 3.5 已下架 上架 0 20张 加卡 库存 2026-06-03 21:38:30 链接 编辑 复制 删除" [ref=e1624]:
+                    - cell [ref=e1625]:
+                      - generic [ref=e1627] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 手写照片生成器10次额度" [ref=e1630]:
+                      - generic [ref=e1635]:
+                        - generic [ref=e1636]: 卡密
+                        - link "手写照片生成器10次额度" [ref=e1641] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/1oktn6
+                    - cell "3.5" [ref=e1644]
+                    - cell "已下架 上架" [ref=e1648]:
+                      - generic [ref=e1651]:
+                        - generic [ref=e1654]: 已下架
+                        - generic [ref=e1656]: 上架
+                    - cell "0" [ref=e1658]
+                    - cell "20张 加卡 库存" [ref=e1662]:
+                      - generic [ref=e1665]:
+                        - generic [ref=e1666]: 20张
+                        - generic [ref=e1668]: 加卡
+                        - generic [ref=e1670]: 库存
+                    - cell "2026-06-03 21:38:30" [ref=e1672]
+                    - cell "链接 编辑 复制 删除" [ref=e1676]:
+                      - generic [ref=e1679]:
+                        - generic [ref=e1680]: 链接
+                        - generic [ref=e1682]: 编辑
+                        - generic [ref=e1684]: 复制
+                        - generic [ref=e1686]: 删除
+                  - row "卡密 手写照片生成器5次额度 1.9 已下架 上架 0 20张 加卡 库存 2026-06-03 21:01:52 链接 编辑 复制 删除" [ref=e1688]:
+                    - cell [ref=e1689]:
+                      - generic [ref=e1691] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 手写照片生成器5次额度" [ref=e1694]:
+                      - generic [ref=e1699]:
+                        - generic [ref=e1700]: 卡密
+                        - link "手写照片生成器5次额度" [ref=e1705] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/32baqj
+                    - cell "1.9" [ref=e1708]
+                    - cell "已下架 上架" [ref=e1712]:
+                      - generic [ref=e1715]:
+                        - generic [ref=e1718]: 已下架
+                        - generic [ref=e1720]: 上架
+                    - cell "0" [ref=e1722]
+                    - cell "20张 加卡 库存" [ref=e1726]:
+                      - generic [ref=e1729]:
+                        - generic [ref=e1730]: 20张
+                        - generic [ref=e1732]: 加卡
+                        - generic [ref=e1734]: 库存
+                    - cell "2026-06-03 21:01:52" [ref=e1736]
+                    - cell "链接 编辑 复制 删除" [ref=e1740]:
+                      - generic [ref=e1743]:
+                        - generic [ref=e1744]: 链接
+                        - generic [ref=e1746]: 编辑
+                        - generic [ref=e1748]: 复制
+                        - generic [ref=e1750]: 删除
+                  - row "卡密 矿泉水API周卡180刀每天 90 销售中 下架 2 18张 加卡 库存 2026-06-02 02:49:17 链接 编辑 复制 删除" [ref=e1752]:
+                    - cell [ref=e1753]:
+                      - generic [ref=e1755] [cursor=pointer]:
+                        - checkbox
+                    - cell "卡密 矿泉水API周卡180刀每天" [ref=e1758]:
+                      - generic [ref=e1763]:
+                        - generic [ref=e1764]: 卡密
+                        - link "矿泉水API周卡180刀每天" [ref=e1769] [cursor=pointer]:
+                          - /url: https://wzyp.cn/item/oepxni
+                    - cell "90" [ref=e1772]
+                    - cell "销售中 下架" [ref=e1776]:
+                      - generic [ref=e1779]:
+                        - generic [ref=e1782]: 销售中
+                        - generic [ref=e1784]: 下架
+                    - cell "2" [ref=e1786]
+                    - cell "18张 加卡 库存" [ref=e1790]:
+                      - generic [ref=e1793]:
+                        - generic [ref=e1794]: 18张
+                        - generic [ref=e1796]: 加卡
+                        - generic [ref=e1798]: 库存
+                    - cell "2026-06-02 02:49:17" [ref=e1800]
+                    - cell "链接 编辑 复制 删除" [ref=e1804]:
+                      - generic [ref=e1807]:
+                        - generic [ref=e1808]: 链接
+                        - generic [ref=e1810]: 编辑
+                        - generic [ref=e1812]: 复制
+                        - generic [ref=e1814]: 删除
+              - list [ref=e1818]:
+                - generic [ref=e1819]: .
+                - listitem [ref=e1822] [cursor=pointer]: "1"
+                - listitem [ref=e1823] [cursor=pointer]: "2"
+                - generic [ref=e1824] [cursor=pointer]: .

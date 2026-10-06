@@ -1,0 +1,167 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e95]:
+    - generic [ref=e97]:
+      - generic [ref=e98]:
+        - link [ref=e99] [cursor=pointer]:
+          - /url: /
+        - generic [ref=e104]:
+          - generic [ref=e105] [cursor=pointer]: 网站首页
+          - generic [ref=e106] [cursor=pointer]: 开店教学
+          - generic [ref=e107] [cursor=pointer]: 开通微信支付
+      - generic [ref=e108]:
+        - generic [ref=e110] [cursor=pointer]:
+          - generic [ref=e111]: 消息通知
+          - generic [ref=e115]: "43"
+        - generic [ref=e118] [cursor=pointer]:
+          - img "avatar" [ref=e121]
+          - generic [ref=e122]: 商家0752
+    - generic [ref=e127]:
+      - generic [ref=e134] [cursor=pointer]:
+        - generic [ref=e135]: 首页
+        - generic [ref=e141]: 店铺
+        - generic [ref=e147]: 商品
+        - generic [ref=e152]: 订单
+        - generic [ref=e157]: 售后
+        - generic [ref=e162]: 营销
+        - generic [ref=e167]: 分销
+        - generic [ref=e172]: 货源
+        - generic [ref=e178]: 资金
+        - generic [ref=e186]: 我的
+      - main [ref=e194]:
+        - generic [ref=e3607]:
+          - generic [ref=e3609]:
+            - generic [ref=e3611]:
+              - heading "今天的奋斗就是明天的美好" [level=5] [ref=e3612]
+              - generic [ref=e3613]: 数据更新时间：2026-09-28 03:32:49
+            - generic [ref=e3617]:
+              - link "0 待付款" [ref=e3619] [cursor=pointer]:
+                - /url: javascript:void(0);
+                - generic "0" [ref=e3620]
+                - generic "待付款" [ref=e3621]
+              - link "0 待发货" [ref=e3623] [cursor=pointer]:
+                - /url: javascript:void(0);
+                - generic "0" [ref=e3624]
+                - generic "待发货" [ref=e3625]
+              - link "0 待处理售后" [ref=e3627] [cursor=pointer]:
+                - /url: javascript:void(0);
+                - generic "0" [ref=e3628]
+                - generic "待处理售后" [ref=e3629]
+              - link "0 库存预警" [ref=e3631] [cursor=pointer]:
+                - /url: javascript:void(0);
+                - generic "0" [ref=e3632]
+                - generic "库存预警" [ref=e3633]
+              - link "0 违规" [ref=e3635] [cursor=pointer]:
+                - /url: javascript:void(0);
+                - generic "0" [ref=e3636]
+                - generic "违规" [ref=e3637]
+            - generic [ref=e3639]:
+              - generic [ref=e3640]: 店铺数据
+              - generic [ref=e3643]:
+                - generic [ref=e3647]:
+                  - generic [ref=e3648]: 成交金额
+                  - generic [ref=e3649]:
+                    - generic [ref=e3650]:
+                      - text: "0"
+                      - generic [ref=e3651]: ".00"
+                    - generic [ref=e3652]: 昨日：0元
+                - generic [ref=e3656]:
+                  - generic [ref=e3657]: 订单数
+                  - generic [ref=e3658]:
+                    - generic [ref=e3659]: "0"
+                    - generic [ref=e3660]: 昨日：0笔
+                - generic [ref=e3664]:
+                  - generic [ref=e3665]: 访客数
+                  - generic [ref=e3666]:
+                    - generic [ref=e3667]: "1"
+                    - generic [ref=e3668]: 昨日：1
+                - generic [ref=e3672]:
+                  - generic [ref=e3673]: 支付买家数
+                  - generic [ref=e3674]:
+                    - generic [ref=e3675]: "0"
+                    - generic [ref=e3676]: 昨日：0人
+                - separator [ref=e3678]
+            - generic [ref=e3681]:
+              - generic [ref=e3682]: 交易数据
+              - generic [ref=e3683]: 订单管理
+          - generic [ref=e3691]:
+            - generic [ref=e3693]:
+              - generic [ref=e3694]:
+                - generic [ref=e3695]: 快捷操作
+                - generic [ref=e3698]:
+                  - generic [ref=e3699] [cursor=pointer]: 访问店铺
+                  - generic [ref=e3704] [cursor=pointer]: 我的商品
+                  - generic [ref=e3709] [cursor=pointer]: 订单列表
+                  - generic [ref=e3714] [cursor=pointer]: 我的钱包
+                  - generic [ref=e3722] [cursor=pointer]: 店铺设置
+              - generic [ref=e3728]:
+                - generic [ref=e3729]: 店铺提醒
+                - list [ref=e3738]:
+                  - generic [ref=e3739]: 暂无数据
+            - generic [ref=e3745]:
+              - generic [ref=e3746]: 公告
+              - generic [ref=e3749]:
+                - generic [ref=e3750]:
+                  - generic [ref=e3751]: 通知
+                  - generic [ref=e3752] [cursor=pointer]: 关于调整商家提现门槛的公告
+                - generic [ref=e3753]:
+                  - generic [ref=e3754]: 通知
+                  - generic [ref=e3755] [cursor=pointer]: 【重要】近期重点风险提示：严防涉诈订单
+                - generic [ref=e3756]:
+                  - generic [ref=e3757]: 通知
+                  - generic [ref=e3758] [cursor=pointer]: 商家店铺域名更换通知
+                - generic [ref=e3759]:
+                  - generic [ref=e3760]: 通知
+                  - generic [ref=e3761] [cursor=pointer]: 关于禁止发布包含GPT / ChatGPT文字/图片商品的公告
+                - generic [ref=e3762]:
+                  - generic [ref=e3763]: 通知
+                  - generic [ref=e3764] [cursor=pointer]: 提现服务升级通知（重要）
+                - generic [ref=e3765]:
+                  - generic [ref=e3766]: 通知
+                  - generic [ref=e3767] [cursor=pointer]: 结算信息设置教程
+                - generic [ref=e3768]:
+                  - generic [ref=e3769]: 通知
+                  - generic [ref=e3770] [cursor=pointer]: 商家开店必看！！！
+                - generic [ref=e3771]:
+                  - generic [ref=e3772]: 通知
+                  - generic [ref=e3773] [cursor=pointer]: 关于严禁发布禁售商品的通知
+            - generic [ref=e3779]:
+              - paragraph [ref=e3780]: 平台客服
+              - paragraph [ref=e3781]: 专属客户经理
+              - paragraph [ref=e3782]: 随时为您解决问题
+  - generic [ref=e3787]:
+    - generic [ref=e3788]: 公告详情
+    - generic [ref=e3794]:
+      - paragraph [ref=e3795]: "尊敬的各位商家:"
+      - paragraph [ref=e3796]: "为营造合规经营环境,平台现对商品名称及商品图片中涉及 \"GPT\" \"ChatGPT\" 的相关内容进行专项规范,具体要求如下:"
+      - paragraph [ref=e3797]:
+        - strong [ref=e3799]: 一、违规范围
+      - list [ref=e3800]:
+        - listitem [ref=e3801]: 禁止在商品名称中含有 "GPT" "ChatGPT" 等文字及其变体写法。
+        - listitem [ref=e3802]: 禁止商品图片中带有 "GPT" "ChatGPT" 等文字内容。
+      - paragraph [ref=e3803]:
+        - strong [ref=e3805]: 二、商家自查
+      - paragraph [ref=e3806]: 请各位商家立即对店铺内商品进行自查。如存在上述违规文字或图片,请尽快自行整改、下架,或替换为不含违规内容的图片与名称。
+      - paragraph [ref=e3807]:
+        - strong [ref=e3809]: 三、参考案例
+      - list [ref=e3810]:
+        - listitem [ref=e3811]:
+          - text: ❌
+          - strong [ref=e3813]: 属于违规
+          - text: :商品标题或商品图片中带有 "GPT" "ChatGPT" 文字内容的商品。
+        - listitem [ref=e3814]:
+          - text: ✅
+          - strong [ref=e3816]: 不属于违规
+          - text: :商品标题、商品图片中标注为 "AI 工具" 等合规表述,不含上述违规文字的商品。
+      - paragraph [ref=e3817]:
+        - strong [ref=e3819]: 四、巡查与处置
+      - paragraph [ref=e3820]:
+        - text: 平台将通过系统自动检测与人工巡查相结合的方式,长期对上述违规关键词进行监测。对未及时整改到位的商品,平台将视情况采取
+        - strong [ref=e3822]: 警告下架、加收保证金
+        - text: 等措施;对拒不整改的商家,将
+        - strong [ref=e3824]: 升级为风控店铺
+        - text: 并采取相应管理措施。
+      - paragraph [ref=e3825]: 请各位商家高度重视,尽快完成自查整改,共同维护平台良好经营秩序。
+      - paragraph [ref=e3826]:
+        - strong [ref=e3828]: 链动小铺平台
+        - generic [ref=e3829]: 2026年8月28日
+    - button "关闭" [ref=e3831] [cursor=pointer]

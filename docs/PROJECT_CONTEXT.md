@@ -187,3 +187,9 @@ deploy/  docs/  plugins/  scratch/  scripts/  tools/  web/
 > 上文 §8 的 **R2（源码树可写但无落地闸门）** 与 **B-2 落代码阻塞** 已通过闸门 G3 处置并关闭，详见 `docs/DECISIONS.md` **D12**。
 > 上文 §7 的缺口 G4（无落地闸门）已补齐。
 > **上文其余内容（风险 R1–R12、审计边界）保持不变，仍为当日早些时候的事实快照。**
+
+> **追加（2026-09-21 当前切片复核）**：统一治理质量门已可执行并通过（`node scripts/verify.mjs`：7 PASS / 0 WARN / 0 FAIL）。权威源码已提供 `npm run verify`，本次复核为类型检查通过、18/18 契约与代理集成测试通过、生产构建通过。垂直切片 001 的实现与本地浏览器/代理证据分别见 `docs/STATUS_20260921_SLICE001_BROWSER.md` 和 `output/proxy-idempotency-integration.json`；真实上游、独立双人审查和生产发布/回滚仍未验证，不能视为 G4–G6 完成，交接条件见 `docs/SLICE-001-GATE-HANDOFF.md`。
+
+> **追加（2026-09-21 机器状态闸门）**：治理质量门新增 `output/slice-001-gate-status.json` 完整性检查；当前复核为 **8 PASS / 0 WARN / 0 FAIL**。前一条的 7 PASS 是新增该检查前的历史快照。
+
+> **追加（2026-09-21 发布包覆盖）**：新增代理幂等模块已同步进入 `Dockerfile.proxy`、`publish.sh` 暂存与指纹、`deploy.sh` 服务器复制；治理质量门新增覆盖检查，当前严格复核为 **9 PASS / 0 WARN / 0 FAIL**。真实服务器发布仍未执行。

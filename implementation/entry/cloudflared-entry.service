@@ -1,0 +1,23 @@
+# /etc/systemd/system/cloudflared-entry.service
+# Cloudflare Tunnel（one.cauai.fun —— CAUAI 统一入口）
+#
+# 为什么不照抄 cloudflared-canvas.service 的 token 写法：
+#   canvas / huowenti 两条用 --token-file，远端 Ingress 只能在 Cloudflare 后台改，
+#   服务器上没有本地配置文件可读可审。apic 那条改成 --config + 本地 ingress 文件后
+#   可验证、可回滚、可审计，本服务沿用 apic 的写法。
+#
+# 硬约束（AGENTS.md §4）：不要用 `cloudflared service install`，
+#   它会创建名为 cloudflared 的 systemd 服务，跟这台机器上已有的隧道抢名字。
+[Unit]
+Description=Cloudflare Tunnel for one.cauai.fun (CAUAI entry)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/cloudflared --no-autoupdate tunnel --config /etc/cloudflared-entry/config.yml run
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

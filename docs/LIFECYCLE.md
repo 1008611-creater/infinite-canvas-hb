@@ -190,3 +190,20 @@
 | `docs/INDEX.md` | 文档权威度与上下文包 |
 | `docs/ROADMAP.md` | 三批次的**范围与顺序**（SSOT） |
 | `implementation/deploy/ACCEPTANCE.md` | 验收标准（SSOT） |
+
+---
+
+## 6. 执行化入口（架构重置，2026-09-21）
+
+本文件的 G1–G6 规则现在绑定到两个可执行入口：
+
+- 变更架构与禁止事项：`docs/ARCHITECTURE-RESET.md`
+- 变更实施计划模板：`docs/IMPLEMENTATION-PLAN.md`
+
+后续每个变更必须先产出 Problem Brief、Spec、Constraint Record 和 Implementation Plan，再进入 G3。没有这些产物的“直接修复”不算进入实现阶段；没有 G4/G5/G6 证据的不算完成。
+
+## 7. 垂直切片 001 当前闸门（2026-09-21 追加）
+
+垂直切片 001 已完成本地实现、契约测试、代理集成、浏览器模拟和发布包静态覆盖检查；机器状态见 `output/slice-001-gate-status.json`。G4 的真实上游证据、G5 的两名独立 reviewer、G6 的生产发布/回滚仍未关闭。
+
+发布前必须运行 `node scripts/verify.mjs --release`；该模式会在任一 G4/G5/G6 未标记为 `passed`，或 S3–S6 未标记为 `pass` / `verified` 时失败。当前严格本地质量门为 9 PASS / 0 WARN / 0 FAIL，但 `--release` 有意保持失败。
