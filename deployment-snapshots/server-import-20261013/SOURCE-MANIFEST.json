@@ -1,0 +1,3301 @@
+{
+  "date": "2026-10-13",
+  "scope": "Sanitized source snapshots recovered from running deployments; production untouched; excluded environment credentials, user data, runtime storage, generated/build output and unreviewed media.",
+  "repository": "1008611-creater/infinite-canvas-hb",
+  "variants": [
+    {
+      "name": "canvas-v019",
+      "source": "canvas-source",
+      "server": "haika-1757",
+      "sourcePath": "/opt/canvas-build/src",
+      "relationship": "Current deployed source snapshot; runtime data excluded",
+      "excludedSensitiveAndRuntimeFiles": true,
+      "files": [
+        {
+          "path": "CHANGELOG.md",
+          "sha256": "7d65679ad7c9201dc7fe0be50ff85a7e311e3004d7b32193ff9d504e4e4df1b2"
+        },
+        {
+          "path": "VERSION",
+          "sha256": "349f0b2fb5b9c49835b51e68fd0e8f0179c59a48f880004ce48b31dbae778930"
+        },
+        {
+          "path": "web/.editorconfig",
+          "sha256": "a8a0347569646d94f212963da048d081f8562235e5883bba14a252fa538e8b4e"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/dev/index.d.ts",
+          "sha256": "18299f4563870f27abbf6d224cd56f757d70576822169d2307db04a852273e5f"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/dev/index.js",
+          "sha256": "589de4a6fc080fa50ab26e9cc59e1c64420c7882bdaf7fbec78dd13591074a86"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/dev/lib/index.d.ts",
+          "sha256": "92ec2d6a5fe2394f42d244a047f2ebe3fa117121277b8fbf60455d0c9d16ceb2"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/dev/lib/index.d.ts.map",
+          "sha256": "7d61e1a618dc4071a6878933a1be61fcd7098bc6bec5ba5a0e3cba1df8c339c4"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/dev/lib/index.js",
+          "sha256": "35f879ff7cd0b5c049d8269c1264a9cb3348b68f8133eae436f3589580a568c6"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/dev/lib/types.d.ts",
+          "sha256": "9fee26e106bca73858b6f2c59badc490aebd78bc16b3dd475140ed96854710af"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/dev/lib/types.js",
+          "sha256": "9a3623991d731b5dcdbe2da14cf71f42c9037edefce06ea9076f50edc65a3626"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/index.d.ts",
+          "sha256": "18299f4563870f27abbf6d224cd56f757d70576822169d2307db04a852273e5f"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/index.js",
+          "sha256": "61ee29546c83ed224f5f178ae99323f9ca228c5e4898ad4347ce1bf593e0abe8"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/lib/index.d.ts",
+          "sha256": "92ec2d6a5fe2394f42d244a047f2ebe3fa117121277b8fbf60455d0c9d16ceb2"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/lib/index.d.ts.map",
+          "sha256": "7d61e1a618dc4071a6878933a1be61fcd7098bc6bec5ba5a0e3cba1df8c339c4"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/lib/index.js",
+          "sha256": "fdb837b5fb4643bec3da16dbe0a135226bfd7dff8b124a80f9db8c535f8f956a"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/lib/types.d.ts",
+          "sha256": "9fee26e106bca73858b6f2c59badc490aebd78bc16b3dd475140ed96854710af"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/lib/types.js",
+          "sha256": "a0ea7336bdadabfc872698ca4f7c266bfbbce9bfe2603c88180fd53a5654944b"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/package.json",
+          "sha256": "aa2c78010a3859c77a47ba30ae20fb08f2191a35acd7a466f873c089c10b72d6"
+        },
+        {
+          "path": "web/.fixed/mdast-util-from-markdown/x/package/readme.md",
+          "sha256": "e0e84eccce8e6ee5a4df75b183e0788df54ededc6228d6c5c9d92e533fa22460"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/index.d.ts",
+          "sha256": "ce5c78cca39b1da11c6e408029e19802a7aad35b91cbaa74a4fcab10e1eb3113"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/index.js",
+          "sha256": "eb9a7eb673c5ccaa53e22c3bb88dd0e37644a8cf6ee6f5e47e7f7c176ba18aa5"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/footer.d.ts",
+          "sha256": "99bebd69568dec062ad32cf9954305b550a84955a6b33277ec0a2cbde0e255c6"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/footer.d.ts.map",
+          "sha256": "cd2d4556d2121a87415c9bcb3988604f8e68755d7cbbafc9e2c958364234e04a"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/footer.js",
+          "sha256": "6ef7426e08fae896959f469b65553aa223a3716353708e1ec04e857d961ed9b6"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/blockquote.d.ts",
+          "sha256": "617660d8af826dd16070641020a7d86cfaf7be3421e7550b89c87b411a51ade5"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/blockquote.d.ts.map",
+          "sha256": "fd5eea6f66dab0c4c26811452bf90b445a1687e9d6208a0952dda17eaf1687f6"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/blockquote.js",
+          "sha256": "187ea4f574e1d0dae2a62e7a28d005a05c0d56411f66e3be0a18a344f6efde4c"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/break.d.ts",
+          "sha256": "8484619e725b0e5f685a969b78b4d36088e230b08b6102eeb56c9bcc3f22ccbc"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/break.d.ts.map",
+          "sha256": "4c087161748c25ea7f2aef2dfddbc17e7296c0551487e57fb9f34c65be0158dd"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/break.js",
+          "sha256": "3ba6b7b1a4130473e73644be0b0728cdf2398b8e23d007701fad09a17b1aac0e"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/code.d.ts",
+          "sha256": "177ac6f2c7c390885ce6ab25295ebe406f954b1b70f558853a9dc72016788533"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/code.d.ts.map",
+          "sha256": "a97db8db42771daf5734ddff59a22f68a352d027021d7a32e55787649332f71c"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/code.js",
+          "sha256": "17f47a7c4e3e655784e27c21ec02ef988b8f77c37c7337e0e207d8108d838dd4"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/delete.d.ts",
+          "sha256": "f946b7848ada58f9b5340ba29956b3a31b8f9fe7c5fbbd7d3475d4102da89c7c"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/delete.d.ts.map",
+          "sha256": "1b8a33972f68d8ace5f1ec2292f1fdfe51298cc4906fdaa850e0d51a33b8e45c"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/delete.js",
+          "sha256": "531f1b14032b26c36fc211a7f56bf23a911d343e8ff2e3a792616ceea1c8610e"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/emphasis.d.ts",
+          "sha256": "46ad6dfb1f723a86938dbc280d3ab348840cbeee24f862a3e67ed56f4c56c72b"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/emphasis.d.ts.map",
+          "sha256": "15767427a55916c49927d737a8ddaf583b237d04d086e3b44cfad60b8c77ead0"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/emphasis.js",
+          "sha256": "399efb8569d6fcf6e70f8bfa88d14ee84782d5c4c523912524221e0a015499df"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/footnote-reference.d.ts",
+          "sha256": "8fe33e2cb750aae04c949e403c04cdb6288b244a116cea3d282a899288e7ef3c"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/footnote-reference.d.ts.map",
+          "sha256": "9b8ef50ee0b2865ee022056ca784c447c70d1e9f2f7aa38dccf8b2b034ecbb9e"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/footnote-reference.js",
+          "sha256": "8c4d1d2f6574a63829375652ec4394d753760cc831064fd2d4a754cb23a0f44e"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/heading.d.ts",
+          "sha256": "49e2ef5f4e524a9d29b29cdd4bf842f434b38a136925e436ed92c8482a87d6fc"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/heading.d.ts.map",
+          "sha256": "297aaefdbb8a2abd9756d48b5e0bfef82051a9fc71f1988a052bfe100d5d1cb9"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/heading.js",
+          "sha256": "e45f46970953d32844401d29f4285a629bd0b4a575410e5d24b2e32fb5ef3b43"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/html.d.ts",
+          "sha256": "280a1f95bb28757b3a8bd4ba3ade7f2009b7867d9d68542e22ec4080bc82c608"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/html.d.ts.map",
+          "sha256": "d40f3898a62fcbf42e452627708dabdd661ea59e0090cebee62b0b47c368f575"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/html.js",
+          "sha256": "1a13da6a5e95c0a3b1e7e9b1037310695795ebf43184b8bd42ab3cf806ec4f0b"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/image-reference.d.ts",
+          "sha256": "7b361a38f5a01e710915c9d7d967c071daa9b94652ea324fefd8629438cf549d"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/image-reference.d.ts.map",
+          "sha256": "67a22f76bbb47f7e0fda7d92f07662494c9b5229c63b76c4337b1c63e23369ed"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/image-reference.js",
+          "sha256": "bfaa4351c374645beb2e967d0b30d49b874fabfe5d861c170d11e696437ec5c5"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/image.d.ts",
+          "sha256": "00528896002e6bbaef62ca7df0ae5ada40bda7fa7925e162b28fd0e9b84050d2"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/image.d.ts.map",
+          "sha256": "8beb22bace513f3296f62d45a9fae9a4aec24c4c2e39dd6afcef9844b4be8fc1"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/image.js",
+          "sha256": "de7c105f0022018008aee839771c6fb9ed2dace99e46f2c2410019c90420034f"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/index.d.ts",
+          "sha256": "8026fdc2af9c44c2219a4b63121edc4d953f6ac4370b9f3a4c0c63b0fa7b1b3c"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/index.d.ts.map",
+          "sha256": "2a98a004c4242e9b1d64e02eb80ade73c79854c83b120d57a5dc0f4389543c8d"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/index.js",
+          "sha256": "cf5a876512e942ddf9accb872b5dea3eb96f96a1895a44b673904f3de42ef698"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/inline-code.d.ts",
+          "sha256": "58b01bcaccb57e5d0c2f8ecb8c0fee2eb73bae77fa0815f5b1151464d58302b8"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/inline-code.d.ts.map",
+          "sha256": "6eded65cacbfa422b36da54f96f4bd23f16a23bab573532b2c332946f48d3a68"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/inline-code.js",
+          "sha256": "b78c4610da3aaf352989ac959d1f449751ed8bc934bf7bd8050c2c7d32baa0dd"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/link-reference.d.ts",
+          "sha256": "cf0f32a3a78c8adc411b7af5485c56c29c2a9c804023f2ac09757ca77b27d8d5"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/link-reference.d.ts.map",
+          "sha256": "efe73165dfce6b97c0e082793d6e1480395d86b1b35bf12cb89966d88d2dff2b"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/link-reference.js",
+          "sha256": "1eb57060c8fbabe94906eb163954da877ec84513a3d7f1ffd3f403b5f6f6afee"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/link.d.ts",
+          "sha256": "99e6e957f73bb4822bc737056dc7ba8614ce726c6c82c2e3783a498be1e82099"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/link.d.ts.map",
+          "sha256": "0cea9e38e80d01257fb1d3e3491dabbd3d170a527f71921f8aaecfabacf2fd84"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/link.js",
+          "sha256": "718532e40ce9b11b3c171379edeedae28357f7993909853cebd9562f123aca06"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/list-item.d.ts",
+          "sha256": "15f518d859ca0037620469aad599b36873381a80c4bab827163bdcf3489e045c"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/list-item.d.ts.map",
+          "sha256": "d95be3d7ea15c016f3cb3a30523023d80e474e6d61c3c02f22b691bf54b1d94b"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/list-item.js",
+          "sha256": "56cb8b4b276e2b5637e8379b5258867976c219f1fc80a742d6086eb3b867afca"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/list.d.ts",
+          "sha256": "9dda6c25c2916411b50852613aba431585163a00b7ddca7d31c15e920fbf9618"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/list.d.ts.map",
+          "sha256": "814952a08d703539913ea6c2be75442c78b6e7b651f6ccd390f6b6242826ff73"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/list.js",
+          "sha256": "4ea0bb107b0fe8aea588dd4696a3151ef472d0cee088c60d5e031850d312b14d"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/paragraph.d.ts",
+          "sha256": "6fa5d60f0ee0207d75b34d5ed1a24ddd8d320edb7d6d7ed38a2510123cce1255"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/paragraph.d.ts.map",
+          "sha256": "9a50bb64f6e4ca3809e421894f37798efd5b1c2775336461b919ac7febf39b4d"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/paragraph.js",
+          "sha256": "bc18bbae529b867f15ce822e1b5d9ab8f7ca56b88c0560fcaeabeb65c5d109af"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/root.d.ts",
+          "sha256": "73188b370c27386cd92e22356566098917c9306257da8a85a9a722f677344a5d"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/root.d.ts.map",
+          "sha256": "f4d6cdbfcfb4074740610fcb157f64a7bda1187dcf0fe61ab6f0eb3df88fc410"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/root.js",
+          "sha256": "4d82b669bc397f0316e27b3b4af6dbee0e1f8c4951ed2bf08ed81acc4633bde2"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/strong.d.ts",
+          "sha256": "ef8df69da3671c2350e72bd5d956e34610dbb7fd432a96c1b5eb83ffef10a418"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/strong.d.ts.map",
+          "sha256": "699af978dbfebf5b4a1731040d27042d51893bf2554114e30f49090bfaf0f80e"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/strong.js",
+          "sha256": "9f1ae3d9d890fda50e379a2362bd48cff7f99498ff8a7a36466d4cdd813aa810"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/table-cell.d.ts",
+          "sha256": "70d2eff70fc9864130c69475a0a2146c593ed5ea3d050dd5d428cda7a1dbb190"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/table-cell.d.ts.map",
+          "sha256": "8563257948bddeea72dbdef01f79e3ba9408a1d545e24ad4f2c04e89fbc83e2e"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/table-cell.js",
+          "sha256": "79470b04edc9c14e8eb3f738b6689dcb436de40b5469012a013335cba14cc12c"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/table-row.d.ts",
+          "sha256": "15801f487618e2787d9aedd74aa158c7f56699c7e5adb06453d9b51fff02d749"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/table-row.d.ts.map",
+          "sha256": "e4bc3de1135734dbe95cbf512bb2f2da666e30c5bc95320b354b9e10ad4d2a09"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/table-row.js",
+          "sha256": "6522b269eea84a3817a0e6e9a29dedf4cdbd0f6cc5c6da91190fbc33264c4e2b"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/table.d.ts",
+          "sha256": "336f994e5cb4ee79865c157d75b007dbf901d577420005c34b46c44ee7bedef9"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/table.d.ts.map",
+          "sha256": "23e81f672f7522f8f5257c87a44f056f5ee9a100aac5d765d9328c93f275b3e0"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/table.js",
+          "sha256": "4ab165e91abe08c09a9da1166b1d9fa36e2d9d4fad8a3f342ba706e2c938b855"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/text.d.ts",
+          "sha256": "a707faa8c86dcfd80d8769b75ba8eed681419070404e54681719410fe88abdd2"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/text.d.ts.map",
+          "sha256": "d7d7c926892f17c214b7d99caee22f81bb397e2235379f7ab32b614d1cabc027"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/text.js",
+          "sha256": "c0a0491917ed32479d952a8c5a85c30b835cd27b83916d0058aa06550cc000b6"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/thematic-break.d.ts",
+          "sha256": "4a6c31a674c099c2e25955b3cae428c8f512f8c060cce93bff87a7beaf57d5fd"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/thematic-break.d.ts.map",
+          "sha256": "c20cbfd3cd5580fe00bddb804bc734f69b4139530163c24d6b97e590743f72b2"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/handlers/thematic-break.js",
+          "sha256": "c2f4d6c0cf128702d1a69af6d373de8bb3530c69b8dff7bbc9565217daae64ea"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/index.d.ts",
+          "sha256": "155eac3f6d6c55013d65c29c5ad0263ed011e042008392accf83b7434783cccc"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/index.d.ts.map",
+          "sha256": "55a8bc3cdc3981c0f9325f9ceac4c00156e22d7b707c91548eb3babe4ee3d412"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/index.js",
+          "sha256": "792cbdd1c063ef157b7e1c107ac9c67ec99f7a370787cb5e3eb424eea694e92e"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/revert.d.ts",
+          "sha256": "c20c74477cfafbd8d30a08ab4d0789a90f7450ebb4f07c056d4027db4a0a9163"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/revert.d.ts.map",
+          "sha256": "48aa9d2583622b6811900fee6b0f124dd1fc64cd0e7ebe0922e6a3069ee3da90"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/lib/revert.js",
+          "sha256": "d0baf8e317c48dd125d77c76aa3de639b2e41c9ecc3e2af046de532170077f36"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/license",
+          "sha256": "c88da0941b4ac25628eac42dc489ec594a6993e43515405e90152a6065ea572f"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/package.json",
+          "sha256": "a31324b67906bca91d8afe028de98107a3d4b8763dbd23b65cbc058d12aa2da3"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-hast/x/package/readme.md",
+          "sha256": "2bdf19d567d830246956d98d3426c9d9599ddb5d0a149d91f514449fcda65741"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-string/x/package/index.d.ts",
+          "sha256": "0e5fe35c5d35ac395526620d2e43021186d3bd7b315954958d6727216d8b2554"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-string/x/package/index.js",
+          "sha256": "3c84ad878792de4496704ab1803390bf908a61f54340e6e6163c75fb3454a4cc"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-string/x/package/lib/index.d.ts",
+          "sha256": "3ee7f289bb7dcd34c94b3c0c5d8c16ef55f8a11f5be10a54ac4136f09b201d61"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-string/x/package/lib/index.js",
+          "sha256": "d22c3a7b00b02d7ba5fccfbc67c95f2ccfe6719d8e90dfb5dcee7851f18c17f0"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-string/x/package/license",
+          "sha256": "5560958fcf5db8766e080803fba631cc0e6d73d4207da13749034cfd1502777d"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-string/x/package/package.json",
+          "sha256": "07e07b04c111e646c9fa62aaf018397d95467c26782ca0b18b2afbd28148cfea"
+        },
+        {
+          "path": "web/.fixed/mdast-util-to-string/x/package/readme.md",
+          "sha256": "c25ef69ba14e939e227d62c8700befb21bc6a1dc0150424d354483996cd9628e"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/index.d.ts",
+          "sha256": "eae8325af7122ae80e0cd8d459d17a02e41c9b25a93f06d3e622f85b77e60495"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/index.d.ts.map",
+          "sha256": "bd52de9ef6e8e7dfb683db60fd30cb2ad98173b699e92e1791cb0a8a6b89711e"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/index.js",
+          "sha256": "9c18feb9c23aa57ebcd4a97458ee183675bd4ddb3a4b9569041ac203adbc5f70"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/compile.d.ts",
+          "sha256": "7bd8ed32d533e38b702b98ad89536b1b9890ce27ff8c74d4e9b298d394235a9b"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/compile.d.ts.map",
+          "sha256": "a01ab69cf98414d3f334625cdac145341c20a917857d1add284bd9ac80e03459"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/compile.js",
+          "sha256": "4ed784a62202cf762bc5b40fd8d88ec82d463afbe1269e375b58c3db5cd601ce"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/constructs.d.ts",
+          "sha256": "ca922212207dc145ef3db4adbd5540d206cb8db83fdece9e1dc603eb3ea4bd1d"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/constructs.d.ts.map",
+          "sha256": "a807d3762734d57e693f28e82c3080a92c49b7a274e7e755d0ce28f6131ea77c"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/constructs.js",
+          "sha256": "e8d481fa500280e3cd83077b7e85096ffa5803bc741066bb1c04bc47f199d890"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/create-tokenizer.d.ts",
+          "sha256": "3399e64a2b2ee6680a1a5bc1705bea6e6479ffadcf5fb89f0181185e38f18819"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/create-tokenizer.d.ts.map",
+          "sha256": "418dad52219afb0d6842d1cc64590bf25f96120371c55f04459ce7bf148772e0"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/create-tokenizer.js",
+          "sha256": "0e0c6cbcd74210c4c58a684e9a4411ca32b8fd8ad776da93edefb6408c5bad83"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/initialize/content.d.ts",
+          "sha256": "ff6f26ad9d2b416236ff35fe7b69cd21a779da741a51a45eaf64078b73c46df5"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/initialize/content.d.ts.map",
+          "sha256": "fea1ee81bde2717464c6b77078dee0017979e532eb4f7a08374c878def457d70"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/initialize/content.js",
+          "sha256": "47b8c6fd7d636bce579899b2cdc1d5d59944e5bf5b8fab38db6f54f2b8af101b"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/initialize/document.d.ts",
+          "sha256": "982588a6c5e756444a5cfc3981d762a962d9dd9f175a980b4d1a7eb863b9766c"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/initialize/document.d.ts.map",
+          "sha256": "94eb2a576e6c488aa5527f06f350df8bcc728a69ee227c51e3a2f453e3a398f3"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/initialize/document.js",
+          "sha256": "5cdd6a349846550a3826538bcf8aff91cd8c12870c2c645c7025a49fd084d287"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/initialize/flow.d.ts",
+          "sha256": "2c37913639fe2e3cdcf9b835b780fb3f3cc205749bd42746507f26a22a36524f"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/initialize/flow.d.ts.map",
+          "sha256": "10c75f86bbf6d8ba92098e9c3e664d03752b83dad83f597862d984ee884c25c1"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/initialize/flow.js",
+          "sha256": "9cb402a829d232b63625ad06edb8dae1851645745c7a8b584b7f04f5f3c89cd6"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/initialize/text.d.ts",
+          "sha256": "a74dd8b53eb4536e89dd1e0664b21618c60a015d5424fb9925197c0366b01a44"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/initialize/text.d.ts.map",
+          "sha256": "49f99870d560437c24a3ea3dd8863c497739bef9c8c9141708e8bbe69fa2f284"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/initialize/text.js",
+          "sha256": "dc7941da9b1e756119cc1e2af9fe5dcb9e9237b24f6c9afca9c3243f38bf2325"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/parse.d.ts",
+          "sha256": "883e255b7be2179b4227fe76f30a8d30fc81b365958d7546eb5a9ea101dbe2a6"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/parse.d.ts.map",
+          "sha256": "51afe68f0fab1f1382631edcd597ed79cda69779a04afe0f6213c061ab853757"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/parse.js",
+          "sha256": "e5884354aead2555291259655c4be7532aa141389d7e46a1a449d3b66fe67b35"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/postprocess.d.ts",
+          "sha256": "d7e095fb401b83b04f99a830bcfc15ec953badcd2f1eb190f4430f2b55f58b01"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/postprocess.d.ts.map",
+          "sha256": "2242c513dfd0e86f59fa55a2bb2d4b7d1de85720d5268140009c957a8837aaf1"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/postprocess.js",
+          "sha256": "52defe69a3f776fde356f7562ee56455f7a1009e9950282ec04cef76b412b59c"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/preprocess.d.ts",
+          "sha256": "0b9dc8392f6ecfb57fd84d1ca85e72c1618e308264595859027d58eb89b65205"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/preprocess.d.ts.map",
+          "sha256": "781937cbde94b8e904a76b5a7e4b410fc81f7afdc7ba5be793b3e26ee51f1b9c"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/lib/preprocess.js",
+          "sha256": "c3720b6da43ec3459a38fca042ae2b9e78d597882707707cebc9fc9b3e681edd"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/stream.d.ts",
+          "sha256": "22272b787f4dd00cca4e6eceb028294dfdb02d3a9e23fba5e0bc5db8819b36b4"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/stream.d.ts.map",
+          "sha256": "aa27ccb536504a5fdde5f378ba313e524f77bdffd09ab67e895b9e6774fdd8ff"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/dev/stream.js",
+          "sha256": "12289bbb33a5d0568d1740edd86fdd0636fd7bd804f9fed704d1b7e7b6b53f01"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/index.d.ts",
+          "sha256": "eae8325af7122ae80e0cd8d459d17a02e41c9b25a93f06d3e622f85b77e60495"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/index.d.ts.map",
+          "sha256": "bd52de9ef6e8e7dfb683db60fd30cb2ad98173b699e92e1791cb0a8a6b89711e"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/index.js",
+          "sha256": "9bac8a72a91c5c760eeb38a3cfcdc0187cd965f39a6c797e0670e74b6fee08bf"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/compile.d.ts",
+          "sha256": "7bd8ed32d533e38b702b98ad89536b1b9890ce27ff8c74d4e9b298d394235a9b"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/compile.d.ts.map",
+          "sha256": "a01ab69cf98414d3f334625cdac145341c20a917857d1add284bd9ac80e03459"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/compile.js",
+          "sha256": "79f7b5034f1f17ef806198772b7f467e9066aae9bc379072f8554312d1ed8f32"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/constructs.d.ts",
+          "sha256": "ca922212207dc145ef3db4adbd5540d206cb8db83fdece9e1dc603eb3ea4bd1d"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/constructs.d.ts.map",
+          "sha256": "a807d3762734d57e693f28e82c3080a92c49b7a274e7e755d0ce28f6131ea77c"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/constructs.js",
+          "sha256": "1e7296ae10964503aec890dcd06b8543ce9e630ac463a07c5cad62f19193541d"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/create-tokenizer.d.ts",
+          "sha256": "3399e64a2b2ee6680a1a5bc1705bea6e6479ffadcf5fb89f0181185e38f18819"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/create-tokenizer.d.ts.map",
+          "sha256": "418dad52219afb0d6842d1cc64590bf25f96120371c55f04459ce7bf148772e0"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/create-tokenizer.js",
+          "sha256": "2e2d0b74b16745521a84c47686fb42570adf101e05edb39be1a6e97533b89a8a"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/initialize/content.d.ts",
+          "sha256": "ff6f26ad9d2b416236ff35fe7b69cd21a779da741a51a45eaf64078b73c46df5"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/initialize/content.d.ts.map",
+          "sha256": "fea1ee81bde2717464c6b77078dee0017979e532eb4f7a08374c878def457d70"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/initialize/content.js",
+          "sha256": "53c6448c7d4dffa6cf82a8956e494cc32c59c5cbcfa19ff81a6dd5d510310cf9"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/initialize/document.d.ts",
+          "sha256": "982588a6c5e756444a5cfc3981d762a962d9dd9f175a980b4d1a7eb863b9766c"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/initialize/document.d.ts.map",
+          "sha256": "94eb2a576e6c488aa5527f06f350df8bcc728a69ee227c51e3a2f453e3a398f3"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/initialize/document.js",
+          "sha256": "37078ca431b73c7c9cdd68b48c35d9dfa4051a5b6d8e89035655f00bdc7a95da"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/initialize/flow.d.ts",
+          "sha256": "2c37913639fe2e3cdcf9b835b780fb3f3cc205749bd42746507f26a22a36524f"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/initialize/flow.d.ts.map",
+          "sha256": "10c75f86bbf6d8ba92098e9c3e664d03752b83dad83f597862d984ee884c25c1"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/initialize/flow.js",
+          "sha256": "5c7b19abfb0c6f7e560f6e9518c13d4e4df6b8592860756e90ae46394556b095"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/initialize/text.d.ts",
+          "sha256": "a74dd8b53eb4536e89dd1e0664b21618c60a015d5424fb9925197c0366b01a44"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/initialize/text.d.ts.map",
+          "sha256": "49f99870d560437c24a3ea3dd8863c497739bef9c8c9141708e8bbe69fa2f284"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/initialize/text.js",
+          "sha256": "e92c27c996a5c8feffae016507cdd7d5d7473f0f5df4e83abd00febcf315bae4"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/parse.d.ts",
+          "sha256": "883e255b7be2179b4227fe76f30a8d30fc81b365958d7546eb5a9ea101dbe2a6"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/parse.d.ts.map",
+          "sha256": "51afe68f0fab1f1382631edcd597ed79cda69779a04afe0f6213c061ab853757"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/parse.js",
+          "sha256": "222fef61034533526496193d1605351c64bdaa398a6283f15119204cd429c948"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/postprocess.d.ts",
+          "sha256": "d7e095fb401b83b04f99a830bcfc15ec953badcd2f1eb190f4430f2b55f58b01"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/postprocess.d.ts.map",
+          "sha256": "2242c513dfd0e86f59fa55a2bb2d4b7d1de85720d5268140009c957a8837aaf1"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/postprocess.js",
+          "sha256": "84a559852e17de2410b0c5892dde7a2b680dbf18e0623063ad9b8286fd9b55ff"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/preprocess.d.ts",
+          "sha256": "0b9dc8392f6ecfb57fd84d1ca85e72c1618e308264595859027d58eb89b65205"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/preprocess.d.ts.map",
+          "sha256": "781937cbde94b8e904a76b5a7e4b410fc81f7afdc7ba5be793b3e26ee51f1b9c"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/lib/preprocess.js",
+          "sha256": "3f67e9863e7ad0de20a618bdc80c43919648e1520258a157ac48190cd5c1c6e2"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/package.json",
+          "sha256": "4eb06bb65d8415f81b7b72c8ef35650abf02475129481ef32cc5cc25f68279ca"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/readme.md",
+          "sha256": "904e43c416441e3cd6738537f72cde94a66e1d67d9e05d2f8419e3af57e707a0"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/stream.d.ts",
+          "sha256": "22272b787f4dd00cca4e6eceb028294dfdb02d3a9e23fba5e0bc5db8819b36b4"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/stream.d.ts.map",
+          "sha256": "aa27ccb536504a5fdde5f378ba313e524f77bdffd09ab67e895b9e6774fdd8ff"
+        },
+        {
+          "path": "web/.fixed/micromark/x/package/stream.js",
+          "sha256": "67e0fac87700caecaeb464b058190ee9f6d5294f41a1bb8b2f40f3e35f305e9e"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/index.d.ts",
+          "sha256": "8c407e5a02bfbab8cda1b1e6dcded92b7f5b04c3313d6736576732a7db5ec33b"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/index.d.ts.map",
+          "sha256": "151b505bc60bfd3da44e1c20c80e71422368993cd125cb4e59b1474861ca8754"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/index.js",
+          "sha256": "a37c11ded75a586499c681995ba6b7db55f3c1bf3b52c2dbbfe47b6e5a59c623"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/attention.d.ts",
+          "sha256": "7fb6cbc82bb8e0fe5849b1a2c335ac0434660bee3484c823c2a4be69ca3de9f5"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/attention.d.ts.map",
+          "sha256": "d4d9208e927e0ab19b3867139b81268eafab3de9936899d13c8847e4256a853b"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/attention.js",
+          "sha256": "909fd6d348d7e53ad49675d005501ca278bfde9cc865318aee1eab42afbad37b"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/autolink.d.ts",
+          "sha256": "aa1da91e003152b9cabe68a971c20f9d752944bede8550898deb810e689901a4"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/autolink.d.ts.map",
+          "sha256": "a1b85c52363f6466b4d30b7ba7debec1d576d5e2809922f5e5ff00c32d43bc30"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/autolink.js",
+          "sha256": "2c63334902b906092f1e5f0106001f6db0f7988255fb820de390b7fb88ace821"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/blank-line.d.ts",
+          "sha256": "c3ba61014cee99c3741356345703ed5f4a24f2fc17224c1d2c6ed01fc4d8522e"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/blank-line.d.ts.map",
+          "sha256": "a33b444f6ee8fe8e36c837f089c48a75971eebeb67e534f30c959a8e8a6a7404"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/blank-line.js",
+          "sha256": "b4870189a72217a3602a5a33619e90cb18c24cacfae6d371c2f27ec5efba9568"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/block-quote.d.ts",
+          "sha256": "6c307aa94361d60f2b3ac32bd318c6a0e74a4169951a1e03f79fbf5ab2508acb"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/block-quote.d.ts.map",
+          "sha256": "b500f9a03427284960b13ee7777d8ec1e988b65d827033116572d4e1af683428"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/block-quote.js",
+          "sha256": "ca7bf48aa7cfcf170bfdd46c05a82e3e2cbe878705b3d454162c77471918a60e"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/character-escape.d.ts",
+          "sha256": "01a755007707fb906e805b41b3713033a805f9b62e544e7c14de79bf5b0fb099"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/character-escape.d.ts.map",
+          "sha256": "71a79dfa09d60f69338be8e6b2226040ebec1cc64aa598b9d636a4cd4a6bc2f4"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/character-escape.js",
+          "sha256": "047b618791ae4040f1dd1cc22aa26fd8edfec4662e3a9c7694252b47db8428e1"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/character-reference.d.ts",
+          "sha256": "cfcd4ba4d39cef41226aae8a4e53101eb6c5ef2b6f39b2c1b45650ddb5ec964a"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/character-reference.d.ts.map",
+          "sha256": "d71c19cc5d3a3197fd5b1defd30a1e2d7c41c606ee3e2ff51c37e6b544df9c8e"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/character-reference.js",
+          "sha256": "ee0e3b9ba1d3fa0bb6de6eb6978136a9beb3600033031218fdb02bc6bcfa3b20"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/code-fenced.d.ts",
+          "sha256": "2394848f4cad69a3ff262adfe3c37c9ac98392697f9631274e0998f78812b610"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/code-fenced.d.ts.map",
+          "sha256": "f18e7db043b3bc7cae5ea772a7f1f7acc1ae4e9c3d75fa7cdf4d1f63e6f71ac5"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/code-fenced.js",
+          "sha256": "5e34a673dcb582d79a9d3631bee7edfa8141531174af1ac461036bf6330e3772"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/code-indented.d.ts",
+          "sha256": "3d228dd6968b043813e0e1c40d433915627081460a1654289bc633668f3607bf"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/code-indented.d.ts.map",
+          "sha256": "30321d0352f990579f844e98970a574ab2b2e0b0100327adbdc3076f6c873a29"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/code-indented.js",
+          "sha256": "ea6e8beae042db56e74ce708c8ba25f076e9e618b33fff9a2a788dd3452da44d"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/code-text.d.ts",
+          "sha256": "c941bfcb7a5496f6290bda0c714097916d2586e1a6f4b71bdeac7fc31f71513b"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/code-text.d.ts.map",
+          "sha256": "71b527568da3f49484f018f54390954ec11eed0d5aac32b3b2177bf75fde90f9"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/code-text.js",
+          "sha256": "c553889310bd032abbf7ebabdea77a561c5f8936679eb3bd6187e637aeb7c1a0"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/content.d.ts",
+          "sha256": "7049ca5a54a93aea8f48127efe1e9814c3fcd4114da2e81fd56f5522d1e1fdad"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/content.d.ts.map",
+          "sha256": "d8ef92d029b02ff26cfe91c98eec00b7da6aa6cf15c297c89e6fb07f70363445"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/content.js",
+          "sha256": "154b49c17cd261f8f63d49ac690cd3b7fcc1231ef8a74ff4324b5b073313e377"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/definition.d.ts",
+          "sha256": "54bdeebb2726470ae9ea42ae096754c51d62fbf8f88e525b3dadaffc6e631ea9"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/definition.d.ts.map",
+          "sha256": "d64dea149781b35884f40d2d236666bbd4950d0338a90b6ef6b9b74ca3e10b60"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/definition.js",
+          "sha256": "f0681af42077f61e81f040fc29464e09033624f4ee60952bff73cc8cb6121114"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/hard-break-escape.d.ts",
+          "sha256": "a6d4fff65962b8c61b3c3095ac0aafa22f1109c00652254ee231cdfb1d6aae25"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/hard-break-escape.d.ts.map",
+          "sha256": "a7079421c884741a8f8864b729906fa67a345d60cc847ce279868150fa98efe8"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/hard-break-escape.js",
+          "sha256": "610c6cc4c8560634447b05729bb1df8f15e39871ecdb0c00aeda2e43b5646379"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/heading-atx.d.ts",
+          "sha256": "92ecb22161ba8f24e6c82e8495bdf982aef09caaeccff9e2d4aaa27deaaba283"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/heading-atx.d.ts.map",
+          "sha256": "026c6adcd14b3c05629dd42a9cc2da2a4bc856c0e59abe8a2e9e51eb1c2a095e"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/heading-atx.js",
+          "sha256": "639900ce1bddfd602dd17e327ec67efb0890ec0290e28861e89752df27128d4d"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/html-flow.d.ts",
+          "sha256": "ca5b0060eb86ea08546b336b88d4f9cdbf54566276dfc02e5178b51b84c6a1d4"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/html-flow.d.ts.map",
+          "sha256": "72c2a39072fda96734d5d185ec7d9e050977bf003c6a2f2cf6aa3b2899eda16b"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/html-flow.js",
+          "sha256": "ba89065b93324021628c6b79093cfbea077d28b1e4651c847fa2562bba8abf78"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/html-text.d.ts",
+          "sha256": "ae64c6b8fa370c2ea6490e10fa9ff393b1105b9269929136d69ba4149cc8e5df"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/html-text.d.ts.map",
+          "sha256": "d32d7a5d63d1b8e6d38f58492ebc96fef6d877b7e130c207d88cabf4a8beff59"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/html-text.js",
+          "sha256": "6a4865e437751f53e88485188a145b5b987dac7f79c3cd27c82cee87745aab03"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/label-end.d.ts",
+          "sha256": "60ee4654ba3c0e0c2396d32f2e549813cf07d6d5c3b7e441c2bccf7b0593c73a"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/label-end.d.ts.map",
+          "sha256": "23766ae7a8f16dfb46417abf95e0311a135e0a7e5aaa3d8eb9499cffeebd16b0"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/label-end.js",
+          "sha256": "d0081098dd80e4fa12e629c79645fff656617786bc37f9fc0311db7b27545518"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/label-start-image.d.ts",
+          "sha256": "fe3d16031af68754e73fb854e2d1587e2415f4ef1b392f94428b7ad72d4e4106"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/label-start-image.d.ts.map",
+          "sha256": "51c8c230b8d5e4457c824c90b139bef692ddf240cae38fc79d79e485b932c553"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/label-start-image.js",
+          "sha256": "a2bac411bf41bb758d8505f7453a5b686ace7e2dbacd3d7d1aaca5138323289f"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/label-start-link.d.ts",
+          "sha256": "1216c844c3f0e1ce2a865046d264c87fbb75d189814f90f4a4f7b2931607e9de"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/label-start-link.d.ts.map",
+          "sha256": "5653602946cfb189ea2949f6c2d546a6e102d835a36b1354b5c149b659942462"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/label-start-link.js",
+          "sha256": "6b9ba2e6486321ea0511a018f2c1f905b0faaeada3c0efd2b1ecad954e41ad6e"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/line-ending.d.ts",
+          "sha256": "441e584738a874b8a78a3aa42ca54665e3b0a720217d4f27d545616ccbbef558"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/line-ending.d.ts.map",
+          "sha256": "62f0324e2b15f668701f5c0593bd07184b6e751206cc6c31769f9723d148c0bb"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/line-ending.js",
+          "sha256": "cd6fc200aec25c9348eb796121791f7f1740c2c99e8837c0fe2561931d9b69ba"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/list.d.ts",
+          "sha256": "863fe1db538be866254210af0bec3521a515e5a2828a98d2de997901f5723c87"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/list.d.ts.map",
+          "sha256": "a2e4107605e0c69ea690700ddcaee221a1bced73c46de1ea48b84554c9f8173d"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/list.js",
+          "sha256": "cdceebb4396b31428f26398c28a54f2911bfc2bd6866c44674d88a12e27ff819"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/setext-underline.d.ts",
+          "sha256": "3006ae6c56ca7c737498381c67c4d850cafd031c489b510085a3765d994811b9"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/setext-underline.d.ts.map",
+          "sha256": "f90a298e76acbd03789096175db472cec75295df761d8871bd9b8ec931ac80b0"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/setext-underline.js",
+          "sha256": "54a52397a0de8862cff7610c3943ace9406ea79401ea615343c3a31787c5238d"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/thematic-break.d.ts",
+          "sha256": "8885714cfa63177eff371f7e9afe290622d3401c1512907069f48fde2af4e5fc"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/thematic-break.d.ts.map",
+          "sha256": "d9a4921e9e6892da54e783c1d96cdee7f99fe99f840d4f7520263d0a547fdfce"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/dev/lib/thematic-break.js",
+          "sha256": "1ffd5b2e3daa0905159d1cd4fa25899577b9a7c324dfb392b53a62de9cbeb46b"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/index.d.ts",
+          "sha256": "8c407e5a02bfbab8cda1b1e6dcded92b7f5b04c3313d6736576732a7db5ec33b"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/index.d.ts.map",
+          "sha256": "151b505bc60bfd3da44e1c20c80e71422368993cd125cb4e59b1474861ca8754"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/index.js",
+          "sha256": "74255b58bcdadeea23118fbdb74171ea5b385e79de0e6754800158ac05c5ed05"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/attention.d.ts",
+          "sha256": "7fb6cbc82bb8e0fe5849b1a2c335ac0434660bee3484c823c2a4be69ca3de9f5"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/attention.d.ts.map",
+          "sha256": "d4d9208e927e0ab19b3867139b81268eafab3de9936899d13c8847e4256a853b"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/attention.js",
+          "sha256": "8367ab8fbce0e8cb801c7b0ebb696d1ca678539f259331a69a0245862d772f30"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/autolink.d.ts",
+          "sha256": "aa1da91e003152b9cabe68a971c20f9d752944bede8550898deb810e689901a4"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/autolink.d.ts.map",
+          "sha256": "a1b85c52363f6466b4d30b7ba7debec1d576d5e2809922f5e5ff00c32d43bc30"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/autolink.js",
+          "sha256": "d18444cc24c312e440f11a0632e25b8f8ac5d804d8196737865ed9bd4742b153"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/blank-line.d.ts",
+          "sha256": "c3ba61014cee99c3741356345703ed5f4a24f2fc17224c1d2c6ed01fc4d8522e"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/blank-line.d.ts.map",
+          "sha256": "a33b444f6ee8fe8e36c837f089c48a75971eebeb67e534f30c959a8e8a6a7404"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/blank-line.js",
+          "sha256": "e6b0f9d489e81a8943d5d4f7a9e4856ba9a8dab50d0fa49168df2c0a4a1daac9"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/block-quote.d.ts",
+          "sha256": "6c307aa94361d60f2b3ac32bd318c6a0e74a4169951a1e03f79fbf5ab2508acb"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/block-quote.d.ts.map",
+          "sha256": "b500f9a03427284960b13ee7777d8ec1e988b65d827033116572d4e1af683428"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/block-quote.js",
+          "sha256": "c6e2a98595ac9aa854d39b1fae226b5eb3e5ec7df099c603cc033eb6797af394"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/character-escape.d.ts",
+          "sha256": "01a755007707fb906e805b41b3713033a805f9b62e544e7c14de79bf5b0fb099"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/character-escape.d.ts.map",
+          "sha256": "71a79dfa09d60f69338be8e6b2226040ebec1cc64aa598b9d636a4cd4a6bc2f4"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/character-escape.js",
+          "sha256": "5ba9dec91c68414fd5bba988f6433a89cb48b00c1efb757d05ecd8854c94b3be"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/character-reference.d.ts",
+          "sha256": "cfcd4ba4d39cef41226aae8a4e53101eb6c5ef2b6f39b2c1b45650ddb5ec964a"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/character-reference.d.ts.map",
+          "sha256": "d71c19cc5d3a3197fd5b1defd30a1e2d7c41c606ee3e2ff51c37e6b544df9c8e"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/character-reference.js",
+          "sha256": "6a25e17171d700c825c421e115c9ace36b6f0663b7aefcc0df922ac5a231feb9"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/code-fenced.d.ts",
+          "sha256": "2394848f4cad69a3ff262adfe3c37c9ac98392697f9631274e0998f78812b610"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/code-fenced.d.ts.map",
+          "sha256": "f18e7db043b3bc7cae5ea772a7f1f7acc1ae4e9c3d75fa7cdf4d1f63e6f71ac5"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/code-fenced.js",
+          "sha256": "3c04971b95bd98c4633b73d3a78f7a5ff57736336b7a08d1b95a2b7fad3c79b4"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/code-indented.d.ts",
+          "sha256": "3d228dd6968b043813e0e1c40d433915627081460a1654289bc633668f3607bf"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/code-indented.d.ts.map",
+          "sha256": "30321d0352f990579f844e98970a574ab2b2e0b0100327adbdc3076f6c873a29"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/code-indented.js",
+          "sha256": "f12e434d410dd67f8155778758babcf479f846e99f90e3daef04c83fd49a73ce"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/code-text.d.ts",
+          "sha256": "c941bfcb7a5496f6290bda0c714097916d2586e1a6f4b71bdeac7fc31f71513b"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/code-text.d.ts.map",
+          "sha256": "71b527568da3f49484f018f54390954ec11eed0d5aac32b3b2177bf75fde90f9"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/code-text.js",
+          "sha256": "c55b37257ab2ff431b3a52c1e94de7091b002809360603dbf0943ff639497f13"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/content.d.ts",
+          "sha256": "7049ca5a54a93aea8f48127efe1e9814c3fcd4114da2e81fd56f5522d1e1fdad"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/content.d.ts.map",
+          "sha256": "d8ef92d029b02ff26cfe91c98eec00b7da6aa6cf15c297c89e6fb07f70363445"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/content.js",
+          "sha256": "8273cb4344ea87b6936620467f5dbfc3de80b70fd8c91ef5996a5fdab50264b0"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/definition.d.ts",
+          "sha256": "54bdeebb2726470ae9ea42ae096754c51d62fbf8f88e525b3dadaffc6e631ea9"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/definition.d.ts.map",
+          "sha256": "d64dea149781b35884f40d2d236666bbd4950d0338a90b6ef6b9b74ca3e10b60"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/definition.js",
+          "sha256": "71da8953ae099556ac1690a5a49d12bd1f113899958836328665f80915d8311c"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/hard-break-escape.d.ts",
+          "sha256": "a6d4fff65962b8c61b3c3095ac0aafa22f1109c00652254ee231cdfb1d6aae25"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/hard-break-escape.d.ts.map",
+          "sha256": "a7079421c884741a8f8864b729906fa67a345d60cc847ce279868150fa98efe8"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/hard-break-escape.js",
+          "sha256": "c45bf8df0b3eb47b5b9885e940c6f3961a33fc9b77361f96c11a7f35e84ed42c"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/heading-atx.d.ts",
+          "sha256": "92ecb22161ba8f24e6c82e8495bdf982aef09caaeccff9e2d4aaa27deaaba283"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/heading-atx.d.ts.map",
+          "sha256": "026c6adcd14b3c05629dd42a9cc2da2a4bc856c0e59abe8a2e9e51eb1c2a095e"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/heading-atx.js",
+          "sha256": "8c0bb877d6be4503509dda190f970ab74deb91ae61018785128adad556114b87"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/html-flow.d.ts",
+          "sha256": "ca5b0060eb86ea08546b336b88d4f9cdbf54566276dfc02e5178b51b84c6a1d4"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/html-flow.d.ts.map",
+          "sha256": "72c2a39072fda96734d5d185ec7d9e050977bf003c6a2f2cf6aa3b2899eda16b"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/html-flow.js",
+          "sha256": "fa9bfecf0df91f52fd2e00114439d415d706c9cef8a552e4c98c067c3cc22a44"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/html-text.d.ts",
+          "sha256": "ae64c6b8fa370c2ea6490e10fa9ff393b1105b9269929136d69ba4149cc8e5df"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/html-text.d.ts.map",
+          "sha256": "d32d7a5d63d1b8e6d38f58492ebc96fef6d877b7e130c207d88cabf4a8beff59"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/html-text.js",
+          "sha256": "3b1de6d4d33425e8f8d5541753379e61387c8de78b4e7b30ec24d8ed9084cad6"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/label-end.d.ts",
+          "sha256": "60ee4654ba3c0e0c2396d32f2e549813cf07d6d5c3b7e441c2bccf7b0593c73a"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/label-end.d.ts.map",
+          "sha256": "23766ae7a8f16dfb46417abf95e0311a135e0a7e5aaa3d8eb9499cffeebd16b0"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/label-end.js",
+          "sha256": "06e1f063781406ee0617ee8895340fc51f4b38b44f07a5dff4e504f788614177"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/label-start-image.d.ts",
+          "sha256": "fe3d16031af68754e73fb854e2d1587e2415f4ef1b392f94428b7ad72d4e4106"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/label-start-image.d.ts.map",
+          "sha256": "51c8c230b8d5e4457c824c90b139bef692ddf240cae38fc79d79e485b932c553"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/label-start-image.js",
+          "sha256": "8e3c0e50c18285edfdfd70e50bc65ce52d4985c38b2fc0cc10f21405b6f81077"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/label-start-link.d.ts",
+          "sha256": "1216c844c3f0e1ce2a865046d264c87fbb75d189814f90f4a4f7b2931607e9de"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/label-start-link.d.ts.map",
+          "sha256": "5653602946cfb189ea2949f6c2d546a6e102d835a36b1354b5c149b659942462"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/label-start-link.js",
+          "sha256": "c64177e7feb8542cfae28cfe68c472aa4a71368ef1d20132923847c6b9849a64"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/line-ending.d.ts",
+          "sha256": "441e584738a874b8a78a3aa42ca54665e3b0a720217d4f27d545616ccbbef558"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/line-ending.d.ts.map",
+          "sha256": "62f0324e2b15f668701f5c0593bd07184b6e751206cc6c31769f9723d148c0bb"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/line-ending.js",
+          "sha256": "7f52676f82337f4cca9674dd03621bf8de974af471878582931377eba420bd0d"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/list.d.ts",
+          "sha256": "863fe1db538be866254210af0bec3521a515e5a2828a98d2de997901f5723c87"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/list.d.ts.map",
+          "sha256": "a2e4107605e0c69ea690700ddcaee221a1bced73c46de1ea48b84554c9f8173d"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/list.js",
+          "sha256": "cbab8744e9b62ec246e9c91cd8fd7eba282bc4cc87459124473f1add439da46d"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/setext-underline.d.ts",
+          "sha256": "3006ae6c56ca7c737498381c67c4d850cafd031c489b510085a3765d994811b9"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/setext-underline.d.ts.map",
+          "sha256": "f90a298e76acbd03789096175db472cec75295df761d8871bd9b8ec931ac80b0"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/setext-underline.js",
+          "sha256": "ba3d12cdc871ca05805fdbb0e5ba6e2266c6137d1e13d679bce7ff3035233a1f"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/thematic-break.d.ts",
+          "sha256": "8885714cfa63177eff371f7e9afe290622d3401c1512907069f48fde2af4e5fc"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/thematic-break.d.ts.map",
+          "sha256": "d9a4921e9e6892da54e783c1d96cdee7f99fe99f840d4f7520263d0a547fdfce"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/lib/thematic-break.js",
+          "sha256": "bd8028ccf83cc488b564c1c9f77bdb6682d7c8ea447327eb1a7cd12e055e8a0b"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/package.json",
+          "sha256": "67d439bd9e10e282fb1f320e5dfac69f3f005cbd54d1b6e644ca05fd7ada81cf"
+        },
+        {
+          "path": "web/.fixed/micromark-core-commonmark/x/package/readme.md",
+          "sha256": "c6b607b5d18451c10d1b3293116563caf3339d5899519344c5b2f83af5882708"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-destination/x/package/dev/index.d.ts",
+          "sha256": "bb0fe2fe232cd207c687420720998bfec4daf7a82b5d1c56154131db1e8ae862"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-destination/x/package/dev/index.d.ts.map",
+          "sha256": "fced466818b15c50419663b7f84c012ee8d6726cca350ef8db6e99f2c32488e2"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-destination/x/package/dev/index.js",
+          "sha256": "d4b8e0b33da401ad5a2ebb22e7f51d5879d7517b06fda2ac2c1139f659196370"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-destination/x/package/index.d.ts",
+          "sha256": "bb0fe2fe232cd207c687420720998bfec4daf7a82b5d1c56154131db1e8ae862"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-destination/x/package/index.d.ts.map",
+          "sha256": "fced466818b15c50419663b7f84c012ee8d6726cca350ef8db6e99f2c32488e2"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-destination/x/package/index.js",
+          "sha256": "0d78405137c6f861c3416ee553c4497aeafd5851e86110fc0f4f4ad1e9794831"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-destination/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-destination/x/package/package.json",
+          "sha256": "93242d560d2a362f2e0c4ff81bd9018f5f82e8aadbcc33214916b236c355958c"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-destination/x/package/readme.md",
+          "sha256": "5c4396f8edbc5207bcfc92854f8420ad993cd0a910db06a8ad11d6590af62607"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-label/x/package/dev/index.d.ts",
+          "sha256": "06086ab1ce782cd5215ce7bbc9980fa2e53ad5c1737811b9e8fe75b19fde50cc"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-label/x/package/dev/index.d.ts.map",
+          "sha256": "61c6b29e916125caa98dffae036338155c395bec6f2c9569850c4fa0b3ce3d77"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-label/x/package/dev/index.js",
+          "sha256": "cd802e5fe172297f7a7257c80d9f89b7b618fe2afa1ad2c20c01440d9d3b7299"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-label/x/package/index.d.ts",
+          "sha256": "06086ab1ce782cd5215ce7bbc9980fa2e53ad5c1737811b9e8fe75b19fde50cc"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-label/x/package/index.d.ts.map",
+          "sha256": "61c6b29e916125caa98dffae036338155c395bec6f2c9569850c4fa0b3ce3d77"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-label/x/package/index.js",
+          "sha256": "c454c4100e33a4bb65040d0b814e7cc9ce0b22c7e43472b31122691e124e0f48"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-label/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-label/x/package/package.json",
+          "sha256": "11b903819c20eaab32ed38e79c85a0885767b0d213f7c0e1dd31246032acaff5"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-label/x/package/readme.md",
+          "sha256": "1962a78fc55720c7cec3297377ceaa70139575f3b1e59bca9c7225bcb4a8d52d"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-space/x/package/dev/index.d.ts",
+          "sha256": "9df59019e730216849ac846317b04f139d84380b5aafdbe7bea16f39fa7d49dc"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-space/x/package/dev/index.d.ts.map",
+          "sha256": "5489549fd836264b15fdfe9270ad3ce9edfa3d5c2e317952e6f31c79fe1163e1"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-space/x/package/dev/index.js",
+          "sha256": "37d734ff8b7bd838ca88345020cc9d468109f8dda819749e976955513a1861b2"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-space/x/package/index.d.ts",
+          "sha256": "9df59019e730216849ac846317b04f139d84380b5aafdbe7bea16f39fa7d49dc"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-space/x/package/index.d.ts.map",
+          "sha256": "5489549fd836264b15fdfe9270ad3ce9edfa3d5c2e317952e6f31c79fe1163e1"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-space/x/package/index.js",
+          "sha256": "991972fc4dc7167fd8c6af8e7db99a7b48b0114414dc4afa073a2ba0f817ffb1"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-space/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-space/x/package/package.json",
+          "sha256": "defabc7241ce54079ad501c9023c49e8551b8fb8cc2af6534435c03958db8e3e"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-space/x/package/readme.md",
+          "sha256": "e9e01ce375c11347d9ae897356ea97523175ca0d67991c4b0f6fe70d146a04b8"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-title/x/package/dev/index.d.ts",
+          "sha256": "e492acd8fdbdab8d99f6bdfc7583defc60601d64058c61148f833f5f8703a09d"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-title/x/package/dev/index.d.ts.map",
+          "sha256": "e27a5da30ac995b5cb420c6d7717152e26d883e6cc645dfe5aa48981f0b17fe4"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-title/x/package/dev/index.js",
+          "sha256": "6ee4eeefb14f7e803660f4d5edd88e32f5cef308d0859fc1c8bc15bd16a9533e"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-title/x/package/index.d.ts",
+          "sha256": "e492acd8fdbdab8d99f6bdfc7583defc60601d64058c61148f833f5f8703a09d"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-title/x/package/index.d.ts.map",
+          "sha256": "e27a5da30ac995b5cb420c6d7717152e26d883e6cc645dfe5aa48981f0b17fe4"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-title/x/package/index.js",
+          "sha256": "9612f6182fe021ec5397458320807d93e297d2aaee5461d5516092da85d75f2b"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-title/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-title/x/package/package.json",
+          "sha256": "06c8bc4a34fa3fc5113a73df50d84fab4f2f3e66b457eb4dde898e3269966165"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-title/x/package/readme.md",
+          "sha256": "742c05242333d4477e85fa756305b874f4d45ffa81c70de4b00b3a80f3fef972"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-whitespace/x/package/dev/index.d.ts",
+          "sha256": "5cb476db4668052d7d94b1a131e5ccf300a4c60e093e762db8545a60939eb988"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-whitespace/x/package/dev/index.d.ts.map",
+          "sha256": "2ee3622aa3c14bba98cea13296772336f9fe26caaf5a01b189cf03008d2f233c"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-whitespace/x/package/dev/index.js",
+          "sha256": "8de456105778d248fb543c94d1879bf175e01d54fd584cf61b36c59b74bf8416"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-whitespace/x/package/index.d.ts",
+          "sha256": "5cb476db4668052d7d94b1a131e5ccf300a4c60e093e762db8545a60939eb988"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-whitespace/x/package/index.d.ts.map",
+          "sha256": "2ee3622aa3c14bba98cea13296772336f9fe26caaf5a01b189cf03008d2f233c"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-whitespace/x/package/index.js",
+          "sha256": "f42906c426aeb2725715e45113890aadeba8a5372609c6184bdf22987b1add99"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-whitespace/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-whitespace/x/package/package.json",
+          "sha256": "28cc2024e660aa4fca709362a122faa2d266a3f43f8ccb9dbeb8c81cbe6f6be7"
+        },
+        {
+          "path": "web/.fixed/micromark-factory-whitespace/x/package/readme.md",
+          "sha256": "81d242508737a782bbfc66dd734b979ac11bf13b2c064a9868f9a6847174ff0a"
+        },
+        {
+          "path": "web/.fixed/micromark-util-character/x/package/dev/index.d.ts",
+          "sha256": "2c3a3555759d5187756a0dfaec596479ddfc30d18e82668efb90a25b946999b2"
+        },
+        {
+          "path": "web/.fixed/micromark-util-character/x/package/dev/index.d.ts.map",
+          "sha256": "275dcd0f143e195b16d2d1d956ddeea544bb4be33b7920a508ad4e83b788ea5c"
+        },
+        {
+          "path": "web/.fixed/micromark-util-character/x/package/dev/index.js",
+          "sha256": "9a60d3a165acbc05a9e6fd06a6f136e76a3eeccd5d5ed852d61a98a6f04d126f"
+        },
+        {
+          "path": "web/.fixed/micromark-util-character/x/package/index.d.ts",
+          "sha256": "2c3a3555759d5187756a0dfaec596479ddfc30d18e82668efb90a25b946999b2"
+        },
+        {
+          "path": "web/.fixed/micromark-util-character/x/package/index.d.ts.map",
+          "sha256": "275dcd0f143e195b16d2d1d956ddeea544bb4be33b7920a508ad4e83b788ea5c"
+        },
+        {
+          "path": "web/.fixed/micromark-util-character/x/package/index.js",
+          "sha256": "d0925bcca366a066650fefda6132ff39bba2525cfa5f44d8424d017813a5cf69"
+        },
+        {
+          "path": "web/.fixed/micromark-util-character/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-util-character/x/package/package.json",
+          "sha256": "cacb36e04627d546562c80a90afdc46d0f19569cf95ae6d3f7cc56f35a76becd"
+        },
+        {
+          "path": "web/.fixed/micromark-util-character/x/package/readme.md",
+          "sha256": "6ca1ed1ad425bcbe35caba8e5da044f79ec58b92901601ad05a26b47a31b382a"
+        },
+        {
+          "path": "web/.fixed/micromark-util-chunked/x/package/dev/index.d.ts",
+          "sha256": "3b7a41c25a7066af80b33a6e5d06c2b3a61282f5d6138291c5c039be6a8e0dc5"
+        },
+        {
+          "path": "web/.fixed/micromark-util-chunked/x/package/dev/index.d.ts.map",
+          "sha256": "5214f7d75e7582489bdc5402603f3f9e6244abc6dd62b2c8361bc36f71778949"
+        },
+        {
+          "path": "web/.fixed/micromark-util-chunked/x/package/dev/index.js",
+          "sha256": "d2d722e0539fc3585cd924cb5b550491873ff374ee85bd96425a6da3b7a194b3"
+        },
+        {
+          "path": "web/.fixed/micromark-util-chunked/x/package/index.d.ts",
+          "sha256": "3b7a41c25a7066af80b33a6e5d06c2b3a61282f5d6138291c5c039be6a8e0dc5"
+        },
+        {
+          "path": "web/.fixed/micromark-util-chunked/x/package/index.d.ts.map",
+          "sha256": "5214f7d75e7582489bdc5402603f3f9e6244abc6dd62b2c8361bc36f71778949"
+        },
+        {
+          "path": "web/.fixed/micromark-util-chunked/x/package/index.js",
+          "sha256": "6b12aefba6b02ff35ada500f162c2f6b750bcc5fdbcd1a9e5852aa542e5211fd"
+        },
+        {
+          "path": "web/.fixed/micromark-util-chunked/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-util-chunked/x/package/package.json",
+          "sha256": "f7c62cf197f0bbe572295faa5253c843acf0a63f3a24d9dabc9ebc7a9c197bbe"
+        },
+        {
+          "path": "web/.fixed/micromark-util-chunked/x/package/readme.md",
+          "sha256": "6b59d8bd902713d5115b5094387c3b41e77987dec862b31b6a188d0ea31c389a"
+        },
+        {
+          "path": "web/.fixed/micromark-util-classify-character/x/package/dev/index.d.ts",
+          "sha256": "8b42552a82ecc60dd0dbed602f80b091a141b39da3dda1e9e16be68b93857c12"
+        },
+        {
+          "path": "web/.fixed/micromark-util-classify-character/x/package/dev/index.d.ts.map",
+          "sha256": "366f78ad6962e052987dd85dc0e759afe1139a4b3c7994365ea1144fb6211c9a"
+        },
+        {
+          "path": "web/.fixed/micromark-util-classify-character/x/package/dev/index.js",
+          "sha256": "6085670b706716055dfb162bc9c990d355c1941eff4971228189817e3c12c284"
+        },
+        {
+          "path": "web/.fixed/micromark-util-classify-character/x/package/index.d.ts",
+          "sha256": "8b42552a82ecc60dd0dbed602f80b091a141b39da3dda1e9e16be68b93857c12"
+        },
+        {
+          "path": "web/.fixed/micromark-util-classify-character/x/package/index.d.ts.map",
+          "sha256": "366f78ad6962e052987dd85dc0e759afe1139a4b3c7994365ea1144fb6211c9a"
+        },
+        {
+          "path": "web/.fixed/micromark-util-classify-character/x/package/index.js",
+          "sha256": "f2aeca2143df2d7c6cadcf6ec138a65af4f2b15426d41ebbeb6f2df71e7a5c24"
+        },
+        {
+          "path": "web/.fixed/micromark-util-classify-character/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-util-classify-character/x/package/package.json",
+          "sha256": "0e1fb034d9c20615056856fdeb68e427731b6d4f604ed0cfb64fb03f5a2eee2f"
+        },
+        {
+          "path": "web/.fixed/micromark-util-classify-character/x/package/readme.md",
+          "sha256": "7c5ead5fe6dc05ef8baa29a07d23d280a3de9ff0817e6db0590678905686ba86"
+        },
+        {
+          "path": "web/.fixed/micromark-util-combine-extensions/x/package/index.d.ts",
+          "sha256": "ca75f75fdfe00e3f2c6bb6a16f94a7b4bfaa4664100251bb33e4089ce8539898"
+        },
+        {
+          "path": "web/.fixed/micromark-util-combine-extensions/x/package/index.d.ts.map",
+          "sha256": "4b2d27c1207acd386f1b23d841e78341cc6ef1aee182ab8aa75c78fb015e6eab"
+        },
+        {
+          "path": "web/.fixed/micromark-util-combine-extensions/x/package/index.js",
+          "sha256": "680825168fc007b7e43e90e07020dd5611281b49ab3917c70963937545feea8a"
+        },
+        {
+          "path": "web/.fixed/micromark-util-combine-extensions/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-util-combine-extensions/x/package/package.json",
+          "sha256": "f2b2a9d07f396afd901f5ea964a552d4b5e1c2799935b90b1a016b877a6824a7"
+        },
+        {
+          "path": "web/.fixed/micromark-util-combine-extensions/x/package/readme.md",
+          "sha256": "0596162d3b6290d26bd699787159a336e5975b5f3ef3006545b737837f9bf160"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-numeric-character-reference/x/package/dev/index.d.ts",
+          "sha256": "9a305fc91401fc13ed2cbf2ecedd935c7415fef5e8b466a03666eb584ef191a4"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-numeric-character-reference/x/package/dev/index.d.ts.map",
+          "sha256": "2d5c9c623a62a06e0ed0dc1f3adb6bb9b47ddcb3e4af58ec78dd6e1dfcf85586"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-numeric-character-reference/x/package/dev/index.js",
+          "sha256": "c4a1015f04d6747511f3b6f2b5eff5f86054b06aaf0eec3356116a01a85d5080"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-numeric-character-reference/x/package/index.d.ts",
+          "sha256": "9a305fc91401fc13ed2cbf2ecedd935c7415fef5e8b466a03666eb584ef191a4"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-numeric-character-reference/x/package/index.d.ts.map",
+          "sha256": "2d5c9c623a62a06e0ed0dc1f3adb6bb9b47ddcb3e4af58ec78dd6e1dfcf85586"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-numeric-character-reference/x/package/index.js",
+          "sha256": "4ce80574f6d96a801d63036920014b45c53bde43bbe48267186df6e4f8b36501"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-numeric-character-reference/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-numeric-character-reference/x/package/package.json",
+          "sha256": "22e7f9adad68f5b1d3ad95efefb818feea668b08357a3eff95ecc8bcfc51ac2e"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-numeric-character-reference/x/package/readme.md",
+          "sha256": "c7b9454a2ea1af5531e4641b207e59c1fed19abf2fd88700cdcdbb7f1be932e3"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-string/x/package/dev/index.d.ts",
+          "sha256": "57cd7d3cfaf0c1d3dc4cfef00af8fb41ce835badefa99e514b0f69045d913fb9"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-string/x/package/dev/index.d.ts.map",
+          "sha256": "93f2e4d1f57332929b6f3a91a9c3862c7814f22554b49599a81d172e04146094"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-string/x/package/dev/index.js",
+          "sha256": "3f41ef55a291a753880b18069c0f9cc8e60a80e14b928ec2039712b8e4c190eb"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-string/x/package/index.d.ts",
+          "sha256": "57cd7d3cfaf0c1d3dc4cfef00af8fb41ce835badefa99e514b0f69045d913fb9"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-string/x/package/index.d.ts.map",
+          "sha256": "93f2e4d1f57332929b6f3a91a9c3862c7814f22554b49599a81d172e04146094"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-string/x/package/index.js",
+          "sha256": "2a33b61917227f14c6b7f3a6fcbd601538a7f577ec30a85c7d20f378e67a9392"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-string/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-string/x/package/package.json",
+          "sha256": "dcd96acdbdf19c8180f90635fc4695c63fd44ffca97523bc02fe760dc562d7c8"
+        },
+        {
+          "path": "web/.fixed/micromark-util-decode-string/x/package/readme.md",
+          "sha256": "1d5070a5837cfbb845ea70140f8097f09db2c5494ed5fd8cfdd5f17514969320"
+        },
+        {
+          "path": "web/.fixed/micromark-util-encode/x/package/index.d.ts",
+          "sha256": "6f56f4b2d2003a69c8f0667c79f2041da0aa4c752bcf9208ba22e45b661d44c3"
+        },
+        {
+          "path": "web/.fixed/micromark-util-encode/x/package/index.d.ts.map",
+          "sha256": "742e1495968195e87d529f0020e8181566910225067476f056ab4257105c3294"
+        },
+        {
+          "path": "web/.fixed/micromark-util-encode/x/package/index.js",
+          "sha256": "f8d1c3cc30e67ca3374ef81f5dbda84688222d034c49d1622f197521ded72972"
+        },
+        {
+          "path": "web/.fixed/micromark-util-encode/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-util-encode/x/package/package.json",
+          "sha256": "3afa43f84fda62fdc0b4b4bac608e89670f0f8548a37baa2f99d8fc50ba87459"
+        },
+        {
+          "path": "web/.fixed/micromark-util-encode/x/package/readme.md",
+          "sha256": "85eb5047c8662d4bd10a0940355483b224ba3339ae0a70e12b58bc06b2f5f944"
+        },
+        {
+          "path": "web/.fixed/micromark-util-html-tag-name/x/package/index.d.ts",
+          "sha256": "f589fdbeef9dbb6e3930d5cb93ad123f60b35431b68853264f977a26e69336ce"
+        },
+        {
+          "path": "web/.fixed/micromark-util-html-tag-name/x/package/index.d.ts.map",
+          "sha256": "77ea3edc9dc173a82b863718e3e839ec9bb3a78ec5004ab217a19e63aed4c9dd"
+        },
+        {
+          "path": "web/.fixed/micromark-util-html-tag-name/x/package/index.js",
+          "sha256": "9ae79113eda91b9c9b16b4ce4f936dfe77824c8f4ea93cbbc2746e96d2b7c43a"
+        },
+        {
+          "path": "web/.fixed/micromark-util-html-tag-name/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-util-html-tag-name/x/package/package.json",
+          "sha256": "30f7979478164eb77b8e6c7bfd4fa0067ea2b4241c383b0fdd15550cf31765c1"
+        },
+        {
+          "path": "web/.fixed/micromark-util-html-tag-name/x/package/readme.md",
+          "sha256": "389898b67b70e9cc12d201ee65657773a48f2eab2e69b5f786d5430c555d42a6"
+        },
+        {
+          "path": "web/.fixed/micromark-util-normalize-identifier/x/package/dev/index.d.ts",
+          "sha256": "f6e40100c729b18c47eb5a499a9025fa40e8686adadbf380c55c2457f0fbfdbe"
+        },
+        {
+          "path": "web/.fixed/micromark-util-normalize-identifier/x/package/dev/index.d.ts.map",
+          "sha256": "4bc7f5ba4edd8c1961d069180d30f7758d3a198fb3ddedd158907cc497a281b7"
+        },
+        {
+          "path": "web/.fixed/micromark-util-normalize-identifier/x/package/dev/index.js",
+          "sha256": "d12a636608602b454192eb73c983fb3f4ee956b3a4673857a17a661393f72a33"
+        },
+        {
+          "path": "web/.fixed/micromark-util-normalize-identifier/x/package/index.d.ts",
+          "sha256": "f6e40100c729b18c47eb5a499a9025fa40e8686adadbf380c55c2457f0fbfdbe"
+        },
+        {
+          "path": "web/.fixed/micromark-util-normalize-identifier/x/package/index.d.ts.map",
+          "sha256": "4bc7f5ba4edd8c1961d069180d30f7758d3a198fb3ddedd158907cc497a281b7"
+        },
+        {
+          "path": "web/.fixed/micromark-util-normalize-identifier/x/package/index.js",
+          "sha256": "08371a98b6f695b5ceb6041fc9b01dc431f91a63dcd71096225822cdbd9ac829"
+        },
+        {
+          "path": "web/.fixed/micromark-util-normalize-identifier/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-util-normalize-identifier/x/package/package.json",
+          "sha256": "61a8912b7ca0caac091bb72d6186fe17d01313a0bc76ba6486b5d7b5adce3e32"
+        },
+        {
+          "path": "web/.fixed/micromark-util-normalize-identifier/x/package/readme.md",
+          "sha256": "b08229aa4922a2d5fa4a5e909fc05b3974c90d55a51827b574f2759806ca1155"
+        },
+        {
+          "path": "web/.fixed/micromark-util-resolve-all/x/package/index.d.ts",
+          "sha256": "8c42d4275d1e941ac97e9b6ec15301dda24448d3acad9d94dc958ceba48a4260"
+        },
+        {
+          "path": "web/.fixed/micromark-util-resolve-all/x/package/index.d.ts.map",
+          "sha256": "68521295d7e5edbc8ba791962161226035a706a07a302cb35133946629f5d6aa"
+        },
+        {
+          "path": "web/.fixed/micromark-util-resolve-all/x/package/index.js",
+          "sha256": "46a4740d536c06d019023530128334cff4b055e011188dabff8b508980bbd8bb"
+        },
+        {
+          "path": "web/.fixed/micromark-util-resolve-all/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-util-resolve-all/x/package/package.json",
+          "sha256": "cc52269381cfc1cd0ce692fd592e373fb083e7f256d60283a8a3ffd71bcfa0b7"
+        },
+        {
+          "path": "web/.fixed/micromark-util-resolve-all/x/package/readme.md",
+          "sha256": "7ab49c260d9539acd7ef0a549283a917a4eaf4e51faf00881abdb72c0f5c3d6c"
+        },
+        {
+          "path": "web/.fixed/micromark-util-sanitize-uri/x/package/dev/index.d.ts",
+          "sha256": "63030ad92d5921ea98460c340f1770b2f29db0521954336ab9976916e1ec45b1"
+        },
+        {
+          "path": "web/.fixed/micromark-util-sanitize-uri/x/package/dev/index.d.ts.map",
+          "sha256": "627d160f03ea40113765497642103b93ad239a3f633c43ad6720d26414433247"
+        },
+        {
+          "path": "web/.fixed/micromark-util-sanitize-uri/x/package/dev/index.js",
+          "sha256": "450cc8d2db22a036947eff71768d62a46f0b230f61dcb54a9605f0f162f0a97e"
+        },
+        {
+          "path": "web/.fixed/micromark-util-sanitize-uri/x/package/index.d.ts",
+          "sha256": "63030ad92d5921ea98460c340f1770b2f29db0521954336ab9976916e1ec45b1"
+        },
+        {
+          "path": "web/.fixed/micromark-util-sanitize-uri/x/package/index.d.ts.map",
+          "sha256": "627d160f03ea40113765497642103b93ad239a3f633c43ad6720d26414433247"
+        },
+        {
+          "path": "web/.fixed/micromark-util-sanitize-uri/x/package/index.js",
+          "sha256": "1dc185ff60d6eedf2efaa4fc524d0f5014d6f87c745212e7ca19562bc0a5ee9c"
+        },
+        {
+          "path": "web/.fixed/micromark-util-sanitize-uri/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-util-sanitize-uri/x/package/package.json",
+          "sha256": "d6b6d70da14e46b8394502367ba4a2476cf16b37e79c557153f3e1907320930e"
+        },
+        {
+          "path": "web/.fixed/micromark-util-sanitize-uri/x/package/readme.md",
+          "sha256": "139ae8cbb254df301921b6c0357fd9375dc4f84a24f0e1eff2d5ed2963a6994d"
+        },
+        {
+          "path": "web/.fixed/micromark-util-subtokenize/x/package/dev/index.d.ts",
+          "sha256": "a4cbf0271f4ebb6db230bbfe1b7efeb8014b0c66ef035efed38a003e6ac5bb29"
+        },
+        {
+          "path": "web/.fixed/micromark-util-subtokenize/x/package/dev/index.d.ts.map",
+          "sha256": "c82e87c2dca139811b9df64721c5acc1ecce0660c8fb6af9a61c8c1281bc65ff"
+        },
+        {
+          "path": "web/.fixed/micromark-util-subtokenize/x/package/dev/index.js",
+          "sha256": "67d5f27bd6266ae278fe975a77bad5d4b72a5d458f8911948d37c9ae9628da76"
+        },
+        {
+          "path": "web/.fixed/micromark-util-subtokenize/x/package/dev/lib/splice-buffer.d.ts",
+          "sha256": "c949498628e57c06e83e7eeaa3dc20bbe969e33358aca60facd9ebdc50d63d5a"
+        },
+        {
+          "path": "web/.fixed/micromark-util-subtokenize/x/package/dev/lib/splice-buffer.d.ts.map",
+          "sha256": "5054fa8e55fb91f3840ed0def1fec2cd2851142ad61ed570ec3fc819dfb003d2"
+        },
+        {
+          "path": "web/.fixed/micromark-util-subtokenize/x/package/dev/lib/splice-buffer.js",
+          "sha256": "b05e8c1c39f66680ea0650e4895d63fc53886416e8b79817f790705059d166e5"
+        },
+        {
+          "path": "web/.fixed/micromark-util-subtokenize/x/package/index.d.ts",
+          "sha256": "a4cbf0271f4ebb6db230bbfe1b7efeb8014b0c66ef035efed38a003e6ac5bb29"
+        },
+        {
+          "path": "web/.fixed/micromark-util-subtokenize/x/package/index.d.ts.map",
+          "sha256": "c82e87c2dca139811b9df64721c5acc1ecce0660c8fb6af9a61c8c1281bc65ff"
+        },
+        {
+          "path": "web/.fixed/micromark-util-subtokenize/x/package/index.js",
+          "sha256": "bb1db64ea3ecf6c8dad0a0369d3a25228ca03917538bed6e5b635e3b0ee633cc"
+        },
+        {
+          "path": "web/.fixed/micromark-util-subtokenize/x/package/lib/splice-buffer.d.ts",
+          "sha256": "c949498628e57c06e83e7eeaa3dc20bbe969e33358aca60facd9ebdc50d63d5a"
+        },
+        {
+          "path": "web/.fixed/micromark-util-subtokenize/x/package/lib/splice-buffer.d.ts.map",
+          "sha256": "5054fa8e55fb91f3840ed0def1fec2cd2851142ad61ed570ec3fc819dfb003d2"
+        },
+        {
+          "path": "web/.fixed/micromark-util-subtokenize/x/package/lib/splice-buffer.js",
+          "sha256": "733678652d5f65e7dcabe64bca754a63f113c1f946172449c52cafd8731033e7"
+        },
+        {
+          "path": "web/.fixed/micromark-util-subtokenize/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-util-subtokenize/x/package/package.json",
+          "sha256": "0d885ab654a0c3a9d331e49c2c4e4435016002595b7e1abb6d091edcb961abed"
+        },
+        {
+          "path": "web/.fixed/micromark-util-subtokenize/x/package/readme.md",
+          "sha256": "427b4b763b655ee161156cd1d41fcee9df7dbec3d590751f36330c234be460ce"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/lib/codes.d.ts",
+          "sha256": "bdeb9242ce96802c32f92f8f25d6229efc1b4ea16b651bbfd31473a31f9759d6"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/lib/codes.d.ts.map",
+          "sha256": "3cacab6e7222400ac869b9a0008fe8d7404dc160e32390099a613860d7a789d9"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/lib/codes.js",
+          "sha256": "f6808b04ecb93a4d191826c539b981f84bc0c7460449f37c670f394ebf57d253"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/lib/constants.d.ts",
+          "sha256": "8ba2540e99cc78ffdfc0dfe02041d530b5b17b51f6100286bb9d9e819600c5ba"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/lib/constants.d.ts.map",
+          "sha256": "37c608fb7aed4281032839d88972242fb4aea88398bef4b7b0f04088567ba5c7"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/lib/constants.js",
+          "sha256": "19964c18ca37155ef08d8861a1efcb9e8a3c0212d1f7a51320bbd15afafb7f6e"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/lib/default.d.ts",
+          "sha256": "09cff720afaf082197f44c1f26bf39cc33a63dd661b22e252a9767bf88c42637"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/lib/default.d.ts.map",
+          "sha256": "71aff5a3453cc014c7a53067131fc8634a1188fe9ffce8aa435c98bfa5025e91"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/lib/default.js",
+          "sha256": "613c5b3f8e9b92ce7ddd556050f0255581049020c9ac0c147a0bf0dfc578df4f"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/lib/types.d.ts",
+          "sha256": "a28a8aff8c35083cf661a66605e76daf4f01ebc79f241bd6e9dd32fe344c9583"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/lib/types.d.ts.map",
+          "sha256": "0e0347acae911e1087b698aab25e4c667b01845a213c0fc9d5ec1b49ab935a35"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/lib/types.js",
+          "sha256": "cb03f2a864f583aeba0e50fa42f9fdc15d30b09675d095142721f07f20442b55"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/lib/values.d.ts",
+          "sha256": "bf7c917931cae4da39ac8f5d4cb3a6faed70d51b6869ca744134c460ddd12bc2"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/lib/values.d.ts.map",
+          "sha256": "222ef8a3b5ac2db7a7e1f2f1535a5389aa6a8d32c1f17a4510eb496aed09ff30"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/lib/values.js",
+          "sha256": "05c3b49e348a22cc0709d3ba3e68631fa43e533d71775acf4868555672f39a34"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/package.json",
+          "sha256": "87326e5500c2e01039682826bc772c7c3386b0062a3eb33810b8edd68ba418b9"
+        },
+        {
+          "path": "web/.fixed/micromark-util-symbol/x/package/readme.md",
+          "sha256": "08aa7bc741df0e1535b6e951ed9baa825789abfddeef28211141d79669b4e9ab"
+        },
+        {
+          "path": "web/.fixed/micromark-util-types/x/package/index.d.ts",
+          "sha256": "5ecf3ec900b16ac7e3e560f6aab855148362385b9293102d66a8d116ef65b2e0"
+        },
+        {
+          "path": "web/.fixed/micromark-util-types/x/package/index.js",
+          "sha256": "121d65ce24df87425bb9fcf519f1b6f7ab48a00b2eea59bf76bb9ba57e5e96e9"
+        },
+        {
+          "path": "web/.fixed/micromark-util-types/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/micromark-util-types/x/package/package.json",
+          "sha256": "fb3030b614ed919b63954e06727d48fceea437cc4961c4b685770ed4f5027cd1"
+        },
+        {
+          "path": "web/.fixed/micromark-util-types/x/package/readme.md",
+          "sha256": "6bcb28a36c98c1aacd77831143ab4178c7e4a5a0c518c0bfe9470506ef7be37a"
+        },
+        {
+          "path": "web/.fixed/remark-parse/x/package/index.d.ts",
+          "sha256": "168be8696c726ec79d4550e9997f811be3ab557090d878d403f7338ff212b5c7"
+        },
+        {
+          "path": "web/.fixed/remark-parse/x/package/index.js",
+          "sha256": "b0e50d0fa0f82d0ff86cab0900adf1eead83b586d8e0739e98b4d1d1aa7d180e"
+        },
+        {
+          "path": "web/.fixed/remark-parse/x/package/lib/index.d.ts",
+          "sha256": "30261556a7290a6e6184c9b5915add41ae8c5fd2ed9e1fff804c5f2598262816"
+        },
+        {
+          "path": "web/.fixed/remark-parse/x/package/lib/index.js",
+          "sha256": "1f25fd76110f443777e20f56de65d7a9c3b716e34f1e9a1d1d27851b9d796e3e"
+        },
+        {
+          "path": "web/.fixed/remark-parse/x/package/license",
+          "sha256": "149f7a2c3938fcf15f05afcb0182242c99699f545257dd6fe964292b6bfc1b4e"
+        },
+        {
+          "path": "web/.fixed/remark-parse/x/package/package.json",
+          "sha256": "f2e63418bc4f44e75265793a6eb2bbc78c4087755a4f1cea82ed314d062e1a24"
+        },
+        {
+          "path": "web/.fixed/remark-parse/x/package/readme.md",
+          "sha256": "a7a9d915a438b1e49ed6b7b4aff2db2ea54c8bfccacd5dc2377417d3f9f71662"
+        },
+        {
+          "path": "web/.fixed/remark-rehype/x/package/index.d.ts",
+          "sha256": "22b9d35fe5753b3085d5e9c1cb05a5a99d5a8b1d0580233433288a5d207b49e9"
+        },
+        {
+          "path": "web/.fixed/remark-rehype/x/package/index.d.ts.map",
+          "sha256": "7914185ac231cf5471e02c6fc440f12cc22b094cb321cf3422c046ae48bda5db"
+        },
+        {
+          "path": "web/.fixed/remark-rehype/x/package/index.js",
+          "sha256": "b496e7b6260e8498d535d20d7cdb7c8f41ebc35551bfd2f3b9020496f4dd95b0"
+        },
+        {
+          "path": "web/.fixed/remark-rehype/x/package/lib/index.d.ts",
+          "sha256": "6bdfbd1a0a73a4f77f9e9f7161413e9baa05a1b7dbe705f8a39851d8b47fb92f"
+        },
+        {
+          "path": "web/.fixed/remark-rehype/x/package/lib/index.d.ts.map",
+          "sha256": "1e2dc4b2f6467321f4a7e70c7bab6813921245264e054e46254ff6d10fe9f4a4"
+        },
+        {
+          "path": "web/.fixed/remark-rehype/x/package/lib/index.js",
+          "sha256": "04a80977e43832d0d6f50d2a3f080375d5c8a287f8172149c97ccbb0b8d79e8d"
+        },
+        {
+          "path": "web/.fixed/remark-rehype/x/package/license",
+          "sha256": "f9288c302fd33de9d11d4554f3520a5dd177dd1543b9f84cc7a3c8f2fb77fe88"
+        },
+        {
+          "path": "web/.fixed/remark-rehype/x/package/package.json",
+          "sha256": "38877c2975380bf4059655543013c5cbc55935a44661f542c99583d1437039a3"
+        },
+        {
+          "path": "web/.fixed/remark-rehype/x/package/readme.md",
+          "sha256": "3e9fd2dfe02772471fee99266091444f0ca827652ce363b70bfaeb2d230b6f1f"
+        },
+        {
+          "path": "web/.fixed/unified/x/package/index.d.ts",
+          "sha256": "a15468003ec934883f52ec9edeac30a98600cadbac7646a4cb9d2281828ed318"
+        },
+        {
+          "path": "web/.fixed/unified/x/package/index.js",
+          "sha256": "e02231f1dee380bbced5b020a1eaf887c4f50e52f3c7a781f0c2e475b839dd70"
+        },
+        {
+          "path": "web/.fixed/unified/x/package/lib/callable-instance.d.ts",
+          "sha256": "f227d3e6b90fbace6d6143b9691512f7e2bfae38a5119689b56aa7881aaaac49"
+        },
+        {
+          "path": "web/.fixed/unified/x/package/lib/callable-instance.d.ts.map",
+          "sha256": "b5f4adf1756fb7b04e92e6705ee596b613c85107f8d8afd5e5e118fda143dd40"
+        },
+        {
+          "path": "web/.fixed/unified/x/package/lib/callable-instance.js",
+          "sha256": "531a5510f25741ee6f9d568844dcdef5451cd348d50f3320a5f6d875ffb5c02b"
+        },
+        {
+          "path": "web/.fixed/unified/x/package/lib/index.d.ts",
+          "sha256": "d9083c71d1913a28e5d3287a2a019da024d95af894e6070db3e6fdba4a3f6a01"
+        },
+        {
+          "path": "web/.fixed/unified/x/package/lib/index.d.ts.map",
+          "sha256": "6460381382547b4da62e216d67b3a5e03d1931c8992670010ae1ff237fefd8da"
+        },
+        {
+          "path": "web/.fixed/unified/x/package/lib/index.js",
+          "sha256": "1ef2bd684ed3eecd14f7f6e3c974f939674ce5aa42c95f3bf6b20e537c876fcf"
+        },
+        {
+          "path": "web/.fixed/unified/x/package/license",
+          "sha256": "ac5c700337496a2e5d91927bcf74f98de24d65e0a6e290e96190138451e7b276"
+        },
+        {
+          "path": "web/.fixed/unified/x/package/package.json",
+          "sha256": "e351360ffb026e6a85149064b644eecd26caab51b1bebc496bc52ec63b6d80b3"
+        },
+        {
+          "path": "web/.fixed/unified/x/package/readme.md",
+          "sha256": "57d7721345a80c2117ebdb829a0cb39606838f4b00aa877b85f23d94c22bb22f"
+        },
+        {
+          "path": "web/.fixed/unist-util-position/x/package/index.d.ts",
+          "sha256": "d0e4c3ad4a81cde9dceee0da27d0f2fb73ad1279942c05e9b45f955d06c07927"
+        },
+        {
+          "path": "web/.fixed/unist-util-position/x/package/index.js",
+          "sha256": "d0e4c3ad4a81cde9dceee0da27d0f2fb73ad1279942c05e9b45f955d06c07927"
+        },
+        {
+          "path": "web/.fixed/unist-util-position/x/package/lib/index.d.ts",
+          "sha256": "08858e0e44228e62dfbbcd7288c35b7836dffc95f470449ae28ae694f2d53c07"
+        },
+        {
+          "path": "web/.fixed/unist-util-position/x/package/lib/index.js",
+          "sha256": "8b0ec679c8f50e2ecbdf23c981dfb2fb76a000cc1f82b47098c1447b42372cf3"
+        },
+        {
+          "path": "web/.fixed/unist-util-position/x/package/license",
+          "sha256": "5560958fcf5db8766e080803fba631cc0e6d73d4207da13749034cfd1502777d"
+        },
+        {
+          "path": "web/.fixed/unist-util-position/x/package/package.json",
+          "sha256": "ac76dd9d949b294b0fd2d71b1623c4f5ee2036b81e5aba1a70ad55ae7cbd5063"
+        },
+        {
+          "path": "web/.fixed/unist-util-position/x/package/readme.md",
+          "sha256": "447974d01b0cc7c2f204a6708bed5f56efbe80d2d186b9eb7703a23327dc6054"
+        },
+        {
+          "path": "web/.fixed/unist-util-stringify-position/x/package/index.d.ts",
+          "sha256": "fb1e0ce9666cdbe1be2a9918f236daafb2e5df56c63e1eafcef50cafabb2a12b"
+        },
+        {
+          "path": "web/.fixed/unist-util-stringify-position/x/package/index.js",
+          "sha256": "fb1e0ce9666cdbe1be2a9918f236daafb2e5df56c63e1eafcef50cafabb2a12b"
+        },
+        {
+          "path": "web/.fixed/unist-util-stringify-position/x/package/lib/index.d.ts",
+          "sha256": "5295016b13fba3ec4de0672206a12776a846a0fcc45b38d7582d1c43d6540fc9"
+        },
+        {
+          "path": "web/.fixed/unist-util-stringify-position/x/package/lib/index.js",
+          "sha256": "27ac20ee28125f39e028eddc252dbf800c29d6641f4919a316f632c9af54ce0b"
+        },
+        {
+          "path": "web/.fixed/unist-util-stringify-position/x/package/license",
+          "sha256": "c88da0941b4ac25628eac42dc489ec594a6993e43515405e90152a6065ea572f"
+        },
+        {
+          "path": "web/.fixed/unist-util-stringify-position/x/package/package.json",
+          "sha256": "afa3c5d20576932830d05bdf95241593d99d5b47a8a24fb5ace5bb92fc1acbb8"
+        },
+        {
+          "path": "web/.fixed/unist-util-stringify-position/x/package/readme.md",
+          "sha256": "95aa3bc65a84f7680f4ac5ff72f159edad567a28d25e6a4027ee5749b4703afd"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit/x/package/index.d.ts",
+          "sha256": "355069f4e38eafdf76a4bbddaac0f435933b9d4880aa0d1c55f9b7d514d61475"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit/x/package/index.js",
+          "sha256": "8f97e15b54de91287ba82b501c40bda6ee0c4afafc2042ec9c91a9d5ffe0dc0c"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit/x/package/lib/index.d.ts",
+          "sha256": "db0036d21ec21c12fa19ae1a58ff86f5c49eb837495bfe565e32714096cb205a"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit/x/package/lib/index.d.ts.map",
+          "sha256": "51ed27f1c09ea9097dab24777aa71fcbed0aa130c1162ceabaf8e6490e731618"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit/x/package/lib/index.js",
+          "sha256": "51b1efba2575c0d9228642420c4a97246367995ab672142304503b73047ee0c4"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit/x/package/license",
+          "sha256": "5560958fcf5db8766e080803fba631cc0e6d73d4207da13749034cfd1502777d"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit/x/package/package.json",
+          "sha256": "30119c7f30baf70fa08944039389687f403c1a8c4ddb14bfc71ca0961e035b41"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit/x/package/readme.md",
+          "sha256": "b0696c4091a5b29bd232f1db862869db22dcc948abc638dbd5d20170bd6c2dc4"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit-parents/x/package/index.d.ts",
+          "sha256": "11e94bcdea8dd55dfb8ed270118bc83d29fc43c821fcd306cc7bb5f1ebd9d4f7"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit-parents/x/package/index.js",
+          "sha256": "1f6121267391a3a7b407dfd984987befb2d6e84a7fd82ce2db03a3bb021569b9"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit-parents/x/package/lib/color.d.ts",
+          "sha256": "95bba1980475acdacf216bd3b787d8798cc72656cf893844f52445ceae195092"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit-parents/x/package/lib/color.d.ts.map",
+          "sha256": "72a1967814ebd84bd52dcf729c2e502efceeda88c9000de3dfc92d917d9fbe7e"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit-parents/x/package/lib/color.js",
+          "sha256": "ec91d13385955e9eb334b06ffca999204c845e3d5ef99c4ca6eec97eb356ce7d"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit-parents/x/package/lib/color.node.d.ts",
+          "sha256": "4eb5540b12bdc3f5369ebfb9860b74237c0db6c8d2cd1dbf73bcb97629cc6383"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit-parents/x/package/lib/color.node.d.ts.map",
+          "sha256": "85d23947b53f9d79780aceecfc3a3650f80fa686fa159c1b32e405fecf031ee8"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit-parents/x/package/lib/color.node.js",
+          "sha256": "e6086b1937663bf33e0a74e90da04790a60516e91229041cb335f234bc44024c"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit-parents/x/package/lib/index.d.ts",
+          "sha256": "3c63c6b6dbceee75f9c011f4b1e6fc85d15568d7a812a0c9fc7a8643492da0e7"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit-parents/x/package/lib/index.d.ts.map",
+          "sha256": "b372541a328dbb7fef95c0c67df619123e5a8a7de8a449232c8109971ee2f6e4"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit-parents/x/package/lib/index.js",
+          "sha256": "2b16daa601a3fe62b8d2773e2c0f271124e3d8ac64d2e7f495b62d125c7a0f84"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit-parents/x/package/license",
+          "sha256": "c88da0941b4ac25628eac42dc489ec594a6993e43515405e90152a6065ea572f"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit-parents/x/package/package.json",
+          "sha256": "94b7e17aa0ed6654789721ad0001f431f9bb7c690922c240236bbbd9212c0a16"
+        },
+        {
+          "path": "web/.fixed/unist-util-visit-parents/x/package/readme.md",
+          "sha256": "6265de3fd22275f8ae60e713ad5f25c08f513e02648fadaefe14e1f51342a5f6"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/index.d.ts",
+          "sha256": "9893067adf6c16c467fc665d1c70de998a3ce032091654c2111e6bfa04ee24f4"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/index.js",
+          "sha256": "30512f139c014eecce3d976c230bb34a4bbe73f6fbaaf62c800d075b47af7338"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/index.d.ts",
+          "sha256": "2e13a5a4252d49c0897f6d2c463f3a7e9f603161dd46f7388d50e41a32672de9"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/index.d.ts.map",
+          "sha256": "ad9dea52e386250674ebf985a7980ef11e14c5feb32741f89d952fec260512ce"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/index.js",
+          "sha256": "4a976138a4f86963c6ff5b259851cf6a7b0830bb1613becadd5b73f7021ac12a"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minpath.browser.d.ts",
+          "sha256": "1a4987bea9ea47ba81ff7a4624166ba22c093fbf683224d0d4a8c5621a85b030"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minpath.browser.d.ts.map",
+          "sha256": "a1f8e146e165bccd0125e040d4813aaef1a81cee8b4cdae2640bfd12e84beff4"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minpath.browser.js",
+          "sha256": "1a5ed3c97f6d3892439ca603a7b1279cb3dc061cef507a125265a6139299c978"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minpath.d.ts",
+          "sha256": "391b06fed4bf80ccf149c57ee1211ec942c616e0107cbd0e14ce39656aaf3f09"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minpath.d.ts.map",
+          "sha256": "3f2cd5ba949566a256e714b3f2bd20051c67d6c5f6e8afcfcc9e7f0d2f7442df"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minpath.js",
+          "sha256": "6ebbd8d03861b3d5fa3749fc374b3ca6d8db8e8781b5ffce68fefa9b4d64a7dc"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minproc.browser.d.ts",
+          "sha256": "8697ed62a1db8edf8137badf99f240829d0896b78794adada7ac69e5e17c0a48"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minproc.browser.d.ts.map",
+          "sha256": "7a50a3ec22104f4658e7f558cbdb5c83dcf2bdc6944f8291b688b1411b81aac3"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minproc.browser.js",
+          "sha256": "0282f1b16e5227d58a7dae1806d94bf82086e920be165a7d4347b26fb1bbaad7"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minproc.d.ts",
+          "sha256": "826f04ecb283fedbf72de75efa738ef6e809b09a013f678406f96c66380ff290"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minproc.d.ts.map",
+          "sha256": "1bab6f566cfc08f5aeb5ad7309af39ea493efd2620291cd2cc1b3d89b4b6db16"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minproc.js",
+          "sha256": "1415a6df696eeb187a72d4f1964f00e50672761d09e1951e9d55493c9a6a4a81"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minurl.browser.d.ts",
+          "sha256": "23ba5c05f896793858c9a69a9026fb336816ce3296a280decd5975bdf5eeca76"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minurl.browser.d.ts.map",
+          "sha256": "1f625b1b78854db0148f7e35dbc5c50359e4e328a001c52ff21d009cf918522c"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minurl.browser.js",
+          "sha256": "a9c9e45b2b161e31da4a401a082bb3c5507a5d0f87d179a37213bfbdb3549498"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minurl.d.ts",
+          "sha256": "d3035ffd55e6a0173293a70c735756a916f39be1abb63a9cb134906e02bedd90"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minurl.d.ts.map",
+          "sha256": "6f768a3291264aeccfbb0a93074dd061c35db4e79c983a3379c0a9889bae4986"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minurl.js",
+          "sha256": "3e71d79c9c3f0e0dbfbb33f11b6dee6b4d582ad1089988399b356d4005b90b3f"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minurl.shared.d.ts",
+          "sha256": "b576e1800839ad1fce1649326bac73565723728d27c17311cde6d9da7f5f8045"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minurl.shared.d.ts.map",
+          "sha256": "3beaf1963607f04cf664bd2eeee7cccf161526104469d6b6f1942a6816205ded"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/lib/minurl.shared.js",
+          "sha256": "8c9df68ce2f181017617138383d6aaec0e81277ea0a2258b4de98883a8d4d3c7"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/license",
+          "sha256": "ac5c700337496a2e5d91927bcf74f98de24d65e0a6e290e96190138451e7b276"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/package.json",
+          "sha256": "ef8fdb86437e3cf504afcca8645927562ba98ee1b69033d24dba79fcbd39d8f4"
+        },
+        {
+          "path": "web/.fixed/vfile/x/package/readme.md",
+          "sha256": "0d8ce365f774dce06fd128cecff841c564ddd25c57086abcd717402aef407da6"
+        },
+        {
+          "path": "web/.prettierignore",
+          "sha256": "c919b85318eaf3c14364e6a0249ee0beb13414859584ffac6ed591f37e2c9d87"
+        },
+        {
+          "path": "web/.prettierrc.json",
+          "sha256": "4c47e6a59e952d0c8afb8b784ddabe5c70af9e1126c689423bda17d9182a63fe"
+        },
+        {
+          "path": "web/bun.lock",
+          "sha256": "e8b6ef75167171dfec652d5da2cbbc8eb6908c624cc3147410b188164171a9a3"
+        },
+        {
+          "path": "web/components.json",
+          "sha256": "c2b7299c0a4c863e593a8a6e0e6041ffd72a7195bb7c3c645ff3c38402dfdd6c"
+        },
+        {
+          "path": "web/docker-entrypoint.sh",
+          "sha256": "fc42086790dd96a2eb734be51f2056274fab9ee3617c2c3cfbafd5f13bea8583"
+        },
+        {
+          "path": "web/index.html",
+          "sha256": "b65f7cf226b584d1af81d3c497d120054ef3a46680da4a58e17145720937b4a4"
+        },
+        {
+          "path": "web/package-lock.json",
+          "sha256": "3c83e0aa21dfa376c1680a4643678bdcd490c3caa1618646dbbe4472719cae91"
+        },
+        {
+          "path": "web/package.json",
+          "sha256": "029f5dc8aa0c03f440701cc876afe32643c8b5e7e152fa828638fa5197e6bce4"
+        },
+        {
+          "path": "web/postcss.config.mjs",
+          "sha256": "2c83fe8b2a087789056113c8c0688666bcdf6b8cf0b6b7630d631736b1084e30"
+        },
+        {
+          "path": "web/public/config.js",
+          "sha256": "ff6db06171946a0269d9f25eded95724a9399aff6ad48445368c1cd1fd01d77b"
+        },
+        {
+          "path": "web/public/icons/claude.svg",
+          "sha256": "a3101f3047a119aa11825ad9369510f0c472428c8c52d420e31bc62db44a8364"
+        },
+        {
+          "path": "web/public/icons/deepseek.svg",
+          "sha256": "deba5f98a5c1796e20fcac3149bcd7eb8a32f0bdd04d048819400b1f28bd1439"
+        },
+        {
+          "path": "web/public/icons/gemini.svg",
+          "sha256": "8ab0a9bafec11f7e69bcb9fc4ffd8f1bc927d1ddcbbb6ff36dee5ae8b5a9d602"
+        },
+        {
+          "path": "web/public/icons/glm.svg",
+          "sha256": "8174e65ff71647d5c705c920c953a82bd723d9e3e42887bdd4ffc9dfe51207a0"
+        },
+        {
+          "path": "web/public/icons/grok.svg",
+          "sha256": "9175fc90c22655160231976c849f25a03b888d7cc0e04c5f1b987b659bb07c95"
+        },
+        {
+          "path": "web/public/icons/linuxdo.svg",
+          "sha256": "7864fbfc8a4b9c865fa2b543c408b4bf02e3b4d3dfe6ccc947c0810201e3e458"
+        },
+        {
+          "path": "web/public/icons/openai.svg",
+          "sha256": "a595df6b423920c67a7f8f73c063e4bfb72d415948097b6cac063a2366bb5186"
+        },
+        {
+          "path": "web/public/login.html",
+          "sha256": "27007705e595286bdf0a9c62251ca2930e6e75e34c190e91d8866e9eb93abbdb"
+        },
+        {
+          "path": "web/public/logo.svg",
+          "sha256": "c085c0c94c0bbce27bb135d4643f236e12aaafe9c9943a6c3d61a110de82221f"
+        },
+        {
+          "path": "web/src/components/agent/agent-canvas-reference-preview.tsx",
+          "sha256": "2355789b8927fd43af598b3f4065237a5c5fd19dc1fb2654ecd9303202ee11fc"
+        },
+        {
+          "path": "web/src/components/agent/agent-chat-composer.tsx",
+          "sha256": "480b6924f842f96a27f53f0238e22dbfc7d2ddc828f614b87c7469db36e42d46"
+        },
+        {
+          "path": "web/src/components/agent/agent-chat-inline-tokens.ts",
+          "sha256": "6bdfc274ef7d1de0433f39394310f110d5d1d9bd90303bb84f0d5265102a9380"
+        },
+        {
+          "path": "web/src/components/agent/agent-chat-message.tsx",
+          "sha256": "5a29f08202c5b206c19922521696b803d53ba0d391cf36364adc1cb9ce9e15e6"
+        },
+        {
+          "path": "web/src/components/agent/agent-chat-prompt-input.tsx",
+          "sha256": "63451c781594f9a4551a825839cad1f78fe7185a83e1d6e886063ea46b70c5fb"
+        },
+        {
+          "path": "web/src/components/agent/agent-chat.tsx",
+          "sha256": "c7aba3f84a851dd35886a944176c277241a54363638e0f54e0b66aa3e92a3d8c"
+        },
+        {
+          "path": "web/src/components/agent/agent-connect-view.tsx",
+          "sha256": "3b09acfac3e466d45a81bbbf376ac9925f91f2789c6d91cd3e70ae3060ad17cb"
+        },
+        {
+          "path": "web/src/components/agent/agent-event-formatters.ts",
+          "sha256": "87460294d673252afeec214fd850765a4bd0ad1c5f5a44c9b5e0d3af81b9a8a1"
+        },
+        {
+          "path": "web/src/components/agent/agent-history-view.tsx",
+          "sha256": "cf75c9326461a97449b1a98eb058def13ee51ff82e05bed8bf73c6df012706d9"
+        },
+        {
+          "path": "web/src/components/agent/agent-log-view.tsx",
+          "sha256": "e27be33d299f23b56ccce7c332a2cd6ddc81bf1b3cc43e082c422ea11f7b4b89"
+        },
+        {
+          "path": "web/src/components/agent/agent-panel-tabs.tsx",
+          "sha256": "a38741c981d45097a3b993a20526f85318e0c6dd2108599a91edd7d3f820db83"
+        },
+        {
+          "path": "web/src/components/agent/agent-panel.tsx",
+          "sha256": "3f43e636dcf342a38a14b0e3122ef0ecf8c20320041bf1b743368f02540ae4b7"
+        },
+        {
+          "path": "web/src/components/agent/agent-scroll-to-bottom.tsx",
+          "sha256": "3703c1357a1c993e152c220f8586c7284aa4dd16e6b976ff9f1b272aa1ca24e1"
+        },
+        {
+          "path": "web/src/components/agent/agent-skills-view.tsx",
+          "sha256": "8a04a63c86209938b1114f9c0ba33189ce1510b18f9b31e9efab433b5c7dc402"
+        },
+        {
+          "path": "web/src/components/agent/local-agent-panel.tsx",
+          "sha256": "cb5fec23d9be21eaa12dc7b9830d441fd143e803e00811625010f3dde502c05c"
+        },
+        {
+          "path": "web/src/components/audio-settings-panel.tsx",
+          "sha256": "d757189afd34f4438cee1b5f497e54e1b3996a5229dd9c62b6f9c2c264f05653"
+        },
+        {
+          "path": "web/src/components/canvas/asset-picker-modal.tsx",
+          "sha256": "f02143c3ef154d82eae74e67835e71981481cfdf4412db7bfdb24cbd7ad88662"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-audio-settings-popover.tsx",
+          "sha256": "d29f0394e00e919eaee2af3c3695db7870c55047edf4cd06a75746cce6a0d10b"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-config-composer.tsx",
+          "sha256": "fef423cca283c055cc7a94bb0720999969b93aba7c88cbfe71b69ff8ac398fca"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-config-node-panel.tsx",
+          "sha256": "ecd730ea667d83082f114a01afb6d59a9329174aefa11e84916e79f0e3113731"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-connections.tsx",
+          "sha256": "877a068eb577d4a03bb079aa9b4b4108c2606b82a94c04707d68bf5b886b16b8"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-context-menu.tsx",
+          "sha256": "563090328d04108e67d138bc365ec8f648fce3749ffef050873d503843a8c70a"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-create-menus.tsx",
+          "sha256": "7e9082dac9404d87fa797fa92dbaca41c6e0362a76233de58a6086cfebdbe8ea"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-delete-projects-dialog.tsx",
+          "sha256": "274bb1da750e96ac1df2f9fad828c5083e2d0caf05d69eb2f23f617075d6f4fc"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-image-settings-popover.tsx",
+          "sha256": "3ff9ac5e3a2ff9d38da8b1ad41af18139d8a84e44a5980db14a7afdeac78d373"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-image-toolbar-settings-modal.tsx",
+          "sha256": "9e2560924b33bb7cfe10f23689d6fe23a7c56d81cf1c8e9ff79260333fbe11a1"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-image-toolbar-tools.tsx",
+          "sha256": "a1e3db1c62eaa24d4a3fff46bc003f6044e27b5e37187386c7aee1f86d7e3131"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-mini-map.tsx",
+          "sha256": "f4214b41135383cc5d0804a05ce4c19d4713222c2a87b821a030f7b7307e4f1a"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-node-angle-dialog.tsx",
+          "sha256": "3430c993483cae07dfe1cef45e7dfe405801f47d726ce6d3178cb43b6b629f01"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-node-crop-dialog.tsx",
+          "sha256": "0fd1566afddf9628cef0d32cb57d4712fe5ee7321b6d13c2308c5e33c2745b35"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-node-generation.ts",
+          "sha256": "2f4f44b970ef049f89419d89f67e44c2bddda574066eb476e65565ce0d530b1c"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-node-hover-toolbar.tsx",
+          "sha256": "29e378763c7efee9a608c52a1613de2bdcbc4d95747d9bb4e8ead32cfe0a85b1"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-node-mask-edit-dialog.tsx",
+          "sha256": "81d7771a703bb78e72dbba50cba07eaaac8723ad7b664e3935659bc00e6a4e9b"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-node-prompt-panel.tsx",
+          "sha256": "851aa8119eecd0ceeab249202ac0f0dac788756aa4fb89769bb37f64459e277d"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-node-reference-bar.tsx",
+          "sha256": "fe334fcccd75d6fe3abc2dc008500720b271ef4bf3eb6a883d7ff5806815d441"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-node-split-dialog.tsx",
+          "sha256": "1f03cebd7a4a52aa8d15b1ffc52c9e2d7df66d995d6a1c8d258487155392f3bb"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-node-upscale-dialog.tsx",
+          "sha256": "d50f8244d3fe7a19e21767cd2e762f885e94eb882e692b51525607dbe5a95031"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-node.tsx",
+          "sha256": "94765a0e59b4b669e9b5ec62c61c43815b924cbe424b9da489d64b1c7311a79f"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-plugin-manager-modal.tsx",
+          "sha256": "a53e0ffe5aecfe1780ca15989fabb10ac996f216aef134749910f8b2973a3ed1"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-project-card.tsx",
+          "sha256": "d8daaf7be5c466ca92e917e177b634c5787a2bc3b1adf9a30390f51195ca1fc7"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-prompt-chip-input.tsx",
+          "sha256": "c95e6bd0c0fd41b4cdaeb853c7a3f76f148ee77e3479e447d64efa3dd21b8dbd"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-prompt-library.tsx",
+          "sha256": "97f6ee3600cee2bac7f95f50e2b06e7c5560aec64c08e352e0e5a43146873c0c"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-refresh-shell.tsx",
+          "sha256": "0acf9f7433863817724a25307e28a401f5040d175970795f6cae7ff780b6c3e3"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-resource-mention-textarea.tsx",
+          "sha256": "39f0aa7111ea504bc98b31bc7d2cf9972744bddac7ecbb92ecb451f0ca3e610e"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-selection-toolbar.tsx",
+          "sha256": "454c152b6787f039a2ae17ccf2879bcf795c9da5f947557208fcaf651c16abdd"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-side-panel.tsx",
+          "sha256": "86ba930fdb9147a8a64ad6dafaa48d5257bd029a93e3ee0b9a6346349c6d32e0"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-size-picker.tsx",
+          "sha256": "e2425bd55ba2e90b6e77907afa636b62ff6d32e85e0a4704db5b713bc9a346f7"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-text-settings-popover.tsx",
+          "sha256": "7befe5bc93919bf6c5f4a26ca197e5fa4a1e33c15e545d4003ead8ae5ab45bc3"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-toolbar.tsx",
+          "sha256": "9109f07a0bd11456051f677d3fd9a4562ec7d38897b59efb972effce7b13899b"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-top-bar.tsx",
+          "sha256": "acc2ad0d8fe7de6db5ce601012790badb60299fd0a494cb3e2843f98a4a827f7"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-video-settings-popover.tsx",
+          "sha256": "c2dabbaee5981e7a9b3c177978cac545892b788729dfc73d0fee56eee180ca08"
+        },
+        {
+          "path": "web/src/components/canvas/canvas-zoom-controls.tsx",
+          "sha256": "59e35ac27573db8a194bd70b9437fa41c83b0c0005fe5eccf17a378424361bab"
+        },
+        {
+          "path": "web/src/components/canvas/infinite-canvas.tsx",
+          "sha256": "745d3f5664c8cdf5b460b553a02db77e6c9f47b06cdd88f213f9f1a917f376df"
+        },
+        {
+          "path": "web/src/components/canvas/nodes/builtin-nodes.tsx",
+          "sha256": "5d93e8eae5f33b9985e4649bfd6afb903c5bb48f49f2cada8a9e850d6a08cc89"
+        },
+        {
+          "path": "web/src/components/canvas/use-image-editor-viewport.ts",
+          "sha256": "91fae3e286318063dbc385a7d3de32c1988888de149cb47c93521b30f7136122"
+        },
+        {
+          "path": "web/src/components/image-generation-pending.tsx",
+          "sha256": "59deb251f3737b18687d5d302aa3d5986bda02687a31427a3a71f5d81fb02194"
+        },
+        {
+          "path": "web/src/components/image-settings-panel.tsx",
+          "sha256": "1ad03991ed4ce6e95c00ff37163417b29c9839a997c3834949b6e943ee2cf301"
+        },
+        {
+          "path": "web/src/components/layout/analytics-tracker.tsx",
+          "sha256": "14b26aab3f39a516ad89954b7d35fcf35fad36cecf8c8e664aa62a4a197c4477"
+        },
+        {
+          "path": "web/src/components/layout/app-config-modal.tsx",
+          "sha256": "ea282e1a48356838b00fd1d0c303f9c7c5bfaf89334c19118bed3e19da7ccc8c"
+        },
+        {
+          "path": "web/src/components/layout/app-providers.tsx",
+          "sha256": "efcafc8b963cb37ff7fca4ebde0ebdc6030b0b4f17ba08c6b36c045dd6780b56"
+        },
+        {
+          "path": "web/src/components/layout/app-top-nav.tsx",
+          "sha256": "f15f55803e8111e1f5fe3882d2dafc19841b68eca18875c446da7a7d04501e4c"
+        },
+        {
+          "path": "web/src/components/layout/channel-editor-drawer.tsx",
+          "sha256": "285ab1e11c686efff2d71a466f91c35180ac04bd22b627d33b1fa6952bce71ee"
+        },
+        {
+          "path": "web/src/components/layout/client-root-init.tsx",
+          "sha256": "bc1369f808248dfc195746715f7432a379ef0ed7eeaa44ba1d66d2a20a6f00a7"
+        },
+        {
+          "path": "web/src/components/layout/config-account.tsx",
+          "sha256": "fdac791a28dbfea77775f21de7c19d8a9b6005fa4a001fc2beab7e26b8982451"
+        },
+        {
+          "path": "web/src/components/layout/config-local-storage.tsx",
+          "sha256": "40b8dddc1bde5ab16acd3b2b66e1e6314aa184da69d8f347051999784b2c52be"
+        },
+        {
+          "path": "web/src/components/layout/config-prompt-sources.tsx",
+          "sha256": "e4b578ffeb7f26eb6b52f18af3287699b8092c0c84997f9e7c719eba08bf1d94"
+        },
+        {
+          "path": "web/src/components/layout/github-link.tsx",
+          "sha256": "a7bf72a85e140165ff7055424ab578ef0b778273b222db3fdb4f74fccddd77d0"
+        },
+        {
+          "path": "web/src/components/layout/mobile-nav-drawer.tsx",
+          "sha256": "a1a7ff1683ae4926bdd0bd97c27c73fe43e0c72429af32558127b442b196bde7"
+        },
+        {
+          "path": "web/src/components/layout/model-script-editor.tsx",
+          "sha256": "7ff836737f0058c4a1e1f8760dd8f58a145c0d262d07b866b86ab61e113c2b05"
+        },
+        {
+          "path": "web/src/components/layout/model-select-modal.tsx",
+          "sha256": "221786c67c6996a6abe2caa3b6ef72c5abfa02f818f8fef199c9c31ed17a790b"
+        },
+        {
+          "path": "web/src/components/layout/prompt-source-content-modal.tsx",
+          "sha256": "dd2aab7fe4255c51edf5a41b07787da30ac4e6e15859097bd7ca1ecd7edd9c2d"
+        },
+        {
+          "path": "web/src/components/layout/prompt-source-editor-drawer.tsx",
+          "sha256": "f53d8a6cb63b4de11df5bc379f54a28f7b6cb8caa983c5cacb3e9807e936881f"
+        },
+        {
+          "path": "web/src/components/layout/user-status-actions.tsx",
+          "sha256": "07c20d1b2daca083b4f852947be49c07a6d8fcf83b1078bf10c1a01359779496"
+        },
+        {
+          "path": "web/src/components/layout/version-release-modal.tsx",
+          "sha256": "31f0af32cce27833269cdcda38df753a7b3c38728587f44f2f53402b9f4b32c7"
+        },
+        {
+          "path": "web/src/components/model-picker.tsx",
+          "sha256": "9ba938049a9be2b9f6ae27666bd6b7565c4cebb53d310538c32d84b0691142fb"
+        },
+        {
+          "path": "web/src/components/prompts/prompt-card.tsx",
+          "sha256": "16bf7482723d590b4d2f130e4746f23028b7900cc506be24498a2c567bb4b497"
+        },
+        {
+          "path": "web/src/components/prompts/prompt-select-dialog.tsx",
+          "sha256": "a036c49a373bf3262e2e9068f7ef6e038954d27e1c1725e9f307fa1c7d4743ab"
+        },
+        {
+          "path": "web/src/components/prompts/use-prompt-list.ts",
+          "sha256": "dd29a9404d006bc2b06b37b908992ee187e79fc044db80c38b3c088e037b7f67"
+        },
+        {
+          "path": "web/src/components/text-settings-panel.tsx",
+          "sha256": "f0c9a51ae96812ea9e861592e426bb8abd20845a5f24402db45e08e372d68a45"
+        },
+        {
+          "path": "web/src/components/ui/animated-theme-toggler.tsx",
+          "sha256": "b72c4f0138db8ddcae3b08ee1b0e24af3145c387330c16f929bb004cf76ad7c0"
+        },
+        {
+          "path": "web/src/components/ui/dia-text-reveal.tsx",
+          "sha256": "06f17cbc12e26ed99ebea9a759293f18882e7c624b2385c7ec9614238cd4fddb"
+        },
+        {
+          "path": "web/src/components/ui/select.tsx",
+          "sha256": "fa20f35a09ad01bbda9e53f16b0324530abc0d7b1cc83f49d01f3ceb5c429398"
+        },
+        {
+          "path": "web/src/components/video-settings-panel.tsx",
+          "sha256": "c44f326c8e66a1fc2e32b655bbd8a583fdeee0b5990f1c91f84ab86d200379ca"
+        },
+        {
+          "path": "web/src/constant/canvas.ts",
+          "sha256": "f075dda9e219ecdd0f08efc5a973e9e70b556466f68fd4ecb1b4acab3da0ffa0"
+        },
+        {
+          "path": "web/src/constant/env.ts",
+          "sha256": "f7b62ea3bba8af0d124c9262b0dd88308a1bfe5a9a66400002ba35a5eec4adf5"
+        },
+        {
+          "path": "web/src/constant/navigation-tools.ts",
+          "sha256": "9b4e35d6cb486139ff3520d3c09546597b8a2327845e0e7ebcf111796fa96c45"
+        },
+        {
+          "path": "web/src/constant/runtime-config.ts",
+          "sha256": "bd89fc656439c893f7ac89e35cf82e6c236e9c39c2fa53a56dfff76350cd189e"
+        },
+        {
+          "path": "web/src/hooks/use-copy-text.ts",
+          "sha256": "d6db665172fba00f70b776cab736b1ceabe2f3a4905458cbeab5f1265581d874"
+        },
+        {
+          "path": "web/src/hooks/use-prompt-source-scheduler.ts",
+          "sha256": "f9bed2764ed646fe261800dcd7cd26a28697bc37523f9913bfa481891006c26a"
+        },
+        {
+          "path": "web/src/hooks/use-version-check.ts",
+          "sha256": "277916be956f3fcf3f38ca159ff46d76c19c434db3e45d09cfd543a3f78cbaf1"
+        },
+        {
+          "path": "web/src/i18n/index.ts",
+          "sha256": "903f54a450c23bfb6a6575368c55be9ecbec6133f018ae6679cfe93b7b8b1dcc"
+        },
+        {
+          "path": "web/src/i18n/locales/en-US.ts",
+          "sha256": "666449d2d95124719bcbdee1ce700dd4732f1a03de2329fbecc8356cc96d9a76"
+        },
+        {
+          "path": "web/src/i18n/locales/zh-CN.ts",
+          "sha256": "26fd7da91160520ddee7fb47714db31799efca856667fd97b342ef02500734d8"
+        },
+        {
+          "path": "web/src/layouts/user-layout.tsx",
+          "sha256": "642e7c9201a9da51935a4202d994185e8aff586dbbcd34cf72a8d96cd01154a3"
+        },
+        {
+          "path": "web/src/lib/agent/agent-site-tools.ts",
+          "sha256": "a926f574dffe401e37529b36624a618f1c60d74c1c7bacb89249d8f6e8c6f583"
+        },
+        {
+          "path": "web/src/lib/agent/agent-url-bootstrap.ts",
+          "sha256": "cc6fce7ed7adf6752c85ef308ab94d76b9884bd52b58aa26573241ec015605f9"
+        },
+        {
+          "path": "web/src/lib/analytics.ts",
+          "sha256": "cdc17fa61d050f029cf043395fb478617193d70e9622639d4e829d3f3f4e68f8"
+        },
+        {
+          "path": "web/src/lib/app-theme.ts",
+          "sha256": "0178753656444f1b28fed5fd246a70cff9ebf9305abe4496cc03a0bf7fdb08b1"
+        },
+        {
+          "path": "web/src/lib/audio-generation.ts",
+          "sha256": "d84b7f4eb645e5572b071dc478025e9d5afe989b6b705c4ab18b152b249e7413"
+        },
+        {
+          "path": "web/src/lib/canvas/canvas-agent-ops.ts",
+          "sha256": "d9679e0a20af562b8cca65c4f2d7d8afe285e7365d94467292f357b9060fd7e6"
+        },
+        {
+          "path": "web/src/lib/canvas/canvas-event-bus.ts",
+          "sha256": "58c5fa8892ed82743441953357346fed1c098e521fce3047498ad8863311fc7b"
+        },
+        {
+          "path": "web/src/lib/canvas/canvas-export.ts",
+          "sha256": "ea458910dbecef0cfcdd2f8e396f86abc344507a3f97c5ff055b063d29468d46"
+        },
+        {
+          "path": "web/src/lib/canvas/canvas-generation-helpers.ts",
+          "sha256": "e7ae36436af702baec61657ab39c3e14ec2200fd128a084c26729748c4aaef61"
+        },
+        {
+          "path": "web/src/lib/canvas/canvas-image-data.ts",
+          "sha256": "935a3f57eeed1b77ef20c715642b2069d1c71030bf70c9a17f64d92a17fd69f9"
+        },
+        {
+          "path": "web/src/lib/canvas/canvas-node-factory.ts",
+          "sha256": "8727245da926d162504aed343b0e08d81efa0ef322c8732cd3227f6167d6d47e"
+        },
+        {
+          "path": "web/src/lib/canvas/canvas-node-geometry.ts",
+          "sha256": "4da5f3d14d18f9cd76d571abab6aa824d9e9c4306130d80a8bc022e872408679"
+        },
+        {
+          "path": "web/src/lib/canvas/canvas-node-size.ts",
+          "sha256": "80942a663f77240b8b6c92cd3d841f11d4fb8984d45f29ab62969bbadefcd287"
+        },
+        {
+          "path": "web/src/lib/canvas/canvas-resource-references.ts",
+          "sha256": "68ee64803b1df9b75a3d9869de470520355189740e17078a6e2fa305b824c705"
+        },
+        {
+          "path": "web/src/lib/canvas/canvas-video-frame.ts",
+          "sha256": "d18ca8fbb0dfae177ef038d05bf0c45397fc2ea4cf229f0301aa56d7aa4b0cfc"
+        },
+        {
+          "path": "web/src/lib/canvas/canvas-video-mode.ts",
+          "sha256": "d846c3fbfb05221fc4d581ea30205aa26340769dc6103495478c5819f9a622a2"
+        },
+        {
+          "path": "web/src/lib/canvas/node-registry.ts",
+          "sha256": "227bfe92a6c6928e047a9decee5197af5e742e119a2811124d02f8cc33c25b52"
+        },
+        {
+          "path": "web/src/lib/canvas/plugin-loader.ts",
+          "sha256": "deae9e1d127bea8ce4972eba49d5905c112822731a49b712f6fe11beb5f42c9d"
+        },
+        {
+          "path": "web/src/lib/canvas/plugin-node-context.ts",
+          "sha256": "282a394da78c3aa875c35d12e50d5df012208f7b0ca78c539e63e41bbc1e19ba"
+        },
+        {
+          "path": "web/src/lib/canvas/plugin-registry.ts",
+          "sha256": "f3901e3527b1b694cbc5bf7bc012f2cf20e9beec626aaeb51ec87ed55e5cc7cc"
+        },
+        {
+          "path": "web/src/lib/canvas/plugin-runtime.ts",
+          "sha256": "3665b2cb8499decdaba3722d134e9d4004e378f089d174479288e1e8243008eb"
+        },
+        {
+          "path": "web/src/lib/canvas-theme.ts",
+          "sha256": "21c1bfc160058cce9489817e44d2f044ce29a3ac647b4e02b2950e2b4a3c21a3"
+        },
+        {
+          "path": "web/src/lib/image-reference-prompt.ts",
+          "sha256": "c61d2d4d24e2bd1ad0a0039c1eb6a7e56247bbb17617a977bff8171430b5b977"
+        },
+        {
+          "path": "web/src/lib/image-thumbnail.ts",
+          "sha256": "d6439076a70d0a5b881d8de832af5210be3aa8804f4e079bd53f946debfaaef7"
+        },
+        {
+          "path": "web/src/lib/image-utils.ts",
+          "sha256": "4a79b95f68b62f6bc9193a524bb5f35029a1819b47d1319c559ceed292c54e22"
+        },
+        {
+          "path": "web/src/lib/keyboard-event.ts",
+          "sha256": "53086584844fa06f5ad2953d5744220533cb0b7fbd8eef026f209707a6f147b9"
+        },
+        {
+          "path": "web/src/lib/localforage-storage.ts",
+          "sha256": "f8532c39dde86b6fae154d56480b54c4a48c820b9e5101e4988171f2a5b01430"
+        },
+        {
+          "path": "web/src/lib/media-size.ts",
+          "sha256": "3696bc448f83d369d1e892a3c264698f77d92c78a53d6fcbd8bb4f0b2a030481"
+        },
+        {
+          "path": "web/src/lib/release.ts",
+          "sha256": "ac6c0c5214dee71227db1754748432682566c9ff4c31c21a3c88e6a249473700"
+        },
+        {
+          "path": "web/src/lib/utils.ts",
+          "sha256": "e8250b347be2a5b6568350a908d0d63ba8f975c099150247477d10b70d24f190"
+        },
+        {
+          "path": "web/src/lib/zip.ts",
+          "sha256": "8ed892dc82adc60d37bd82dd86a71b59e9ac9dea08ffe6aceb600bfd61156595"
+        },
+        {
+          "path": "web/src/main.tsx",
+          "sha256": "9c22792703e73739c094cb38d513d8924ebc86204d21bcdc661c46834ded7952"
+        },
+        {
+          "path": "web/src/pages/assets/asset-transfer.ts",
+          "sha256": "fa4b47e62c59197b8b718bd03afb584661e9e9640d128aee8a3f0acf45277e75"
+        },
+        {
+          "path": "web/src/pages/assets/index.tsx",
+          "sha256": "618fa54deef6668967f28066f1811ec4e89a2a64f463fdb99067560608c5b508"
+        },
+        {
+          "path": "web/src/pages/canvas/hooks/use-agent-bridge.ts",
+          "sha256": "4f0133a3eb9934ad6517c0ff8d2c614ee90b9b519421b0ee88d08d0bcaab4aa4"
+        },
+        {
+          "path": "web/src/pages/canvas/hooks/use-plugin-host.tsx",
+          "sha256": "e1e756d73b1eca323882d4603b9b43b615e29114fd78a940425b682614c101bd"
+        },
+        {
+          "path": "web/src/pages/canvas/index.tsx",
+          "sha256": "c69ae1331ad24b0c33cf481ad2d386c46d22610dfe723715f9ed0540dfcf025b"
+        },
+        {
+          "path": "web/src/pages/canvas/project.tsx",
+          "sha256": "feaff080c14542f97a285727b0fd5964e1d9bb80a0a267ff323156dec43e024a"
+        },
+        {
+          "path": "web/src/pages/config/index.tsx",
+          "sha256": "aa4c17e13c2a765a7b4349daa0e65477deec2e5969d2e73cdac3d733a60f43e6"
+        },
+        {
+          "path": "web/src/pages/home/index.tsx",
+          "sha256": "68d579c0e6978e9ba5198b4256d824bcbf43d2208b37f5b35e3231d17534f73a"
+        },
+        {
+          "path": "web/src/pages/image/index.tsx",
+          "sha256": "ba739911a986e2b3debbfe7323ec665e930204eade244391719900b139412829"
+        },
+        {
+          "path": "web/src/pages/not-found/index.tsx",
+          "sha256": "3c03fde6348e4690f6d5ef0e40f7e3a0956b128a2b81bc37b498bbddc213bbe5"
+        },
+        {
+          "path": "web/src/pages/prompts/components/prompt-detail-dialog.tsx",
+          "sha256": "745b0d3a9bb2d5d40b44fa214dc2100eb719cf1bb51cd3fbdf5c8910dc204913"
+        },
+        {
+          "path": "web/src/pages/prompts/index.tsx",
+          "sha256": "e37f27f0e7c75ee6dbd7574d340ac4b6cca304ec9a1f9473cd6639028639f24f"
+        },
+        {
+          "path": "web/src/pages/video/index.tsx",
+          "sha256": "2456d6ea527b16142699f0a590064d356004cf38b8361912b13b4e42ddf9c9df"
+        },
+        {
+          "path": "web/src/router.tsx",
+          "sha256": "d46a2157d77f0c4d72386713a3262c5e5c7fafaf1381a7455cb51685377ad833"
+        },
+        {
+          "path": "web/src/services/api/audio.ts",
+          "sha256": "c99986598b917e065f122cd60b4b030ad18303955e9ff1881aaf66bdf17c7ed3"
+        },
+        {
+          "path": "web/src/services/api/canvas-agent.ts",
+          "sha256": "28b90150f7e797f899216f46d391aec9d4e99b613685b11def0ed214ce9603ba"
+        },
+        {
+          "path": "web/src/services/api/image.ts",
+          "sha256": "326d2755a9b3378ea716953491f785faee4270222e44ead1923125ddf02243f0"
+        },
+        {
+          "path": "web/src/services/api/model-plugin.ts",
+          "sha256": "7326965529a77d9ce3e6ad7ecbd4b21bdd0eb5a69650b116f4721dc97a9ebaaa"
+        },
+        {
+          "path": "web/src/services/api/prompt-source-presets.ts",
+          "sha256": "3387a21707ae93ce8c178f41d1567c0bfc7274a44d5c4ce3006709f7cdacb63a"
+        },
+        {
+          "path": "web/src/services/api/prompt-source-runtime.ts",
+          "sha256": "486d64deada32448b78f72e9d809253d7791cef8972060b9d6272076d36ee583"
+        },
+        {
+          "path": "web/src/services/api/prompts.ts",
+          "sha256": "8bb11ee5a469311f133abe03f34bf397b758c0a54945f0472526f1149c5c2ea7"
+        },
+        {
+          "path": "web/src/services/api/request.ts",
+          "sha256": "9412751804ef1ff025710a432ad73f43a9859ad6ffcd87ba50ee261fd0751126"
+        },
+        {
+          "path": "web/src/services/api/video.ts",
+          "sha256": "f050d152a079716d3887677ea070b33f6f02aeb9d74513e75f5e7c7f2f99450b"
+        },
+        {
+          "path": "web/src/services/app-sync.ts",
+          "sha256": "977a9de015be953dd12b0a8401fa2561f3e492289f69c53ea5b40ae96e67f966"
+        },
+        {
+          "path": "web/src/services/backend-sync.ts",
+          "sha256": "966187895d238e9b2f90ec32cac82b9fe128f0a7ee3da7090f3bb7a512c9b101"
+        },
+        {
+          "path": "web/src/services/config-file.ts",
+          "sha256": "3edc7a9e733d80ab493cef01503d4e6f3e6a6e450316367dd2bd902826848be8"
+        },
+        {
+          "path": "web/src/services/file-storage.ts",
+          "sha256": "735cc09918ce17475f98292e1fe573b73d73d6bcc9ccbbcf38f21450e89e3b00"
+        },
+        {
+          "path": "web/src/services/image-storage.ts",
+          "sha256": "f40c967247533cb6acb4a1b3f83a26af7632d82d2b679689487cbd34fc845fc0"
+        },
+        {
+          "path": "web/src/services/local-storage-usage.ts",
+          "sha256": "80497c0e69189c496944469bf4cbaeb78ae9920742b1cf162afa20f5a0a06dc2"
+        },
+        {
+          "path": "web/src/services/webdav-sync.ts",
+          "sha256": "2a8b193735473a4e7cbd099971b32fdc6ebc8e148ffd3338b32e23e6319fe92d"
+        },
+        {
+          "path": "web/src/services/webdav-transfer-plan.js",
+          "sha256": "6983d5c763518bc03cccfc9e89a541ec0ad40dbc3831fbc4bb36bc2b515e9c56"
+        },
+        {
+          "path": "web/src/stores/canvas/use-canvas-store.ts",
+          "sha256": "e5bfd53d2241d35a68deef816d48b58c365b71309cd83cd70123dba25fea28c7"
+        },
+        {
+          "path": "web/src/stores/canvas/use-canvas-ui-store.ts",
+          "sha256": "ce6ca88828354ddccb77a9a0e89b79503b78e3e5eaf94ea0eb709bea0c137003"
+        },
+        {
+          "path": "web/src/stores/canvas/use-plugin-store.ts",
+          "sha256": "4e8c291d3ee27c7372b0a75ac2c9a5aef05db4cf9db8c8703cdcdab1f306bfb3"
+        },
+        {
+          "path": "web/src/stores/channel-templates.ts",
+          "sha256": "9b20795d873ca6d5985415019dc74d343dd5a17ef66356acd2ccf9e7147b4cd8"
+        },
+        {
+          "path": "web/src/stores/use-agent-skill-store.ts",
+          "sha256": "61a0ffdc8e556038dde5fb7c9e68891c490ecb9c35fdb0c6c27b77fd93e3e917"
+        },
+        {
+          "path": "web/src/stores/use-agent-store.ts",
+          "sha256": "25f3c0eb8adc454c90e2814f08ec389e0061d39fe597deacf65df2fbb5d438f7"
+        },
+        {
+          "path": "web/src/stores/use-asset-store.ts",
+          "sha256": "2241c41cd76947776c7c9c2ebdbf636d6f5ca49501af27b86daeb85009d8c1cd"
+        },
+        {
+          "path": "web/src/stores/use-canvas-side-panel-store.ts",
+          "sha256": "d3902457b65b1e0326e7056e305c76f32d3261d0dc85da0d4419e2ad0951ed86"
+        },
+        {
+          "path": "web/src/stores/use-config-store.ts",
+          "sha256": "14f9b14d638e4cbef2784a02e8d74ab12b6de595141690db92df12572c52ec46"
+        },
+        {
+          "path": "web/src/stores/use-prompt-source-store.ts",
+          "sha256": "f7a21a3a82ac74d07ec13a47fb9780cdc72d98fd65b84cd832a32accac442fc1"
+        },
+        {
+          "path": "web/src/stores/use-theme-store.ts",
+          "sha256": "1d2cd753e17cb8c261da768bb20316da8fd23e518611a99c7c1f0eeb83edbe0a"
+        },
+        {
+          "path": "web/src/stores/use-user-store.ts",
+          "sha256": "a578096716df880a8e87113cfeb7f4f0221b2079f38c6245d6df4e297f8b28c4"
+        },
+        {
+          "path": "web/src/stores/use-workbench-agent-store.ts",
+          "sha256": "6eef326c9f8db28bd3a1ac7915f2e57101347049da402e90daf6db81750c4b4b"
+        },
+        {
+          "path": "web/src/styles/globals.css",
+          "sha256": "f1ec4d17d89e70daefcf8277b6c3534505ad67873d08e8aa25b25e61f5e6214b"
+        },
+        {
+          "path": "web/src/types/canvas-export.ts",
+          "sha256": "3b155cefa80e276082b27f6bcc66a970563cd65da39f7f4d84701cdf51c2db6a"
+        },
+        {
+          "path": "web/src/types/canvas-plugin.ts",
+          "sha256": "62dfe2a62e20222aaf7deabce31930efa02faef677e5bfcf3fa8dcbde93e4538"
+        },
+        {
+          "path": "web/src/types/canvas.ts",
+          "sha256": "9d86c8f655c12a1ec52138b8cb5b2cdb0737bd9eecb3914b1edf4116477b25b4"
+        },
+        {
+          "path": "web/src/types/image.ts",
+          "sha256": "58bf2d5920e9b67981415ccb5c8b923c01d201e917c1ec683cb3f3c67264e418"
+        },
+        {
+          "path": "web/src/types/media.ts",
+          "sha256": "6d9a1f7893974c0ec392d9a5eec60122acfeb7e2bed75fded1a773bfffad6d2c"
+        },
+        {
+          "path": "web/src/vite-env.d.ts",
+          "sha256": "ec0a73fa64c9fd8e347fb40abd3639492de556d2db9d3f0b07f7a3457eeca685"
+        },
+        {
+          "path": "web/tests/image-thumbnail.test.ts",
+          "sha256": "c2fda8f06c4d2ff526adc123c4dd8b023b250c1663dc227288d278661997396b"
+        },
+        {
+          "path": "web/tsconfig.json",
+          "sha256": "0f1ba3c69ec7ee43c34afeb82fbc39d122590c9e3b751c1245a31877eff215f3"
+        },
+        {
+          "path": "web/tsconfig.tsbuildinfo",
+          "sha256": "ad360f26ed8156ce17829102db15978fb499db97b0227f4f2091392658b62b31"
+        },
+        {
+          "path": "web/vercel.json",
+          "sha256": "ab5eb81193ece5fbf25c88db01ba721195f7da56b882b2e7b8a6103d185fcbda"
+        },
+        {
+          "path": "web/vite.config.ts",
+          "sha256": "c2534395f24dee240ee83a9c84629cea6bb46c6133584f309bd5e2f15b9149e8"
+        },
+        {
+          "path": "web/vite.override.config.mjs",
+          "sha256": "a3cce7d16ea77902fa103dca97f77acbae7b6af3fe221b1255845f618873b772"
+        }
+      ]
+    },
+    {
+      "name": "api",
+      "source": "canvas-api",
+      "server": "haika-1757",
+      "sourcePath": "/opt/infinite-canvas/api",
+      "relationship": "Current deployed source snapshot; runtime data excluded",
+      "excludedSensitiveAndRuntimeFiles": true,
+      "files": [
+        {
+          "path": "auth.js",
+          "sha256": "d4ade37d0ccc2e7b69b57767264fb8249ab5f2e60eda91147b94586118a6fd70"
+        },
+        {
+          "path": "credits.js",
+          "sha256": "73ed71afc30cb43848b4d6864f9df3efd5dbb97e9557ad1f32f9683d8bfca0a5"
+        },
+        {
+          "path": "db.js",
+          "sha256": "2a611664d186f565bf0057c8b01accaadfa40989a0f23652411dd915f31a7128"
+        },
+        {
+          "path": "Dockerfile",
+          "sha256": "d15e45c0ea31cbe9c060641a30b12f10fa1f20381b79754c4ea8f351a46595ea"
+        },
+        {
+          "path": "email-verify.js",
+          "sha256": "538ab263348f2c7ff5e9d6b4af3915ffa255c65051ca61a3927026725256e24b"
+        },
+        {
+          "path": "email.js",
+          "sha256": "ef2843897d4dbad1da556b0127706c049ff4ed07b78b842418fc91fb55bf5a51"
+        },
+        {
+          "path": "ldxp-redeem.js",
+          "sha256": "d9dea6455c359c59be0422ce93ff6c9a5b58d7d3dc78e310aac2a00bc924902c"
+        },
+        {
+          "path": "package-lock.json",
+          "sha256": "894236f4d48daba2c88f0836883022e3759656e1158033d2e1609de84ba13f68"
+        },
+        {
+          "path": "package.json",
+          "sha256": "1b5007c5edf75c5e1bae7c060304f4efbccf1ecefdc82de367a4ba1c051e988d"
+        },
+        {
+          "path": "routes-credits.js",
+          "sha256": "7eb757ac4928e454fcccc3c1865628eb5b6b34fb9beb4bfbb2be4f163aee67e2"
+        },
+        {
+          "path": "schema.sql",
+          "sha256": "5bde5d77e538dd2ec596b84342f0807805c70efe7c1059ad0d75eb0753358dee"
+        },
+        {
+          "path": "server.js",
+          "sha256": "183abfdc21192509af91289e530af44699e9c79b23a64722b7ea56973bd25916"
+        },
+        {
+          "path": "unified-auth.js",
+          "sha256": "820111412fb2e7efe4429ddf1ad980a3797d5c9b1d89eb2f2e614ffc784bde3b"
+        },
+        {
+          "path": "unified-quota-client.mjs",
+          "sha256": "8a4dd826e62578bfdc84dbe63f9b2eceda06da398c80ea6f4d7697fa845e3b52"
+        },
+        {
+          "path": "unified-quota.js",
+          "sha256": "e39b396e66664447a270c2db9a693e49a75885a91f95800e70f4920b1cbbf95b"
+        },
+        {
+          "path": "ziyu.js",
+          "sha256": "bb5407d9336e82420fdc656bb1115f71b9860b1fa07070660a901ff07c41f250"
+        }
+      ]
+    },
+    {
+      "name": "proxy",
+      "source": "canvas-proxy",
+      "server": "haika-1757",
+      "sourcePath": "/opt/agnes-video-proxy",
+      "relationship": "Current deployed source snapshot; runtime data excluded",
+      "excludedSensitiveAndRuntimeFiles": true,
+      "files": [
+        {
+          "path": "Dockerfile",
+          "sha256": "36971f9d00d2da7f6c15a427f1bdfd22ac580e023d4fb6355099ab08bd99f8d7"
+        },
+        {
+          "path": "idempotency-store.js",
+          "sha256": "cc89fc0dbda5c6bd2066e61310d325324bafef5241535fad947ad120baa083b9"
+        },
+        {
+          "path": "package.json",
+          "sha256": "883236471b8c5fd35ebc80dad6d6c816e41d254f9f788a46a0445185c8997d91"
+        },
+        {
+          "path": "PROXY_FINGERPRINT",
+          "sha256": "ec531ca15c82e34d235d62666558e3f9f07427e4012252788f697112c93b3723"
+        },
+        {
+          "path": "request-fingerprint.js",
+          "sha256": "af98af99533cba8860bc238a650b307a9e8be0170698478849adf637acb36aa7"
+        },
+        {
+          "path": "server.js",
+          "sha256": "880a931b70d6b7c467a0dc506edc7f17efec6987316b94c481f4e82372f2656a"
+        },
+        {
+          "path": "webdav.js",
+          "sha256": "7f34397de5d30e121c0b131ef2c33c9bed0bcfd3497e041f5506dab028352fe2"
+        }
+      ]
+    }
+  ]
+}
